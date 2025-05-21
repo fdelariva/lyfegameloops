@@ -9,6 +9,7 @@ import Onboarding from "./pages/Onboarding";
 import OnboardingDestinyCards from "./pages/OnboardingDestinyCards";
 import OnboardingOracle from "./pages/OnboardingOracle";
 import OnboardingStreak from "./pages/OnboardingStreak";
+import OnboardingChallenges from "./pages/OnboardingChallenges";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/onboarding-destiny" element={<OnboardingDestinyCards />} />
           <Route path="/onboarding-oracle" element={<OnboardingOracle />} />
           <Route path="/onboarding-streak" element={<OnboardingStreak />} />
+          <Route path="/onboarding-challenges" element={<OnboardingChallenges />} />
           <Route path="/dashboard" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
