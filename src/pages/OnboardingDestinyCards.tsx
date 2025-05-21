@@ -81,7 +81,7 @@ const OnboardingDestinyCards = () => {
 
   const handleSelectArchetype = (selected: "Mestre" | "Guardião" | "Guerreiro" | "Sábio" | "Indefinido") => {
     setArchetype(selected);
-    setStep(3);
+    setStep(4); // Modificado para avançar para a etapa 4 (seleção de hábitos)
   };
 
   const handleAccessorySelect = (accessoryId: string) => {
