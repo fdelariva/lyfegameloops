@@ -62,6 +62,16 @@ const Index = () => {
             
             <Button 
               size="lg" 
+              className="w-full mb-3 bg-gradient-to-r from-orange-500 to-red-500" 
+              onClick={() => navigate("/onboarding-streak")}
+            >
+              <span className="mr-2">🔥</span>
+              Streak Acelerado
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            
+            <Button 
+              size="lg" 
               className="w-full" 
               variant="outline"
               onClick={() => navigate("/onboarding")}
