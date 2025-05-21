@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "@/components/ui/sonner";
 import UserAvatar from "@/components/Avatar";
 import AccessorySelection from "@/components/AccessorySelection";
+import { Coins, Gift, ShoppingCart } from "lucide-react";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -83,7 +83,35 @@ const Onboarding = () => {
                 Ganhe 100 moedas para começar sua jornada!
               </p>
             </div>
+            
+            <Card className="mb-6 bg-primary/5 w-full max-w-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-center gap-2">
+                  <ShoppingCart className="h-5 w-5" />
+                  Loja de Recompensas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-3 gap-2 text-center">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-2xl">🎩</div>
+                  <div className="text-xs">Itens para Avatar</div>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-2xl">🏋️</div>
+                  <div className="text-xs">Cupons de Desconto</div>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-2xl">⚡</div>
+                  <div className="text-xs">Boosts Especiais</div>
+                </div>
+              </CardContent>
+              <CardFooter className="text-xs text-center text-muted-foreground">
+                Troque suas moedas por recompensas exclusivas!
+              </CardFooter>
+            </Card>
+            
             <Button size="lg" onClick={() => setStep(2)}>
+              <Coins className="mr-2 h-4 w-4" />
               Iniciar Jornada
             </Button>
           </div>

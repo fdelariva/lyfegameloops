@@ -11,6 +11,7 @@ import OnboardingOracle from "./pages/OnboardingOracle";
 import OnboardingStreak from "./pages/OnboardingStreak";
 import OnboardingChallenges from "./pages/OnboardingChallenges";
 import Dashboard from "./pages/Dashboard";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/onboarding-streak" element={<OnboardingStreak />} />
           <Route path="/onboarding-challenges" element={<OnboardingChallenges />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/shop" element={<Shop />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

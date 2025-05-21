@@ -1,17 +1,19 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
-import { CheckCircle, User, Calendar } from "lucide-react";
+import { CheckCircle, User, Calendar, ShoppingCart } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
 import AvatarPreview from "@/components/AvatarPreview";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   const [avatar, setAvatar] = useState({
     level: 1,
     archetype: "Guerreiro" as "Mestre" | "Guardião" | "Guerreiro" | "Sábio" | "Indefinido",
@@ -128,7 +130,10 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Lyfe</h1>
           <div className="flex items-center gap-2">
-            <Badge className="bg-amber-500">
+            <Badge 
+              className="bg-amber-500 cursor-pointer hover:bg-amber-600 transition-colors"
+              onClick={() => navigate("/shop")}
+            >
               {coins} moedas
             </Badge>
             <Button size="sm" variant="outline">
@@ -167,6 +172,16 @@ const Dashboard = () => {
                 skill={avatar.skill}
               />
             </CardContent>
+            <CardFooter>
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={() => navigate("/shop")}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Loja de Itens
+              </Button>
+            </CardFooter>
           </Card>
           
           <Card className="md:col-span-2">
