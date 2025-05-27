@@ -27,11 +27,11 @@ const LevelUpAnimation = ({ isOpen, onClose, newLevel }: LevelUpAnimationProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md relative overflow-hidden">
+      <DialogContent className="sm:max-w-md relative overflow-hidden fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
         {/* Confetti Animation */}
         {showConfetti && (
           <div className="absolute inset-0 pointer-events-none">
-            {[...Array(20)].map((_, i) => (
+            {[...Array(30)].map((_, i) => (
               <div
                 key={i}
                 className={`absolute animate-bounce text-2xl`}
@@ -48,36 +48,36 @@ const LevelUpAnimation = ({ isOpen, onClose, newLevel }: LevelUpAnimationProps) 
           </div>
         )}
 
-        <div className="flex flex-col items-center text-center py-6 relative z-10">
-          <div className="relative mb-6">
-            <div className="w-24 h-24 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center animate-pulse">
-              <Trophy className="w-12 h-12 text-white" />
+        <div className="flex flex-col items-center text-center py-8 relative z-10">
+          <div className="relative mb-8">
+            <div className="w-32 h-32 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center animate-pulse shadow-2xl">
+              <Trophy className="w-16 h-16 text-white" />
             </div>
-            <div className="absolute -top-2 -right-2 animate-bounce">
-              <Star className="w-8 h-8 text-yellow-400 fill-current" />
+            <div className="absolute -top-3 -right-3 animate-bounce">
+              <Star className="w-10 h-10 text-yellow-400 fill-current" />
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent animate-pulse">
             LEVEL UP!
           </h2>
           
-          <p className="text-lg mb-4">
-            Parabéns! Você alcançou o <Badge className="bg-primary text-lg px-3 py-1">Nível {newLevel}</Badge>
+          <p className="text-xl mb-6">
+            Parabéns! Você alcançou o <Badge className="bg-primary text-xl px-4 py-2 ml-2">Nível {newLevel}</Badge>
           </p>
           
-          <div className="mb-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">
+          <div className="mb-8 text-center">
+            <p className="text-base text-muted-foreground mb-4">
               Você desbloqueou novos recursos!
             </p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              <Badge variant="outline" className="bg-green-50">+5 Energia Base</Badge>
-              <Badge variant="outline" className="bg-blue-50">+5 Conexão Base</Badge>
-              <Badge variant="outline" className="bg-purple-50">+5 Habilidade Base</Badge>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Badge variant="outline" className="bg-green-50 text-sm px-3 py-2">+5 Energia Base</Badge>
+              <Badge variant="outline" className="bg-blue-50 text-sm px-3 py-2">+5 Conexão Base</Badge>
+              <Badge variant="outline" className="bg-purple-50 text-sm px-3 py-2">+5 Habilidade Base</Badge>
             </div>
           </div>
 
-          <Button onClick={onClose} size="lg" className="animate-pulse">
+          <Button onClick={onClose} size="lg" className="animate-pulse text-lg px-8 py-3">
             Continuar Jornada! 🚀
           </Button>
         </div>
