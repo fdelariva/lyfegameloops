@@ -12,6 +12,7 @@ import OnboardingStreak from "./pages/OnboardingStreak";
 import OnboardingChallenges from "./pages/OnboardingChallenges";
 import OnboardingCompetitive from "./pages/OnboardingCompetitive";
 import OnboardingHero from "./pages/OnboardingHero";
+import OnboardingFinch from "./pages/OnboardingFinch";
 import Dashboard from "./pages/Dashboard";
 import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/onboarding-challenges" element={<OnboardingChallenges />} />
           <Route path="/onboarding-competitive" element={<OnboardingCompetitive />} />
           <Route path="/onboarding-hero" element={<OnboardingHero />} />
+          <Route path="/onboarding-finch" element={<OnboardingFinch />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/shop" element={<Shop />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

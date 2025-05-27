@@ -12,7 +12,7 @@ import { Sword, Wand2, Heart, Zap, Users, Trophy, Coins } from "lucide-react";
 const OnboardingHero = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [heroClass, setHeroClass] = useState<"Guerreiro" | "Mago" | "Curandeiro" | "Ladino" | "Indefinido">("Indefinido");
+  const [heroClass, setHeroClass] = useState<"Guerreiro" | "Mago" | "Curandeiro" | "Ladino" | "Mestre">("Mestre");
   const [hp, setHP] = useState(50);
   const [xp, setXP] = useState(0);
   const [level, setLevel] = useState(1);
