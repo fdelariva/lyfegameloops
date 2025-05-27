@@ -18,6 +18,17 @@ const OnboardingHero = () => {
   const [level, setLevel] = useState(1);
   const [hasEgg, setHasEgg] = useState(false);
 
+  // Map hero classes to avatar archetypes
+  const getAvatarArchetype = (heroClass: string) => {
+    const mapping = {
+      "Guerreiro": "Guerreiro",
+      "Mago": "Sábio", 
+      "Curandeiro": "Guardião",
+      "Ladino": "Mestre"
+    } as const;
+    return mapping[heroClass as keyof typeof mapping] || "Mestre";
+  };
+
   const classes = [
     { 
       name: "Guerreiro", 
@@ -188,7 +199,7 @@ const OnboardingHero = () => {
             <div className="bg-card border rounded-lg p-6 w-full max-w-sm mb-6">
               <UserAvatar 
                 level={level} 
-                archetype={heroClass}
+                archetype={getAvatarArchetype(heroClass)}
                 energy={25}
                 connection={20}
                 skill={15}
