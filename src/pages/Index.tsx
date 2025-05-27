@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Trophy, Users } from "lucide-react";
+import { ArrowRight, Trophy, Users, Sword } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -88,6 +88,16 @@ const Index = () => {
               <span className="mr-2">🏆</span>
               Desafio Competitivo
               <Users className="ml-2 h-4 w-4" />
+            </Button>
+            
+            <Button 
+              size="lg" 
+              className="w-full mb-3 bg-gradient-to-r from-purple-600 to-pink-600" 
+              onClick={() => navigate("/onboarding-hero")}
+            >
+              <span className="mr-2">⚔️</span>
+              Jornada do Herói
+              <Sword className="ml-2 h-4 w-4" />
             </Button>
             
             <Button 
