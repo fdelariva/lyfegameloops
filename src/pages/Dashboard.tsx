@@ -9,10 +9,13 @@ import UserAvatar from "@/components/Avatar";
 import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
 import AvatarPreview from "@/components/AvatarPreview";
+import LevelUpAnimation from "@/components/LevelUpAnimation";
 import { useNavigate } from "react-router-dom";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { playSound } = useSoundEffects();
   
   const [avatar, setAvatar] = useState({
     level: 1,
@@ -45,6 +48,7 @@ const Dashboard = () => {
   
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
+  const [showLevelUpAnimation, setShowLevelUpAnimation] = useState(false);
   const [completedHabitCount, setCompletedHabitCount] = useState(0);
   const [coins, setCoins] = useState(100); // Começar com 100 moedas do onboarding
   const [dayZeroBoost, setDayZeroBoost] = useState(true); // Boost do Dia 0
@@ -61,6 +65,9 @@ const Dashboard = () => {
   }, []);
 
   const handleHabitComplete = (habitId: string) => {
+    // Play habit completion sound
+    playSound('habit');
+    
     // Atualiza o estado dos hábitos
     const updatedHabits = habits.map(habit => 
       habit.id === habitId ? { ...habit, completed: true } : habit
@@ -90,29 +97,41 @@ const Dashboard = () => {
     const coinsEarned = 20 * multiplier;
     setCoins(prev => prev + coinsEarned);
     
-    // Mostra as cartas da sorte após o primeiro hábito
-    if (newCount === 1) {
-      setTimeout(() => {
-        setShowLuckyCards(true);
-      }, 1000);
-    }
-    
-    // Mostra a previsão do avatar após o segundo hábito
-    if (newCount === 2) {
-      setTimeout(() => {
-        setShowAvatarPreview(true);
-      }, 1000);
-    }
-    
-    // Verificar se o usuário evoluiu de nível
+    // Check for level up
     const totalPoints = avatar.energy + avatar.skill + avatar.connection + 
                         (completedHabit.energyBoost + completedHabit.skillBoost + completedHabit.connectionBoost) * multiplier;
     
     if (totalPoints >= 75 && avatar.level === 1) {
       setTimeout(() => {
-        toast.success("Parabéns! Você alcançou o Nível 2!");
+        playSound('levelup');
+        setShowLevelUpAnimation(true);
         setAvatar(prev => ({ ...prev, level: 2 }));
       }, 1500);
+    } else {
+      // Show lucky cards and avatar preview only if no level up
+      if (newCount === 1) {
+        setTimeout(() => {
+          setShowLuckyCards(true);
+        }, 1000);
+      }
+      
+      if (newCount === 2) {
+        setTimeout(() => {
+          setShowAvatarPreview(true);
+        }, 1000);
+      }
+    }
+  };
+
+  const handleLevelUpClose = () => {
+    setShowLevelUpAnimation(false);
+    
+    // Show lucky cards and avatar preview after level up animation closes
+    const newCount = completedHabitCount;
+    if (newCount >= 1 && !showLuckyCards) {
+      setTimeout(() => {
+        setShowLuckyCards(true);
+      }, 500);
     }
   };
 
@@ -294,7 +313,13 @@ const Dashboard = () => {
           </CardFooter>
         </Card>
         
-        {/* Luck Cards & Avatar Preview Dialogs */}
+        {/* Dialogs */}
+        <LevelUpAnimation 
+          isOpen={showLevelUpAnimation} 
+          onClose={handleLevelUpClose}
+          newLevel={avatar.level}
+        />
+        
         <LuckyCards 
           isOpen={showLuckyCards} 
           onClose={() => setShowLuckyCards(false)} 
