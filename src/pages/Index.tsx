@@ -1,8 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Trophy, Users, Sword, Heart } from "lucide-react";
+import { ArrowRight, Trophy, Users, Sword, Heart, ExternalLink } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -123,9 +122,21 @@ const Index = () => {
         </CardContent>
       </Card>
 
-      <p className="text-sm text-muted-foreground text-center">
-        Protótipo do novo onboarding com múltiplas versões de game loop para testes
-      </p>
+      <div className="space-y-3 text-center">
+        <p className="text-sm text-muted-foreground">
+          Protótipo do novo onboarding com múltiplas versões de game loop para testes
+        </p>
+        
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="text-muted-foreground hover:text-foreground"
+          onClick={() => window.open('https://github.com/fdelariva/lyfegameloops/wiki', '_blank')}
+        >
+          <ExternalLink className="w-4 h-4 mr-2" />
+          Documentação do Projeto
+        </Button>
+      </div>
     </div>
   );
 };
