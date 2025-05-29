@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const OnboardingHero = () => {
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState([
     { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
     { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
@@ -95,6 +97,7 @@ const OnboardingHero = () => {
         category: "Personalizado"
       };
       setHabits([...habits, newHabit]);
+      setCustomHabits([...customHabits, { id: newHabit.id, name: newHabit.name }]);
       setSelectedHabits([...selectedHabits, newHabit.id]);
       setCustomHabit("");
       setShowCustomHabitInput(false);
@@ -129,6 +132,15 @@ const OnboardingHero = () => {
       toast.error("Selecione pelo menos uma quest para continuar!");
       return;
     }
+
+    // Save selected habits and custom habits to localStorage
+    console.log("Saving selected habits:", selectedHabits);
+    console.log("Saving custom habits:", customHabits);
+    
+    localStorage.setItem('selectedHabits', JSON.stringify(selectedHabits));
+    localStorage.setItem('customHabits', JSON.stringify(customHabits));
+    localStorage.setItem('userArchetype', heroClass);
+    
     toast.success("Quest Completa!", {
       description: "Tutorial do Herói concluído! +100 Gold adicionado!",
     });

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const OnboardingFinch = () => {
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState([
     { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
     { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
@@ -89,6 +91,7 @@ const OnboardingFinch = () => {
         category: "Personalizado"
       };
       setHabits([...habits, newHabit]);
+      setCustomHabits([...customHabits, { id: newHabit.id, name: newHabit.name }]);
       setSelectedHabits([...selectedHabits, newHabit.id]);
       setCustomHabit("");
       setShowCustomHabitInput(false);
@@ -124,6 +127,16 @@ const OnboardingFinch = () => {
       toast.error("Selecione pelo menos um hábito para continuar!");
       return;
     }
+
+    // Save selected habits and custom habits to localStorage
+    console.log("Saving selected habits:", selectedHabits);
+    console.log("Saving custom habits:", customHabits);
+    
+    localStorage.setItem('selectedHabits', JSON.stringify(selectedHabits));
+    localStorage.setItem('customHabits', JSON.stringify(customHabits));
+    localStorage.setItem('userArchetype', petType);
+    localStorage.setItem('petName', petName);
+    
     toast.success("Jornada Iniciada!", {
       description: `Você e ${petName} são agora companheiros inseparáveis!`,
     });
