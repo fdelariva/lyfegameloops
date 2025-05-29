@@ -141,17 +141,17 @@ const Dashboard = () => {
         if (userHabits.length > 0) {
           setHabits(userHabits);
         } else {
-          // If no valid habits found, use first 2 default habits
-          setHabits(defaultHabits.slice(0, 2));
+          // If no valid habits found, use all default habits
+          setHabits(defaultHabits);
         }
       } else {
-        // If no saved habits, use first 2 default habits
-        setHabits(defaultHabits.slice(0, 2));
+        // If no saved habits, use all default habits
+        setHabits(defaultHabits);
       }
     } catch (error) {
       console.log("Error loading saved habits, using defaults:", error);
-      // Use first 2 default habits as fallback
-      setHabits(defaultHabits.slice(0, 2));
+      // Use all default habits as fallback
+      setHabits(defaultHabits);
     }
   }, []);
 
