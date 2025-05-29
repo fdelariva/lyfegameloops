@@ -13,6 +13,16 @@ import LevelUpAnimation from "@/components/LevelUpAnimation";
 import { useNavigate } from "react-router-dom";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 
+interface Habit {
+  id: string;
+  title: string;
+  description: string;
+  energyBoost: number;
+  skillBoost: number;
+  connectionBoost: number;
+  completed: boolean;
+}
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { playSound } = useSoundEffects();
@@ -25,33 +35,125 @@ const Dashboard = () => {
     skill: 15,
   });
   
-  const [habits, setHabits] = useState([
-    {
-      id: "h1",
-      title: "Beber água regularmente",
-      description: "Beba pelo menos 2 litros de água por dia para melhorar sua energia.",
-      energyBoost: 10,
-      skillBoost: 5,
-      connectionBoost: 0,
-      completed: false,
-    },
-    {
-      id: "h2",
-      title: "Meditar por 5 minutos",
-      description: "Uma meditação curta para acalmar a mente e melhorar o foco.",
-      energyBoost: 0,
-      skillBoost: 7,
-      connectionBoost: 8,
-      completed: false,
-    }
-  ]);
+  // Load habits from onboarding or use defaults
+  const [habits, setHabits] = useState<Habit[]>([]);
   
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
   const [showLevelUpAnimation, setShowLevelUpAnimation] = useState(false);
   const [completedHabitCount, setCompletedHabitCount] = useState(0);
-  const [coins, setCoins] = useState(100); // Começar com 100 moedas do onboarding
-  const [dayZeroBoost, setDayZeroBoost] = useState(true); // Boost do Dia 0
+  const [coins, setCoins] = useState(100);
+  const [dayZeroBoost, setDayZeroBoost] = useState(true);
+
+  // Load user's selected habits from onboarding
+  useEffect(() => {
+    // In a real app, this would come from a proper state management or API
+    // For now, we'll use a default set of habits that matches the onboarding options
+    const defaultHabits = [
+      {
+        id: "h1",
+        title: "Levantar da cama",
+        description: "Começar o dia saindo da cama",
+        energyBoost: 5,
+        skillBoost: 0,
+        connectionBoost: 5,
+        completed: false,
+      },
+      {
+        id: "h2",
+        title: "Escovar os dentes",
+        description: "Cuidar da higiene bucal",
+        energyBoost: 0,
+        skillBoost: 5,
+        connectionBoost: 0,
+        completed: false,
+      },
+      {
+        id: "h3",
+        title: "Lavar meu rosto pela manhã",
+        description: "Refrescar o rosto ao acordar",
+        energyBoost: 5,
+        skillBoost: 0,
+        connectionBoost: 0,
+        completed: false,
+      },
+      {
+        id: "h4",
+        title: "Levantar da cadeira e fazer 1 alongamento",
+        description: "Movimentar o corpo durante o dia",
+        energyBoost: 8,
+        skillBoost: 2,
+        connectionBoost: 0,
+        completed: false,
+      },
+      {
+        id: "h5",
+        title: "Fazer algo que me faz feliz",
+        description: "Dedicar tempo para atividades prazerosas",
+        energyBoost: 0,
+        skillBoost: 0,
+        connectionBoost: 10,
+        completed: false,
+      },
+      {
+        id: "h6",
+        title: "Fazer 3 respirações profundas",
+        description: "Relaxar com exercícios de respiração",
+        energyBoost: 0,
+        skillBoost: 5,
+        connectionBoost: 5,
+        completed: false,
+      },
+      {
+        id: "h7",
+        title: "Beber 1 copo de água",
+        description: "Manter-se hidratado",
+        energyBoost: 5,
+        skillBoost: 0,
+        connectionBoost: 0,
+        completed: false,
+      }
+    ];
+
+    // Try to get selected habits from localStorage (set during onboarding)
+    try {
+      const savedHabits = localStorage.getItem('selectedHabits');
+      const savedCustomHabits = localStorage.getItem('customHabits');
+      
+      if (savedHabits) {
+        const selectedHabitIds = JSON.parse(savedHabits);
+        const customHabits = savedCustomHabits ? JSON.parse(savedCustomHabits) : [];
+        
+        // Filter default habits based on selection and add custom habits
+        const userHabits = [
+          ...defaultHabits.filter(habit => selectedHabitIds.includes(habit.id)),
+          ...customHabits.map((customHabit: any, index: number) => ({
+            id: `custom-${index}`,
+            title: customHabit.name || customHabit,
+            description: "Hábito personalizado",
+            energyBoost: 5,
+            skillBoost: 5,
+            connectionBoost: 5,
+            completed: false,
+          }))
+        ];
+        
+        if (userHabits.length > 0) {
+          setHabits(userHabits);
+        } else {
+          // If no valid habits found, use first 2 default habits
+          setHabits(defaultHabits.slice(0, 2));
+        }
+      } else {
+        // If no saved habits, use first 2 default habits
+        setHabits(defaultHabits.slice(0, 2));
+      }
+    } catch (error) {
+      console.log("Error loading saved habits, using defaults:", error);
+      // Use first 2 default habits as fallback
+      setHabits(defaultHabits.slice(0, 2));
+    }
+  }, []);
 
   // Simula o efeito de uma notificação agendada
   useEffect(() => {
@@ -139,7 +241,7 @@ const Dashboard = () => {
   const calculateDailyProgress = () => {
     const completed = habits.filter(h => h.completed).length;
     const total = habits.length;
-    return Math.round((completed / total) * 100);
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
 
   return (
@@ -281,13 +383,13 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-medium">Iniciando sua Jornada</h3>
-                <p className="text-sm text-muted-foreground">Complete seus 2 hábitos iniciais</p>
+                <p className="text-sm text-muted-foreground">Complete seus {habits.length} hábitos iniciais</p>
               </div>
               <Badge variant="outline" className="bg-primary/10">
-                {completedHabitCount}/2 Completados
+                {completedHabitCount}/{habits.length} Completados
               </Badge>
             </div>
-            <Progress value={(completedHabitCount / 2) * 100} className="h-2" />
+            <Progress value={(completedHabitCount / habits.length) * 100} className="h-2" />
           </CardContent>
           <CardFooter className="pt-4">
             <div className="w-full flex justify-between items-center">
@@ -296,14 +398,14 @@ const Dashboard = () => {
               </div>
               <Button 
                 size="sm" 
-                disabled={completedHabitCount < 2}
+                disabled={completedHabitCount < habits.length}
                 onClick={() => {
                   toast.success("Desafio concluído!");
                   toast("Recompensa recebida!", { description: "+50 moedas" });
                   setCoins(prev => prev + 50);
                 }}
               >
-                {completedHabitCount >= 2 ? (
+                {completedHabitCount >= habits.length ? (
                   <>
                     <CheckCircle className="h-4 w-4 mr-1" /> Coletar
                   </>
