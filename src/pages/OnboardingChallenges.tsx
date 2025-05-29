@@ -4,82 +4,57 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Award, Flag, TrendingUp } from "lucide-react";
+import { ArrowRight, Award, Flag, TrendingUp, Plus, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 const CHALLENGES = [
-  {
-    id: 1,
-    title: "Meditação Matinal",
-    description: "Medite por 5 minutos ao acordar",
-    xp: 50,
-    icon: "🧘‍♂️",
-    difficulty: "Fácil"
-  },
-  {
-    id: 2,
-    title: "Hidratação Consciente",
-    description: "Beba 2L de água ao longo do dia",
-    xp: 30,
-    icon: "💧",
-    difficulty: "Médio"
-  },
-  {
-    id: 3,
-    title: "Leitura Diária",
-    description: "Leia 10 páginas de um livro",
-    xp: 40,
-    icon: "📚",
-    difficulty: "Médio"
-  },
-  {
-    id: 4,
-    title: "Caminhada Rápida",
-    description: "Faça uma caminhada de 15 minutos",
-    xp: 60,
-    icon: "🚶",
-    difficulty: "Médio"
-  },
-  {
-    id: 5,
-    title: "Alongamento Noturno",
-    description: "Alongue-se por 5 minutos antes de dormir",
-    xp: 25,
-    icon: "🤸‍♂️",
-    difficulty: "Fácil"
-  },
-  {
-    id: 6,
-    title: "Desafio de Gratidão",
-    description: "Anote 3 coisas pelas quais você é grato hoje",
-    xp: 35,
-    icon: "🙏",
-    difficulty: "Fácil"
-  }
+  { id: 1, title: "Levantar da cama", description: "Começar o dia saindo da cama", xp: 20, icon: "🛏️", difficulty: "Fácil" },
+  { id: 2, title: "Escovar os dentes", description: "Cuidar da higiene bucal", xp: 25, icon: "🦷", difficulty: "Fácil" },
+  { id: 3, title: "Lavar meu rosto pela manhã", description: "Refrescar o rosto ao acordar", xp: 30, icon: "💧", difficulty: "Fácil" },
+  { id: 4, title: "Levantar da cadeira e fazer 1 alongamento", description: "Movimentar o corpo durante o dia", xp: 40, icon: "🤸‍♂️", difficulty: "Médio" },
+  { id: 5, title: "Fazer algo que me faz feliz", description: "Dedicar tempo para atividades prazerosas", xp: 35, icon: "😊", difficulty: "Médio" },
+  { id: 6, title: "Fazer 3 respirações profundas", description: "Relaxar com exercícios de respiração", xp: 30, icon: "🌬️", difficulty: "Fácil" },
+  { id: 7, title: "Beber 1 copo de água", description: "Manter-se hidratado", xp: 25, icon: "💧", difficulty: "Fácil" }
 ];
 
 const OnboardingChallenges = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [selectedChallenges, setSelectedChallenges] = useState<number[]>([]);
+  const [customChallenge, setCustomChallenge] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [challenges, setChallenges] = useState(CHALLENGES);
 
   const handleChallengeSelection = (id: number) => {
     setSelectedChallenges(prev => {
       if (prev.includes(id)) {
         return prev.filter(challengeId => challengeId !== id);
       } else {
-        if (prev.length < 3) {
-          return [...prev, id];
-        } else {
-          toast({
-            title: "Limite de desafios",
-            description: "Você já selecionou 3 desafios. Remova um para adicionar outro.",
-            variant: "destructive",
-          });
-          return prev;
-        }
+        return [...prev, id];
       }
     });
+  };
+
+  const handleAddCustomChallenge = () => {
+    if (customChallenge.trim()) {
+      const newChallenge = {
+        id: Date.now(),
+        title: customChallenge.trim(),
+        description: "Desafio personalizado",
+        xp: 35,
+        icon: "✨",
+        difficulty: "Personalizado"
+      };
+      setChallenges([...challenges, newChallenge]);
+      setSelectedChallenges([...selectedChallenges, newChallenge.id]);
+      setCustomChallenge("");
+      setShowCustomInput(false);
+      toast({
+        title: "Desafio customizado adicionado!",
+        description: "Seu desafio personalizado foi criado com sucesso.",
+      });
+    }
   };
 
   const handleNextStep = () => {
@@ -101,7 +76,7 @@ const OnboardingChallenges = () => {
 
   const getTotalXP = () => {
     return selectedChallenges.reduce((total, id) => {
-      const challenge = CHALLENGES.find(c => c.id === id);
+      const challenge = challenges.find(c => c.id === id);
       return total + (challenge?.xp || 0);
     }, 0);
   };
@@ -114,43 +89,92 @@ const OnboardingChallenges = () => {
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Desafios Diários</h2>
               <p className="text-muted-foreground">
-                Escolha até 3 desafios para começar sua jornada de hábitos
+                Escolha os desafios que você quer fazer e adicione desafios personalizados se desejar
               </p>
-              <div className="mt-4 flex justify-center">
-                <Badge variant="secondary" className="text-sm">
-                  Selecione {3 - Math.min(3, selectedChallenges.length)} desafios
-                </Badge>
-              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              {CHALLENGES.map((challenge) => (
-                <Card 
-                  key={challenge.id}
-                  className={`cursor-pointer transition-all ${
-                    selectedChallenges.includes(challenge.id) 
-                      ? "ring-2 ring-primary" 
-                      : "hover:bg-accent"
-                  }`}
-                  onClick={() => handleChallengeSelection(challenge.id)}
+            <div className="w-full max-w-2xl mx-auto mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <Badge variant="secondary" className="text-sm">
+                  {selectedChallenges.length} desafios selecionados
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomInput(true)}
+                  className="flex items-center gap-2"
                 >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className="text-3xl">{challenge.icon}</div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium">{challenge.title}</h3>
-                        <Badge>{`+${challenge.xp} XP`}</Badge>
-                      </div>
-                      <p className="text-muted-foreground text-sm">{challenge.description}</p>
-                      <Badge variant="outline" className="mt-2 text-xs">{challenge.difficulty}</Badge>
+                  <Plus className="h-4 w-4" />
+                  Adicionar Desafio Personalizado
+                </Button>
+              </div>
+
+              {showCustomInput && (
+                <Card className="mb-4 border-primary bg-primary/5">
+                  <CardContent className="p-4">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Digite seu desafio personalizado..."
+                        value={customChallenge}
+                        onChange={(e) => setCustomChallenge(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCustomChallenge()}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddCustomChallenge}
+                        disabled={!customChallenge.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowCustomInput(false);
+                          setCustomChallenge("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {challenges.map((challenge) => (
+                  <Card 
+                    key={challenge.id}
+                    className={`cursor-pointer transition-all border-2 ${
+                      selectedChallenges.includes(challenge.id) 
+                        ? "border-primary bg-primary/10" 
+                        : "border-transparent hover:border-primary/50"
+                    }`}
+                    onClick={() => handleChallengeSelection(challenge.id)}
+                  >
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <div className="text-3xl">{challenge.icon}</div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-medium">{challenge.title}</h3>
+                          <div className="flex items-center gap-2">
+                            <Badge>{`+${challenge.xp} XP`}</Badge>
+                            {selectedChallenges.includes(challenge.id) && (
+                              <Check className="h-5 w-5 text-primary" />
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-muted-foreground text-sm">{challenge.description}</p>
+                        <Badge variant="outline" className="mt-2 text-xs">{challenge.difficulty}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         );
-      case 2:
+      case 2: // ... keep existing code (rewards system)
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -175,7 +199,7 @@ const OnboardingChallenges = () => {
                   <div className="pl-16">
                     <div className="grid grid-cols-1 gap-2">
                       {selectedChallenges.map(id => {
-                        const challenge = CHALLENGES.find(c => c.id === id);
+                        const challenge = challenges.find(c => c.id === id);
                         return challenge ? (
                           <div key={challenge.id} className="flex items-center justify-between p-2 rounded-md bg-accent/50">
                             <div className="flex items-center gap-2">
@@ -253,7 +277,7 @@ const OnboardingChallenges = () => {
             </div>
           </div>
         );
-      case 3:
+      case 3: // ... keep existing code (final screen)
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -275,7 +299,7 @@ const OnboardingChallenges = () => {
 
                 <div className="space-y-4">
                   {selectedChallenges.map(id => {
-                    const challenge = CHALLENGES.find(c => c.id === id);
+                    const challenge = challenges.find(c => c.id === id);
                     return challenge ? (
                       <div key={challenge.id} className="flex items-center gap-4 p-3 rounded-lg bg-accent/50">
                         <div className="text-2xl">{challenge.icon}</div>

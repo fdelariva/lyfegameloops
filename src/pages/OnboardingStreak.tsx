@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,24 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "@/components/ui/sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, CheckCircle, Calendar } from "lucide-react";
+import { ArrowRight, CheckCircle, Calendar, Plus, Check, X } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
+import { Input } from "@/components/ui/input";
 
 const OnboardingStreak = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [streakDays, setStreakDays] = useState(0);
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
-
-  // Dados simulados para a demonstração
-  const habits = [
-    { id: "h1", name: "Beber água", icon: "💧", description: "2 litros por dia" },
-    { id: "h2", name: "Caminhar", icon: "🚶‍♂️", description: "15 minutos" },
-    { id: "h3", name: "Meditar", icon: "🧘‍♂️", description: "5 minutos" },
-    { id: "h4", name: "Ler", icon: "📚", description: "10 páginas" },
-    { id: "h5", name: "Alongar", icon: "🤸‍♂️", description: "5 minutos" },
-    { id: "h6", name: "Respiração", icon: "🌬️", description: "3 ciclos" },
-  ];
+  const [customHabit, setCustomHabit] = useState("");
+  const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [habits, setHabits] = useState([
+    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
+    { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
+    { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
+    { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },
+    { id: "h5", name: "Fazer algo que me faz feliz", icon: "😊", description: "Dedicar tempo para atividades prazerosas", category: "Bem-estar" },
+    { id: "h6", name: "Fazer 3 respirações profundas", icon: "🌬️", description: "Relaxar com exercícios de respiração", category: "Mindfulness" },
+    { id: "h7", name: "Beber 1 copo de água", icon: "💧", description: "Manter-se hidratado", category: "Saúde" }
+  ]);
 
   // Recompensas pelo streak
   const streakRewards = [
@@ -34,16 +35,28 @@ const OnboardingStreak = () => {
     { days: 60, reward: "Peça de avatar lendária", icon: "✨" }
   ];
 
-  const handleSelectHabit = (habitId: string) => {
+  const handleHabitToggle = (habitId: string) => {
     if (selectedHabits.includes(habitId)) {
       setSelectedHabits(selectedHabits.filter(id => id !== habitId));
     } else {
-      // Limitar a 3 hábitos
-      if (selectedHabits.length < 3) {
-        setSelectedHabits([...selectedHabits, habitId]);
-      } else {
-        toast.error("Você pode escolher apenas 3 hábitos para começar!");
-      }
+      setSelectedHabits([...selectedHabits, habitId]);
+    }
+  };
+
+  const handleAddCustomHabit = () => {
+    if (customHabit.trim()) {
+      const newHabit = {
+        id: `custom-${Date.now()}`,
+        name: customHabit.trim(),
+        icon: "✨",
+        description: "Hábito personalizado",
+        category: "Personalizado"
+      };
+      setHabits([...habits, newHabit]);
+      setSelectedHabits([...selectedHabits, newHabit.id]);
+      setCustomHabit("");
+      setShowCustomHabitInput(false);
+      toast.success("Hábito customizado adicionado!");
     }
   };
 
@@ -60,6 +73,10 @@ const OnboardingStreak = () => {
   };
 
   const handleCompleteOnboarding = () => {
+    if (selectedHabits.length === 0) {
+      toast.error("Selecione pelo menos um hábito para continuar!");
+      return;
+    }
     toast.success("Onboarding completo!");
     toast("Seu streak inicial!", {
       description: "+3 dias de streak adicionados para começar!",
@@ -181,31 +198,93 @@ const OnboardingStreak = () => {
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">Escolha Seus Hábitos</h2>
             <p className="text-muted-foreground text-center mb-8 max-w-md">
-              Comece com até 3 hábitos simples para construir seu streak diário.
+              Selecione os hábitos que você quer fazer para construir seu streak diário.
             </p>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg mb-8">
-              {habits.map((habit) => (
-                <Card 
-                  key={habit.id}
-                  className={`cursor-pointer transition border hover:border-orange-400 ${
-                    selectedHabits.includes(habit.id) ? "bg-orange-100 border-orange-400" : ""
-                  }`}
-                  onClick={() => handleSelectHabit(habit.id)}
+            <div className="w-full max-w-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <Badge variant="secondary" className="text-sm">
+                  {selectedHabits.length} hábitos selecionados
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomHabitInput(true)}
+                  className="flex items-center gap-2"
                 >
-                  <CardContent className="p-4 flex flex-col items-center text-center">
-                    <div className="text-3xl mb-2">{habit.icon}</div>
-                    <div className="font-medium text-sm">{habit.name}</div>
-                    <div className="text-xs text-muted-foreground">{habit.description}</div>
+                  <Plus className="h-4 w-4" />
+                  Adicionar Hábito Customizado
+                </Button>
+              </div>
+
+              {showCustomHabitInput && (
+                <Card className="mb-4 border-orange-400 bg-orange-50">
+                  <CardContent className="p-4">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Digite seu hábito personalizado..."
+                        value={customHabit}
+                        onChange={(e) => setCustomHabit(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCustomHabit()}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddCustomHabit}
+                        disabled={!customHabit.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowCustomHabitInput(false);
+                          setCustomHabit("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
-              ))}
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {habits.map((habit) => (
+                  <Card 
+                    key={habit.id}
+                    className={`cursor-pointer transition border-2 ${
+                      selectedHabits.includes(habit.id) 
+                        ? 'border-orange-400 bg-orange-100' 
+                        : 'border-transparent hover:border-orange-400'
+                    }`}
+                    onClick={() => handleHabitToggle(habit.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{habit.icon}</span>
+                          <CardTitle className="text-base">{habit.name}</CardTitle>
+                        </div>
+                        {selectedHabits.includes(habit.id) && (
+                          <Check className="h-5 w-5 text-orange-500" />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="text-sm mb-2">
+                        {habit.description}
+                      </CardDescription>
+                      <Badge variant="outline" className="text-xs">
+                        {habit.category}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
             
             <div className="text-center mb-6">
-              <Badge className="mb-2 bg-orange-100 text-orange-800 border-orange-300">
-                {selectedHabits.length}/3 hábitos selecionados
-              </Badge>
               <p className="text-sm text-muted-foreground">
                 Dica: Comece com hábitos simples e rápidos para manter seu streak!
               </p>
@@ -217,7 +296,7 @@ const OnboardingStreak = () => {
               onClick={() => setStep(4)}
               disabled={selectedHabits.length === 0}
             >
-              Confirmar Seleção
+              Confirmar Seleção ({selectedHabits.length} hábitos)
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>

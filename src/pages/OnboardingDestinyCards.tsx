@@ -1,13 +1,14 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, Check, X } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import AccessorySelection from "@/components/AccessorySelection";
 import LuckyCards from "@/components/LuckyCards";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 const OnboardingDestinyCards = () => {
   const navigate = useNavigate();
@@ -17,6 +18,17 @@ const OnboardingDestinyCards = () => {
   const [selectedAccessory, setSelectedAccessory] = useState("");
   const [showWelcomeCards, setShowWelcomeCards] = useState(false);
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const [customHabit, setCustomHabit] = useState("");
+  const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [habits, setHabits] = useState([
+    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
+    { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
+    { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
+    { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },
+    { id: "h5", name: "Fazer algo que me faz feliz", icon: "😊", description: "Dedicar tempo para atividades prazerosas", category: "Bem-estar" },
+    { id: "h6", name: "Fazer 3 respirações profundas", icon: "🌬️", description: "Relaxar com exercícios de respiração", category: "Mindfulness" },
+    { id: "h7", name: "Beber 1 copo de água", icon: "💧", description: "Manter-se hidratado", category: "Saúde" }
+  ]);
 
   // Simples definições de arquétipos para mostrar no onboarding
   const archetypes = [
@@ -88,20 +100,36 @@ const OnboardingDestinyCards = () => {
     setSelectedAccessory(accessoryId);
   };
 
-  const handleHabitSelection = (habitId: string) => {
+  const handleHabitToggle = (habitId: string) => {
     if (selectedHabits.includes(habitId)) {
       setSelectedHabits(selectedHabits.filter(id => id !== habitId));
     } else {
-      // Limitar a 2 hábitos
-      if (selectedHabits.length < 2) {
-        setSelectedHabits([...selectedHabits, habitId]);
-      } else {
-        toast.info("Recomendamos começar com apenas 2 hábitos!");
-      }
+      setSelectedHabits([...selectedHabits, habitId]);
+    }
+  };
+
+  const handleAddCustomHabit = () => {
+    if (customHabit.trim()) {
+      const newHabit = {
+        id: `custom-${Date.now()}`,
+        name: customHabit.trim(),
+        icon: "✨",
+        description: "Hábito personalizado",
+        category: "Personalizado"
+      };
+      setHabits([...habits, newHabit]);
+      setSelectedHabits([...selectedHabits, newHabit.id]);
+      setCustomHabit("");
+      setShowCustomHabitInput(false);
+      toast.success("Hábito customizado adicionado!");
     }
   };
 
   const handleCompleteOnboarding = () => {
+    if (selectedHabits.length === 0) {
+      toast.error("Selecione pelo menos um hábito para continuar!");
+      return;
+    }
     toast.success("Onboarding completo!");
     toast("Bônus de boas-vindas!", {
       description: "+ 100 moedas adicionadas à sua conta!",
@@ -244,52 +272,90 @@ const OnboardingDestinyCards = () => {
             <h2 className="text-2xl font-bold mb-2">Hábitos Revelados</h2>
             <p className="text-muted-foreground text-center mb-6">
               As cartas do destino escolheram estes hábitos para sua jornada como {archetype}.
-              Escolha até 2 para começar sua transformação.
+              Selecione os que você quer fazer e adicione hábitos personalizados se desejar.
             </p>
             
-            <div className="grid grid-cols-1 gap-4 w-full max-w-md mb-6">
-              {suggestedHabits.map((habit) => (
-                <Card 
-                  key={habit.id}
-                  className={`cursor-pointer transition ${
-                    selectedHabits.includes(habit.id) 
-                      ? 'border-primary bg-primary/5' 
-                      : 'hover:border-primary/50'
-                  }`}
-                  onClick={() => handleHabitSelection(habit.id)}
+            <div className="w-full max-w-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <Badge variant="secondary" className="text-sm">
+                  {selectedHabits.length} hábitos selecionados
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomHabitInput(true)}
+                  className="flex items-center gap-2"
                 >
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-lg">{habit.title}</CardTitle>
-                      <span className="text-xs bg-primary/10 px-2 py-1 rounded-full">
-                        {habit.category}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="mb-2">
-                      {habit.description}
-                    </CardDescription>
+                  <Plus className="h-4 w-4" />
+                  Adicionar Hábito Customizado
+                </Button>
+              </div>
+
+              {showCustomHabitInput && (
+                <Card className="mb-4 border-primary bg-primary/5">
+                  <CardContent className="p-4">
                     <div className="flex gap-2">
-                      {habit.points.energy > 0 && (
-                        <div className="text-xs bg-orange-50 px-2 py-1 rounded-full">
-                          +{habit.points.energy} Energia
-                        </div>
-                      )}
-                      {habit.points.skill > 0 && (
-                        <div className="text-xs bg-green-50 px-2 py-1 rounded-full">
-                          +{habit.points.skill} Habilidade
-                        </div>
-                      )}
-                      {habit.points.connection > 0 && (
-                        <div className="text-xs bg-blue-50 px-2 py-1 rounded-full">
-                          +{habit.points.connection} Conexão
-                        </div>
-                      )}
+                      <Input
+                        placeholder="Digite seu hábito personalizado..."
+                        value={customHabit}
+                        onChange={(e) => setCustomHabit(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCustomHabit()}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddCustomHabit}
+                        disabled={!customHabit.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowCustomHabitInput(false);
+                          setCustomHabit("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {habits.map((habit) => (
+                  <Card 
+                    key={habit.id}
+                    className={`cursor-pointer transition border-2 ${
+                      selectedHabits.includes(habit.id) 
+                        ? 'border-primary bg-primary/10' 
+                        : 'border-transparent hover:border-primary/50'
+                    }`}
+                    onClick={() => handleHabitToggle(habit.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{habit.icon}</span>
+                          <CardTitle className="text-base">{habit.name}</CardTitle>
+                        </div>
+                        {selectedHabits.includes(habit.id) && (
+                          <Check className="h-5 w-5 text-primary" />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="text-sm mb-2">
+                        {habit.description}
+                      </CardDescription>
+                      <Badge variant="outline" className="text-xs">
+                        {habit.category}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
 
             <div className="w-full max-w-md">
@@ -306,7 +372,7 @@ const OnboardingDestinyCards = () => {
                 onClick={handleCompleteOnboarding}
                 disabled={selectedHabits.length === 0}
               >
-                Começar Minha Jornada
+                Começar Minha Jornada ({selectedHabits.length} hábitos)
               </Button>
             </div>
           </div>

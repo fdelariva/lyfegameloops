@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,8 @@ import { toast } from "@/components/ui/sonner";
 import UserAvatar from "@/components/Avatar";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Sparkles, MapPin, Star, Gift } from "lucide-react";
+import { Heart, Sparkles, MapPin, Star, Gift, Plus, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const OnboardingFinch = () => {
   const navigate = useNavigate();
@@ -17,6 +17,18 @@ const OnboardingFinch = () => {
   const [energy, setEnergy] = useState(100);
   const [mood, setMood] = useState("Feliz");
   const [mapProgress, setMapProgress] = useState(0);
+  const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const [customHabit, setCustomHabit] = useState("");
+  const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [habits, setHabits] = useState([
+    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
+    { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
+    { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
+    { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },
+    { id: "h5", name: "Fazer algo que me faz feliz", icon: "😊", description: "Dedicar tempo para atividades prazerosas", category: "Bem-estar" },
+    { id: "h6", name: "Fazer 3 respirações profundas", icon: "🌬️", description: "Relaxar com exercícios de respiração", category: "Mindfulness" },
+    { id: "h7", name: "Beber 1 copo de água", icon: "💧", description: "Manter-se hidratado", category: "Saúde" }
+  ]);
 
   const pets = [
     {
@@ -59,6 +71,31 @@ const OnboardingFinch = () => {
     setStep(4);
   };
 
+  const handleHabitToggle = (habitId: string) => {
+    if (selectedHabits.includes(habitId)) {
+      setSelectedHabits(selectedHabits.filter(id => id !== habitId));
+    } else {
+      setSelectedHabits([...selectedHabits, habitId]);
+    }
+  };
+
+  const handleAddCustomHabit = () => {
+    if (customHabit.trim()) {
+      const newHabit = {
+        id: `custom-${Date.now()}`,
+        name: customHabit.trim(),
+        icon: "✨",
+        description: "Hábito personalizado",
+        category: "Personalizado"
+      };
+      setHabits([...habits, newHabit]);
+      setSelectedHabits([...selectedHabits, newHabit.id]);
+      setCustomHabit("");
+      setShowCustomHabitInput(false);
+      toast.success("Hábito customizado adicionado!");
+    }
+  };
+
   const handleFirstActivity = () => {
     setEnergy(120);
     setMapProgress(10);
@@ -83,6 +120,10 @@ const OnboardingFinch = () => {
   };
 
   const handleCompleteOnboarding = () => {
+    if (selectedHabits.length === 0) {
+      toast.error("Selecione pelo menos um hábito para continuar!");
+      return;
+    }
     toast.success("Jornada Iniciada!", {
       description: `Você e ${petName} são agora companheiros inseparáveis!`,
     });
@@ -224,7 +265,114 @@ const OnboardingFinch = () => {
           </div>
         );
 
-      case 4: // Primeira micro atividade
+      case 4: // Add habit selection step
+        return (
+          <div className="flex flex-col items-center">
+            <h2 className="text-2xl font-bold mb-6">🌸 Escolha Atividades de Autocuidado</h2>
+            <p className="text-muted-foreground text-center mb-6">
+              Selecione atividades suaves que {petName} pode fazer com você para fortalecer o vínculo de vocês.
+            </p>
+            
+            <div className="w-full max-w-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <Badge variant="secondary" className="text-sm">
+                  {selectedHabits.length} atividades selecionadas
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomHabitInput(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Adicionar Atividade Personalizada
+                </Button>
+              </div>
+
+              {showCustomHabitInput && (
+                <Card className="mb-4 border-pink-200 bg-pink-50">
+                  <CardContent className="p-4">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Digite sua atividade personalizada..."
+                        value={customHabit}
+                        onChange={(e) => setCustomHabit(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCustomHabit()}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddCustomHabit}
+                        disabled={!customHabit.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowCustomHabitInput(false);
+                          setCustomHabit("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {habits.map((habit) => (
+                  <Card 
+                    key={habit.id}
+                    className={`cursor-pointer transition border-2 ${
+                      selectedHabits.includes(habit.id) 
+                        ? 'border-pink-300 bg-pink-50' 
+                        : 'border-transparent hover:border-pink-300'
+                    }`}
+                    onClick={() => handleHabitToggle(habit.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{habit.icon}</span>
+                          <CardTitle className="text-base">{habit.name}</CardTitle>
+                        </div>
+                        {selectedHabits.includes(habit.id) && (
+                          <Check className="h-5 w-5 text-pink-500" />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="text-sm mb-2">
+                        {habit.description}
+                      </CardDescription>
+                      <Badge variant="outline" className="text-xs">
+                        {habit.category}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-4">
+                {petName} está ansioso para começar essas atividades com você!
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-pink-500 to-purple-500"
+                onClick={() => setStep(5)}
+                disabled={selectedHabits.length === 0}
+              >
+                Iniciar Jornada com {petName} ({selectedHabits.length} atividades)
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 5: // Keep existing micro activities (renamed from case 4)
         return (
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">🌸 Primeira Conexão com {petName}</h2>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,8 @@ import { toast } from "@/components/ui/sonner";
 import UserAvatar from "@/components/Avatar";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Sword, Wand2, Heart, Zap, Users, Trophy, Coins } from "lucide-react";
+import { Sword, Wand2, Heart, Zap, Users, Trophy, Coins, Plus, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const OnboardingHero = () => {
   const navigate = useNavigate();
@@ -17,6 +17,18 @@ const OnboardingHero = () => {
   const [xp, setXP] = useState(0);
   const [level, setLevel] = useState(1);
   const [hasEgg, setHasEgg] = useState(false);
+  const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const [customHabit, setCustomHabit] = useState("");
+  const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [habits, setHabits] = useState([
+    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
+    { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
+    { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
+    { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },
+    { id: "h5", name: "Fazer algo que me faz feliz", icon: "😊", description: "Dedicar tempo para atividades prazerosas", category: "Bem-estar" },
+    { id: "h6", name: "Fazer 3 respirações profundas", icon: "🌬️", description: "Relaxar com exercícios de respiração", category: "Mindfulness" },
+    { id: "h7", name: "Beber 1 copo de água", icon: "💧", description: "Manter-se hidratado", category: "Saúde" }
+  ]);
 
   // Map hero classes to avatar archetypes
   const getAvatarArchetype = (heroClass: string) => {
@@ -65,6 +77,31 @@ const OnboardingHero = () => {
     setStep(3);
   };
 
+  const handleHabitToggle = (habitId: string) => {
+    if (selectedHabits.includes(habitId)) {
+      setSelectedHabits(selectedHabits.filter(id => id !== habitId));
+    } else {
+      setSelectedHabits([...selectedHabits, habitId]);
+    }
+  };
+
+  const handleAddCustomHabit = () => {
+    if (customHabit.trim()) {
+      const newHabit = {
+        id: `custom-${Date.now()}`,
+        name: customHabit.trim(),
+        icon: "✨",
+        description: "Quest personalizada",
+        category: "Personalizado"
+      };
+      setHabits([...habits, newHabit]);
+      setSelectedHabits([...selectedHabits, newHabit.id]);
+      setCustomHabit("");
+      setShowCustomHabitInput(false);
+      toast.success("Quest customizada adicionada!");
+    }
+  };
+
   const handleCompleteFirstHabit = () => {
     setXP(50);
     toast.success("Quest Progresso!", {
@@ -88,6 +125,10 @@ const OnboardingHero = () => {
   };
 
   const handleCompleteOnboarding = () => {
+    if (selectedHabits.length === 0) {
+      toast.error("Selecione pelo menos uma quest para continuar!");
+      return;
+    }
     toast.success("Quest Completa!", {
       description: "Tutorial do Herói concluído! +100 Gold adicionado!",
     });
@@ -96,7 +137,7 @@ const OnboardingHero = () => {
 
   const renderStep = () => {
     switch (step) {
-      case 1: // Tela de boas-vindas RPG
+      case 1:
         return (
           <div className="flex flex-col items-center text-center">
             <h1 className="text-4xl font-bold mb-6">🏰 Bem-vindo à sua Aventura!</h1>
@@ -151,7 +192,7 @@ const OnboardingHero = () => {
           </div>
         );
       
-      case 2: // Escolha da classe
+      case 2:
         return (
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">⚔️ Escolha sua Classe de Herói</h2>
@@ -188,7 +229,113 @@ const OnboardingHero = () => {
           </div>
         );
 
-      case 3: // Sistema de HP e preview do herói
+      case 3:
+        return (
+          <div className="flex flex-col items-center">
+            <h2 className="text-2xl font-bold mb-6">🎯 Escolha suas Quests Iniciais</h2>
+            <p className="text-muted-foreground text-center mb-6">
+              Como {heroClass}, selecione as quests que você quer completar para ganhar XP e evoluir seu herói.
+            </p>
+            
+            <div className="w-full max-w-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <Badge variant="secondary" className="text-sm">
+                  {selectedHabits.length} quests selecionadas
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCustomHabitInput(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Criar Quest Personalizada
+                </Button>
+              </div>
+
+              {showCustomHabitInput && (
+                <Card className="mb-4 border-primary bg-primary/5">
+                  <CardContent className="p-4">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Digite sua quest personalizada..."
+                        value={customHabit}
+                        onChange={(e) => setCustomHabit(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCustomHabit()}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddCustomHabit}
+                        disabled={!customHabit.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowCustomHabitInput(false);
+                          setCustomHabit("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {habits.map((habit) => (
+                  <Card 
+                    key={habit.id}
+                    className={`cursor-pointer transition border-2 ${
+                      selectedHabits.includes(habit.id) 
+                        ? 'border-primary bg-primary/10' 
+                        : 'border-transparent hover:border-primary/50'
+                    }`}
+                    onClick={() => handleHabitToggle(habit.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{habit.icon}</span>
+                          <CardTitle className="text-base">{habit.name}</CardTitle>
+                        </div>
+                        {selectedHabits.includes(habit.id) && (
+                          <Check className="h-5 w-5 text-primary" />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="text-sm mb-2">
+                        {habit.description}
+                      </CardDescription>
+                      <Badge variant="outline" className="text-xs">
+                        {habit.category}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-4">
+                Suas quests diárias te darão XP para evoluir seu herói!
+              </p>
+              <Button 
+                size="lg" 
+                onClick={() => setStep(4)}
+                disabled={selectedHabits.length === 0}
+              >
+                Confirmar Quests ({selectedHabits.length} selecionadas)
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 4:
         return (
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">🛡️ Seu Herói está Pronto!</h2>
@@ -240,14 +387,14 @@ const OnboardingHero = () => {
             <Button 
               size="lg" 
               className="mb-4"
-              onClick={() => setStep(4)}
+              onClick={() => setStep(5)}
             >
               Iniciar Tutorial do Herói
             </Button>
           </div>
         );
 
-      case 4: // Primeira Quest - Tutorial do Herói
+      case 5:
         return (
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">🎯 Quest: Tutorial do Herói</h2>
