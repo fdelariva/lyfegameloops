@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,8 +48,7 @@ const Dashboard = () => {
 
   // Load user's selected habits from onboarding
   useEffect(() => {
-    // In a real app, this would come from a proper state management or API
-    // For now, we'll use a default set of habits that matches the onboarding options
+    // Default habits available for selection
     const defaultHabits = [
       {
         id: "h1",
@@ -138,20 +138,15 @@ const Dashboard = () => {
           }))
         ];
         
-        if (userHabits.length > 0) {
-          setHabits(userHabits);
-        } else {
-          // If no valid habits found, use all default habits
-          setHabits(defaultHabits);
-        }
+        setHabits(userHabits);
       } else {
-        // If no saved habits, use all default habits
-        setHabits(defaultHabits);
+        // If no saved habits, show empty state - user needs to go through onboarding
+        setHabits([]);
       }
     } catch (error) {
-      console.log("Error loading saved habits, using defaults:", error);
-      // Use all default habits as fallback
-      setHabits(defaultHabits);
+      console.log("Error loading saved habits:", error);
+      // Show empty state on error
+      setHabits([]);
     }
   }, []);
 
@@ -243,6 +238,43 @@ const Dashboard = () => {
     const total = habits.length;
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
+
+  // Show message if no habits are configured
+  if (habits.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-6 max-w-4xl">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Lyfe</h1>
+            <div className="flex items-center gap-2">
+              <Badge 
+                className="bg-amber-500 cursor-pointer hover:bg-amber-600 transition-colors"
+                onClick={() => navigate("/shop")}
+              >
+                {coins} moedas
+              </Badge>
+              <Button size="sm" variant="outline">
+                <User className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <Card className="text-center py-12">
+            <CardContent>
+              <h2 className="text-xl font-bold mb-4">Nenhum hábito configurado</h2>
+              <p className="text-muted-foreground mb-6">
+                Você precisa configurar seus hábitos primeiro para começar sua jornada.
+              </p>
+              <Button onClick={() => navigate("/onboarding")}>
+                Configurar Hábitos
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
