@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
 import AvatarPreview from "@/components/AvatarPreview";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
+import TreasureChest from "@/components/TreasureChest";
 import { useNavigate } from "react-router-dom";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 
@@ -42,9 +42,11 @@ const Dashboard = () => {
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
   const [showLevelUpAnimation, setShowLevelUpAnimation] = useState(false);
+  const [showTreasureChest, setShowTreasureChest] = useState(false);
   const [completedHabitCount, setCompletedHabitCount] = useState(0);
   const [coins, setCoins] = useState(100);
   const [dayZeroBoost, setDayZeroBoost] = useState(true);
+  const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
 
   // Load user's selected habits from onboarding
   useEffect(() => {
@@ -230,6 +232,15 @@ const Dashboard = () => {
         setShowLuckyCards(true);
       }, 500);
     }
+  };
+
+  const handleDailyChallengeComplete = () => {
+    if (dailyChallengeCompleted) return;
+    
+    setDailyChallengeCompleted(true);
+    toast.success("Desafio concluído!");
+    setShowTreasureChest(true);
+    setCoins(prev => prev + 50);
   };
 
   // Calcula o progresso diário
@@ -426,18 +437,18 @@ const Dashboard = () => {
           <CardFooter className="pt-4">
             <div className="w-full flex justify-between items-center">
               <div className="text-sm text-muted-foreground">
-                Recompensa: <span className="font-medium text-foreground">+50 moedas</span>
+                Recompensa: <span className="font-medium text-foreground">Baú do Tesouro</span>
               </div>
               <Button 
                 size="sm" 
-                disabled={completedHabitCount < habits.length}
-                onClick={() => {
-                  toast.success("Desafio concluído!");
-                  toast("Recompensa recebida!", { description: "+50 moedas" });
-                  setCoins(prev => prev + 50);
-                }}
+                disabled={completedHabitCount < habits.length || dailyChallengeCompleted}
+                onClick={handleDailyChallengeComplete}
               >
-                {completedHabitCount >= habits.length ? (
+                {dailyChallengeCompleted ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-1" /> Coletado
+                  </>
+                ) : completedHabitCount >= habits.length ? (
                   <>
                     <CheckCircle className="h-4 w-4 mr-1" /> Coletar
                   </>
@@ -464,6 +475,11 @@ const Dashboard = () => {
           isOpen={showAvatarPreview} 
           onClose={() => setShowAvatarPreview(false)} 
           archetype={avatar.archetype}
+        />
+
+        <TreasureChest 
+          isOpen={showTreasureChest} 
+          onClose={() => setShowTreasureChest(false)} 
         />
       </div>
     </div>
