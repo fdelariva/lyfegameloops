@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { Chest } from "lucide-react";
+import { Package } from "lucide-react";
 
 interface TreasureChestProps {
   isOpen: boolean;
@@ -94,7 +94,7 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
               onClick={handleChestClick}
             >
               <div className="relative">
-                <Chest 
+                <Package 
                   size={120} 
                   className="text-amber-600 drop-shadow-lg animate-pulse"
                 />
@@ -112,7 +112,7 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
             {/* Chest opening animation */}
             <div className="flex justify-center mb-6">
               <div className="relative animate-bounce">
-                <Chest 
+                <Package 
                   size={80} 
                   className="text-amber-600"
                 />
