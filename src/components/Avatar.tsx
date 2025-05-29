@@ -23,25 +23,49 @@ const UserAvatar = ({
   showPreview = false,
   previewLevel = 5
 }: AvatarProps) => {
-  // Determine which avatar image to use based on archetype and level
-  const getAvatarImage = () => {
-    const baseImage = `/avatars/${archetype.toLowerCase()}-${level}.png`;
-    // This is a fallback if images aren't available
-    return baseImage;
+  // Get avatar emoji based on archetype and level
+  const getAvatarEmoji = (type: string, avatarLevel: number) => {
+    const avatars = {
+      guerreiro: {
+        1: "⚔️", // Espada básica
+        2: "🛡️", // Escudo de bronze
+        5: "🏛️"  // Guerreiro romano completo
+      },
+      mestre: {
+        1: "🎭", // Máscara teatral
+        2: "🏺", // Ânfora grega
+        5: "👑"  // Coroa de louros
+      },
+      sábio: {
+        1: "📜", // Pergaminho
+        2: "🦉", // Coruja de Atena
+        5: "⚡"  // Raio de Zeus
+      },
+      guardião: {
+        1: "🛡️", // Escudo básico
+        2: "🏛️", // Templo protetor
+        5: "🌟"  // Estrela divina
+      },
+      indefinido: {
+        1: "❓",
+        2: "❓",
+        5: "❓"
+      }
+    };
+
+    return avatars[type.toLowerCase() as keyof typeof avatars]?.[avatarLevel as keyof typeof avatars.guerreiro] || "❓";
   };
 
   const getPreviewImage = () => {
-    const previewImage = `/avatars/${archetype.toLowerCase()}-${previewLevel}.png`;
-    return previewImage;
+    return getAvatarEmoji(archetype, previewLevel);
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
         <Avatar className="w-24 h-24 border-2 border-primary">
-          <AvatarImage src={getAvatarImage()} />
-          <AvatarFallback className="bg-primary/20 text-primary font-bold">
-            {archetype[0]}
+          <AvatarFallback className="bg-primary/20 text-primary font-bold text-3xl">
+            {getAvatarEmoji(archetype, level)}
           </AvatarFallback>
         </Avatar>
         <Badge className="absolute -top-2 -right-2 bg-primary">{`Nível ${level}`}</Badge>
@@ -53,9 +77,8 @@ const UserAvatar = ({
             Prévia Nível {previewLevel}
           </div>
           <Avatar className="w-20 h-20 border-2 border-dashed border-primary/50">
-            <AvatarImage src={getPreviewImage()} />
-            <AvatarFallback className="bg-primary/10 text-primary/50 font-bold">
-              {previewLevel}
+            <AvatarFallback className="bg-primary/10 text-primary/50 font-bold text-2xl">
+              {getPreviewImage()}
             </AvatarFallback>
           </Avatar>
           <div className="absolute -bottom-3 left-0 right-0 text-center text-xs font-semibold text-primary animate-pulse">

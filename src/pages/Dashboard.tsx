@@ -11,6 +11,7 @@ import LuckyCards from "@/components/LuckyCards";
 import AvatarPreview from "@/components/AvatarPreview";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
 import TreasureChest from "@/components/TreasureChest";
+import EvolutionAnimation from "@/components/EvolutionAnimation";
 import { useNavigate } from "react-router-dom";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 
@@ -47,6 +48,9 @@ const Dashboard = () => {
   const [coins, setCoins] = useState(100);
   const [dayZeroBoost, setDayZeroBoost] = useState(true);
   const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
+  const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
+  const [evolutionFromLevel, setEvolutionFromLevel] = useState(1);
+  const [evolutionToLevel, setEvolutionToLevel] = useState(2);
 
   // Load user's selected habits from onboarding
   useEffect(() => {
@@ -203,7 +207,9 @@ const Dashboard = () => {
     if (totalPoints >= 75 && avatar.level === 1) {
       setTimeout(() => {
         playSound('levelup');
-        setShowLevelUpAnimation(true);
+        setEvolutionFromLevel(1);
+        setEvolutionToLevel(2);
+        setShowEvolutionAnimation(true);
         setAvatar(prev => ({ ...prev, level: 2 }));
       }, 1500);
     } else {
@@ -219,6 +225,18 @@ const Dashboard = () => {
           setShowAvatarPreview(true);
         }, 1000);
       }
+    }
+  };
+
+  const handleEvolutionClose = () => {
+    setShowEvolutionAnimation(false);
+    
+    // Show lucky cards and avatar preview after evolution animation closes
+    const newCount = completedHabitCount;
+    if (newCount >= 1 && !showLuckyCards) {
+      setTimeout(() => {
+        setShowLuckyCards(true);
+      }, 500);
     }
   };
 
@@ -459,6 +477,14 @@ const Dashboard = () => {
         </Card>
         
         {/* Dialogs */}
+        <EvolutionAnimation 
+          isOpen={showEvolutionAnimation} 
+          onClose={handleEvolutionClose}
+          archetype={avatar.archetype}
+          fromLevel={evolutionFromLevel}
+          toLevel={evolutionToLevel}
+        />
+        
         <LevelUpAnimation 
           isOpen={showLevelUpAnimation} 
           onClose={handleLevelUpClose}
