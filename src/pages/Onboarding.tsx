@@ -18,6 +18,7 @@ const Onboarding = () => {
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState([
     { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
     { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
@@ -84,6 +85,7 @@ const Onboarding = () => {
         category: "Personalizado"
       };
       setHabits([...habits, newHabit]);
+      setCustomHabits([...customHabits, { id: newHabit.id, name: newHabit.name }]);
       setSelectedHabits([...selectedHabits, newHabit.id]);
       setCustomHabit("");
       setShowCustomHabitInput(false);
@@ -96,6 +98,15 @@ const Onboarding = () => {
       toast.error("Selecione pelo menos um hábito para continuar!");
       return;
     }
+
+    // Save selected habits and custom habits to localStorage
+    console.log("Saving selected habits:", selectedHabits);
+    console.log("Saving custom habits:", customHabits);
+    
+    localStorage.setItem('selectedHabits', JSON.stringify(selectedHabits));
+    localStorage.setItem('customHabits', JSON.stringify(customHabits));
+    localStorage.setItem('userArchetype', archetype);
+    
     toast.success("Onboarding completo!");
     toast("Bônus de boas-vindas!", {
       description: "+ 100 moedas adicionadas à sua conta!",
