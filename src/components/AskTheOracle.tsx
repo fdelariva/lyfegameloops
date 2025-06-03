@@ -89,6 +89,8 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
   const SWIPE_THRESHOLD = 100;
   const currentSuggestion = oracleSuggestions[currentSuggestionIndex];
 
+  console.log("AskTheOracle render:", { isOpen, currentSuggestionIndex, currentSuggestion });
+
   const handleMouseDown = (e: React.MouseEvent) => {
     setStartX(e.clientX);
     setCurrentX(0);
@@ -116,10 +118,8 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
     
     if (Math.abs(currentX) > SWIPE_THRESHOLD) {
       if (currentX > 0) {
-        // Right swipe - accept suggestion
         handleAccept();
       } else {
-        // Left swipe - reject suggestion
         handleReject();
       }
     }
@@ -137,11 +137,13 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
   };
 
   const handleAccept = () => {
+    console.log("Accepting habit:", currentSuggestion.name);
     onAddHabit(currentSuggestion.name);
     nextSuggestion();
   };
 
   const handleReject = () => {
+    console.log("Rejecting habit:", currentSuggestion.name);
     nextSuggestion();
   };
 
@@ -149,26 +151,28 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
     if (currentSuggestionIndex < oracleSuggestions.length - 1) {
       setCurrentSuggestionIndex(currentSuggestionIndex + 1);
     } else {
-      onClose();
+      handleClose();
     }
   };
 
   const handleClose = () => {
+    console.log("Closing Oracle");
     setCurrentSuggestionIndex(0);
     setCurrentX(0);
     setSwipeDirection(null);
     onClose();
   };
 
-  if (!currentSuggestion) {
+  if (!isOpen || !currentSuggestion) {
+    console.log("Not rendering Oracle:", { isOpen, currentSuggestion });
     return null;
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md mx-auto" onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="max-w-md mx-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-center">
+          <DialogTitle className="flex items-center gap-2 text-center justify-center">
             <Users className="h-6 w-6" />
             Oráculo dos Hábitos
           </DialogTitle>
@@ -195,7 +199,6 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Visual feedback for swipe direction */}
             {swipeDirection === 'right' && (
               <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
                 <div className="bg-green-500 text-white rounded-full p-2">

@@ -42,6 +42,8 @@ const HabitSelectionStep = ({
   const [habitRepeatDays, setHabitRepeatDays] = useState<Record<string, number[]>>({});
   const [showOracle, setShowOracle] = useState(false);
 
+  console.log("HabitSelectionStep state:", { showOracle });
+
   const handleAddCustomHabit = () => {
     if (customHabit.trim()) {
       onAddCustomHabit(customHabit.trim());
@@ -70,8 +72,19 @@ const HabitSelectionStep = ({
   };
 
   const handleOracleAddHabit = (habitName: string) => {
+    console.log("Oracle adding habit:", habitName);
     onAddCustomHabit(habitName);
     toast.success("Sugestão do Oráculo adicionada!");
+  };
+
+  const handleOracleOpen = () => {
+    console.log("Opening Oracle");
+    setShowOracle(true);
+  };
+
+  const handleOracleClose = () => {
+    console.log("Closing Oracle");
+    setShowOracle(false);
   };
 
   return (
@@ -90,7 +103,7 @@ const HabitSelectionStep = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setShowOracle(true)}
+              onClick={handleOracleOpen}
               className="flex items-center gap-2"
             >
               <Users className="h-4 w-4" />
@@ -169,6 +182,12 @@ const HabitSelectionStep = ({
           Começar Minha Jornada ({selectedHabits.length} hábitos)
         </Button>
       </div>
+
+      <AskTheOracle
+        isOpen={showOracle}
+        onClose={handleOracleClose}
+        onAddHabit={handleOracleAddHabit}
+      />
     </div>
   );
 };
