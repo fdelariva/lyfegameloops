@@ -1,11 +1,11 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Plus, Check, X } from "lucide-react";
+import { Plus, Check, X, Users } from "lucide-react";
 import SwipeableHabitCard from "@/components/SwipeableHabitCard";
+import AskTheOracle from "@/components/AskTheOracle";
 import { toast } from "@/components/ui/sonner";
 
 interface Habit {
@@ -40,6 +40,7 @@ const HabitSelectionStep = ({
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
   const [habitRepeatDays, setHabitRepeatDays] = useState<Record<string, number[]>>({});
+  const [showOracle, setShowOracle] = useState(false);
 
   const handleAddCustomHabit = () => {
     if (customHabit.trim()) {
@@ -68,6 +69,11 @@ const HabitSelectionStep = ({
     toast.success("Hábito removido!");
   };
 
+  const handleOracleAddHabit = (habitName: string) => {
+    onAddCustomHabit(habitName);
+    toast.success("Sugestão do Oráculo adicionada!");
+  };
+
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-bold mb-6">Escolha seus Hábitos Iniciais</h2>
@@ -80,15 +86,26 @@ const HabitSelectionStep = ({
           <Badge variant="secondary" className="text-sm">
             {selectedHabits.length} hábitos selecionados
           </Badge>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowCustomHabitInput(true)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Adicionar Hábito Customizado
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowOracle(true)}
+              className="flex items-center gap-2"
+            >
+              <Users className="h-4 w-4" />
+              Perguntar ao Oráculo
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowCustomHabitInput(true)}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Adicionar Hábito Customizado
+            </Button>
+          </div>
         </div>
 
         {showCustomHabitInput && (
