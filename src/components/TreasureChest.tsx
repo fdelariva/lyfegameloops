@@ -4,83 +4,121 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { Package } from "lucide-react";
+import { Package, Brain, CheckCircle, XCircle } from "lucide-react";
 
 interface TreasureChestProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface Reward {
-  type: "coins" | "skill" | "energy" | "connection" | "item";
-  amount?: number;
-  itemName?: string;
-  icon: string;
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+  habitRelated: string;
 }
 
 const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
   const [chestOpened, setChestOpened] = useState(false);
-  const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [rewards, setRewards] = useState<Reward[]>([
-    { type: "coins", amount: 75, icon: "💰" },
-    { type: "skill", amount: 25, icon: "🧠" },
-    { type: "item", itemName: "Coroa Dourada", icon: "👑" },
-  ]);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+
+  // Quiz questions related to habit benefits
+  const quizQuestions: QuizQuestion[] = [
+    {
+      question: "Qual é o principal benefício científico de beber água regularmente?",
+      options: [
+        "Melhora apenas o sabor da comida",
+        "Aumenta a performance física e mental em até 15%",
+        "Só ajuda na digestão",
+        "Apenas hidrata a pele",
+        "Não tem benefícios comprovados"
+      ],
+      correctAnswer: 1,
+      explanation: "Estudos mostram que a hidratação adequada pode melhorar a performance física em até 15% e a performance mental significativamente. O cérebro é 75% água, e mesmo uma desidratação leve de 2% pode causar fadiga, dificuldade de concentração e dores de cabeça.",
+      habitRelated: "Beber água"
+    },
+    {
+      question: "Por que a respiração profunda é eficaz para reduzir o stress?",
+      options: [
+        "Apenas relaxa os músculos",
+        "Ativa o sistema nervoso parassimpático, reduzindo cortisol em até 25%",
+        "Só funciona se feita por horas",
+        "É apenas um efeito psicológico",
+        "Não tem base científica"
+      ],
+      correctAnswer: 1,
+      explanation: "A respiração profunda ativa diretamente o sistema nervoso parassimpático, conhecido como 'modo de descanso e digestão'. Isso reduz a produção de cortisol (hormônio do stress) em até 25%, diminui a pressão arterial e a frequência cardíaca, promovendo um estado de calma real e mensurável.",
+      habitRelated: "Respiração profunda"
+    },
+    {
+      question: "Qual é o impacto de ficar sentado por longos períodos?",
+      options: [
+        "Não há problemas comprovados",
+        "Apenas causa dor nas costas",
+        "Reduz o metabolismo em 90% e aumenta risco de diabetes",
+        "Só afeta a postura",
+        "É benéfico para a concentração"
+      ],
+      correctAnswer: 2,
+      explanation: "Ficar sentado por mais de 30 minutos reduz drasticamente o metabolismo em até 90%, aumenta o risco de diabetes tipo 2, doenças cardiovasculares e até mesmo alguns tipos de câncer. Levantar e se mover a cada hora pode reverter esses efeitos negativos.",
+      habitRelated: "Alongamento e movimento"
+    }
+  ];
+
+  const [currentQuestion] = useState(() => 
+    quizQuestions[Math.floor(Math.random() * quizQuestions.length)]
+  );
 
   const handleChestClick = () => {
     if (!chestOpened) {
       setChestOpened(true);
+      setTimeout(() => {
+        setShowQuiz(true);
+      }, 1000);
       toast("O baú está se abrindo!", {
-        description: "Escolha suas cartas surpresa!",
+        description: "Prepare-se para o desafio do conhecimento!",
       });
     }
   };
 
-  const handleCardClick = (index: number) => {
-    if (flippedCards.includes(index)) return;
+  const handleAnswerSelect = (optionIndex: number) => {
+    setSelectedAnswer(optionIndex);
+  };
+
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) return;
     
-    setFlippedCards([...flippedCards, index]);
-    
-    // Show reward toast
-    const reward = rewards[index];
-    if (reward) {
-      let message = "";
-      if (reward.type === "coins") {
-        message = `+${reward.amount} moedas!`;
-      } else if (reward.type === "skill") {
-        message = `+${reward.amount} Habilidade!`;
-      } else if (reward.type === "energy") {
-        message = `+${reward.amount} Energia!`;
-      } else if (reward.type === "connection") {
-        message = `+${reward.amount} Conexão!`;
-      } else if (reward.type === "item") {
-        message = `Novo item: ${reward.itemName}!`;
-      }
-      
-      toast("Recompensa especial!", {
-        description: message,
+    const correct = selectedAnswer === currentQuestion.correctAnswer;
+    setIsCorrect(correct);
+    setQuizCompleted(true);
+
+    if (correct) {
+      toast.success("Resposta correta!", {
+        description: "Você ganhou uma carta Fast Track!",
       });
-    }
-    
-    // Close dialog after all cards are flipped
-    if (flippedCards.length === 2) {
-      setTimeout(() => {
-        onClose();
-        setChestOpened(false);
-        setFlippedCards([]);
-      }, 2000);
+    } else {
+      toast.error("Resposta incorreta", {
+        description: "Volte amanhã para uma nova chance!",
+      });
     }
   };
 
   const handleClose = () => {
     onClose();
     setChestOpened(false);
-    setFlippedCards([]);
+    setShowQuiz(false);
+    setSelectedAnswer(null);
+    setQuizCompleted(false);
+    setIsCorrect(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold">
             🏆 Baú do Desafio Diário 🏆
@@ -104,79 +142,136 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
               </div>
             </div>
             <p className="text-center text-muted-foreground mt-4">
-              Clique no baú para abrir e revelar suas recompensas especiais!
+              Clique no baú para abrir e enfrentar o desafio do conhecimento!
             </p>
           </div>
-        ) : (
+        ) : !showQuiz ? (
+          <div className="flex flex-col items-center py-8">
+            <div className="relative animate-bounce mb-4">
+              <Package 
+                size={80} 
+                className="text-amber-600"
+              />
+              <div className="absolute -top-2 -right-2 animate-spin">
+                <span className="text-2xl">✨</span>
+              </div>
+            </div>
+            <p className="text-center text-lg font-medium">
+              Preparando seu desafio...
+            </p>
+          </div>
+        ) : !quizCompleted ? (
           <div className="py-6">
-            {/* Chest opening animation */}
             <div className="flex justify-center mb-6">
-              <div className="relative animate-bounce">
-                <Package 
-                  size={80} 
-                  className="text-amber-600"
-                />
-                <div className="absolute -top-2 -right-2 animate-spin">
-                  <span className="text-2xl">✨</span>
-                </div>
-                <div className="absolute -bottom-2 -left-2 animate-ping">
-                  <span className="text-xl">💫</span>
-                </div>
+              <div className="bg-primary/10 p-4 rounded-full">
+                <Brain size={40} className="text-primary" />
               </div>
             </div>
             
-            <div className="text-center mb-4">
-              <h3 className="font-bold text-lg">Escolha suas cartas!</h3>
+            <div className="text-center mb-6">
+              <h3 className="font-bold text-lg mb-2">Desafio do Conhecimento</h3>
               <p className="text-sm text-muted-foreground">
-                Cada carta contém uma recompensa especial
+                Responda corretamente para ganhar uma recompensa especial!
               </p>
             </div>
             
-            {/* Cards */}
-            <div className="flex justify-center gap-4">
-              {[0, 1, 2].map((index) => (
-                <div 
-                  key={index} 
-                  className={`cursor-pointer transform transition-all duration-500 ${
-                    flippedCards.includes(index) ? "rotate-y-180 scale-105" : "hover:scale-105"
-                  }`}
-                  onClick={() => handleCardClick(index)}
-                >
-                  {flippedCards.includes(index) ? (
-                    <Card className="w-20 h-28 flex items-center justify-center bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 text-white shadow-lg">
-                      <CardContent className="p-2 text-center">
-                        <div className="text-2xl mb-1">{rewards[index]?.icon}</div>
-                        {rewards[index]?.type !== "item" ? (
-                          <>
-                            <div className="text-sm font-bold">{`+${rewards[index]?.amount}`}</div>
-                            <div className="text-xs">
-                              {rewards[index]?.type === "coins" && "moedas"}
-                              {rewards[index]?.type === "skill" && "skill"}
-                              {rewards[index]?.type === "energy" && "energia"}
-                              {rewards[index]?.type === "connection" && "conexão"}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="text-xs font-bold">{rewards[index]?.itemName}</div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card className="w-20 h-28 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 shadow-lg animate-pulse">
-                      <CardContent className="p-2 flex items-center justify-center">
-                        <div className="text-white text-3xl">❓</div>
-                      </CardContent>
-                    </Card>
-                  )}
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <h4 className="font-medium text-lg mb-4">{currentQuestion.question}</h4>
+                
+                <div className="space-y-3">
+                  {currentQuestion.options.map((option, index) => (
+                    <div
+                      key={index}
+                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                        selectedAnswer === index
+                          ? "border-primary bg-primary/10"
+                          : "border-muted hover:border-primary/50"
+                      }`}
+                      onClick={() => handleAnswerSelect(index)}
+                    >
+                      <div className="flex items-center">
+                        <div className={`w-4 h-4 rounded-full border-2 mr-3 ${
+                          selectedAnswer === index
+                            ? "border-primary bg-primary"
+                            : "border-muted-foreground"
+                        }`} />
+                        <span className="text-sm">{option}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </CardContent>
+            </Card>
+            
+            <div className="flex justify-center">
+              <Button 
+                onClick={handleSubmitAnswer}
+                disabled={selectedAnswer === null}
+                className="px-8"
+              >
+                Confirmar Resposta
+              </Button>
             </div>
+          </div>
+        ) : (
+          <div className="py-6">
+            <div className="flex justify-center mb-6">
+              <div className={`p-4 rounded-full ${isCorrect ? "bg-green-100" : "bg-red-100"}`}>
+                {isCorrect ? (
+                  <CheckCircle size={60} className="text-green-600" />
+                ) : (
+                  <XCircle size={60} className="text-red-600" />
+                )}
+              </div>
+            </div>
+            
+            <div className="text-center mb-6">
+              <h3 className={`font-bold text-xl mb-2 ${isCorrect ? "text-green-600" : "text-red-600"}`}>
+                {isCorrect ? "Parabéns! Resposta Correta!" : "Resposta Incorreta"}
+              </h3>
+              {isCorrect && (
+                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4 rounded-lg mb-4">
+                  <div className="text-lg font-bold">🎫 Carta Fast Track Desbloqueada!</div>
+                  <div className="text-sm">Amanhã seus hábitos gerarão +50% de atributos!</div>
+                </div>
+              )}
+            </div>
+            
+            <Card>
+              <CardContent className="p-6">
+                <h4 className="font-medium text-lg mb-3">
+                  {isCorrect ? "Por que essa resposta está correta:" : "A resposta correta era:"}
+                </h4>
+                {!isCorrect && (
+                  <p className="text-primary font-medium mb-2">
+                    "{currentQuestion.options[currentQuestion.correctAnswer]}"
+                  </p>
+                )}
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {currentQuestion.explanation}
+                </p>
+                <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+                  <p className="text-xs text-primary font-medium">
+                    💡 Relacionado ao hábito: {currentQuestion.habitRelated}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {!isCorrect && (
+              <div className="mt-6 text-center">
+                <p className="text-muted-foreground text-sm">
+                  Volte amanhã para uma nova chance de abrir o baú do tesouro!
+                </p>
+              </div>
+            )}
           </div>
         )}
         
         <div className="flex justify-center">
           <Button variant="outline" onClick={handleClose}>
-            Fechar
+            {quizCompleted ? "Finalizar" : "Fechar"}
           </Button>
         </div>
       </DialogContent>
