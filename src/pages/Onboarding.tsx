@@ -158,7 +158,11 @@ const Onboarding = () => {
         name: customHabit.trim(),
         icon: "✨",
         description: "Hábito personalizado",
-        category: "Personalizado"
+        category: "Personalizado",
+        info: {
+          whyDo: "Este é um hábito personalizado criado por você. Desenvolva sua própria motivação e descubra os benefícios únicos que ele pode trazer para sua vida.",
+          howDo: "Como este é seu hábito personalizado, você é quem melhor sabe como executá-lo. Defina os passos específicos e mantenha consistência na execução."
+        }
       };
       setHabits([...habits, newHabit]);
       setCustomHabits([...customHabits, { id: newHabit.id, name: newHabit.name }]);
