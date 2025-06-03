@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -99,24 +100,24 @@ const HabitSelectionStep = ({
           <Badge variant="secondary" className="text-sm">
             {selectedHabits.length} hábitos selecionados
           </Badge>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleOracleOpen}
-              className="flex items-center gap-2"
-            >
-              <Users className="h-4 w-4" />
-              Perguntar ao Oráculo
-            </Button>
+          <div className="flex flex-col gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowCustomHabitInput(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full"
             >
               <Plus className="h-4 w-4" />
               Adicionar Hábito Customizado
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOracleOpen}
+              className="flex items-center gap-2 w-full"
+            >
+              <Users className="h-4 w-4" />
+              Perguntar ao Oráculo
             </Button>
           </div>
         </div>

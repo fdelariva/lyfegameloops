@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
-import { CheckCircle, User, Calendar, ShoppingCart } from "lucide-react";
+import { CheckCircle, User, Calendar, ShoppingCart, Users, Plus } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
@@ -12,6 +12,7 @@ import AvatarPreview from "@/components/AvatarPreview";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
 import TreasureChest from "@/components/TreasureChest";
 import EvolutionAnimation from "@/components/EvolutionAnimation";
+import AskTheOracle from "@/components/AskTheOracle";
 import { useNavigate } from "react-router-dom";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -56,6 +57,7 @@ const Dashboard = () => {
   const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
   const [evolutionFromLevel, setEvolutionFromLevel] = useState(1);
   const [evolutionToLevel, setEvolutionToLevel] = useState(2);
+  const [showOracle, setShowOracle] = useState(false);
 
   // Load user's selected habits from onboarding
   useEffect(() => {
@@ -342,6 +344,35 @@ const Dashboard = () => {
     );
   }
 
+  const handleOracleAddHabit = (habitName: string) => {
+    console.log("Oracle adding habit:", habitName);
+    const newHabit = {
+      id: `oracle-${Date.now()}`,
+      title: habitName,
+      description: "Sugestão do Oráculo dos Hábitos",
+      energyBoost: 5,
+      skillBoost: 5,
+      connectionBoost: 5,
+      completed: false,
+      info: {
+        whyDo: "Este é um hábito sugerido pelo Oráculo dos Hábitos. Hábitos consistentes são a base para mudanças duradouras e desenvolvimento pessoal.",
+        howDo: "Execute este hábito de forma consistente, prestando atenção aos benefícios que ele traz para sua vida. A regularidade é mais importante que a perfeição."
+      }
+    };
+    setHabits([...habits, newHabit]);
+    toast.success("Sugestão do Oráculo adicionada!");
+  };
+
+  const handleOracleOpen = () => {
+    console.log("Opening Oracle");
+    setShowOracle(true);
+  };
+
+  const handleOracleClose = () => {
+    console.log("Closing Oracle");
+    setShowOracle(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-6 max-w-4xl">
@@ -450,9 +481,22 @@ const Dashboard = () => {
         </div>
         
         {/* Habits Section */}
-        <h2 className="text-xl font-bold mb-4 flex items-center">
-          Hábitos de Hoje <Badge className="ml-2 bg-primary/30">{habits.length}</Badge>
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold flex items-center">
+            Hábitos de Hoje <Badge className="ml-2 bg-primary/30">{habits.length}</Badge>
+          </h2>
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOracleOpen}
+              className="flex items-center gap-2"
+            >
+              <Users className="h-4 w-4" />
+              Perguntar ao Oráculo
+            </Button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {habits.map(habit => (
             <DashboardHabitCard 
@@ -548,6 +592,12 @@ const Dashboard = () => {
         <TreasureChest 
           isOpen={showTreasureChest} 
           onClose={() => setShowTreasureChest(false)} 
+        />
+        
+        <AskTheOracle
+          isOpen={showOracle}
+          onClose={handleOracleClose}
+          onAddHabit={handleOracleAddHabit}
         />
       </div>
     </div>
