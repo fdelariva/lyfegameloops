@@ -14,6 +14,7 @@ import TreasureChest from "@/components/TreasureChest";
 import EvolutionAnimation from "@/components/EvolutionAnimation";
 import { useNavigate } from "react-router-dom";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import DashboardHabitCard from "@/components/DashboardHabitCard";
 
 interface Habit {
   id: string;
@@ -454,7 +455,7 @@ const Dashboard = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {habits.map(habit => (
-            <HabitCard 
+            <DashboardHabitCard 
               key={habit.id}
               title={habit.title}
               description={habit.description}
@@ -463,6 +464,10 @@ const Dashboard = () => {
               skillBoost={habit.skillBoost}
               completed={habit.completed}
               onComplete={() => handleHabitComplete(habit.id)}
+              onDelete={() => {
+                const updatedHabits = habits.filter(h => h.id !== habit.id);
+                setHabits(updatedHabits);
+              }}
               dayZeroBoost={dayZeroBoost}
               habitInfo={habit.info}
             />

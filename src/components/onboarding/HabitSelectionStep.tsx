@@ -39,6 +39,7 @@ const HabitSelectionStep = ({
 }: HabitSelectionStepProps) => {
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
+  const [habitRepeatDays, setHabitRepeatDays] = useState<Record<string, number[]>>({});
 
   const handleAddCustomHabit = () => {
     if (customHabit.trim()) {
@@ -47,6 +48,24 @@ const HabitSelectionStep = ({
       setShowCustomHabitInput(false);
       toast.success("Hábito customizado adicionado!");
     }
+  };
+
+  const handleRepeatChange = (habitId: string, days: number[]) => {
+    setHabitRepeatDays(prev => ({
+      ...prev,
+      [habitId]: days
+    }));
+  };
+
+  const handleHabitDelete = (habitId: string) => {
+    // Remove from repeat days when deleted
+    setHabitRepeatDays(prev => {
+      const newRepeatDays = { ...prev };
+      delete newRepeatDays[habitId];
+      return newRepeatDays;
+    });
+    onHabitDelete(habitId);
+    toast.success("Hábito removido!");
   };
 
   return (
@@ -111,8 +130,10 @@ const HabitSelectionStep = ({
               habit={habit}
               isSelected={selectedHabits.includes(habit.id)}
               onToggle={onHabitToggle}
-              onDelete={onHabitDelete}
+              onDelete={handleHabitDelete}
               showRepeatOptions={true}
+              onRepeatChange={handleRepeatChange}
+              repeatDays={habitRepeatDays[habit.id] || []}
               habitInfo={habit.info}
             />
           ))}

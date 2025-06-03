@@ -41,22 +41,26 @@ const SwipeableHabitCard = ({
   const [startX, setStartX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showRepeatSelection, setShowRepeatSelection] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const dayLabels = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+  const SWIPE_THRESHOLD = 80;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setStartX(e.clientX);
+    setCurrentX(0);
     setIsDragging(true);
+    setSwipeDirection(null);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
     
     const diff = e.clientX - startX;
-    setCurrentX(diff);
+    setCurrentX(Math.max(-150, Math.min(150, diff)));
     
-    if (Math.abs(diff) > 50) {
+    if (Math.abs(diff) > SWIPE_THRESHOLD) {
       setSwipeDirection(diff > 0 ? 'right' : 'left');
     } else {
       setSwipeDirection(null);
@@ -64,9 +68,32 @@ const SwipeableHabitCard = ({
   };
 
   const handleMouseUp = () => {
+    if (!isDragging) return;
+    
     setIsDragging(false);
+    
+    // If swiped far enough, trigger the action
+    if (Math.abs(currentX) > SWIPE_THRESHOLD) {
+      if (currentX > 0 && showRepeatOptions) {
+        // Right swipe - show repeat options
+        setShowRepeatSelection(!showRepeatSelection);
+      } else if (currentX < 0 && onDelete) {
+        // Left swipe - delete
+        handleDelete();
+      }
+    }
+    
+    // Reset position
     setCurrentX(0);
     setSwipeDirection(null);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setCurrentX(0);
+      setSwipeDirection(null);
+    }
   };
 
   const handleDayToggle = (dayIndex: number) => {
@@ -85,16 +112,22 @@ const SwipeableHabitCard = ({
     }
   };
 
+  const handleCardClick = () => {
+    if (!isDragging && Math.abs(currentX) < 10) {
+      onToggle(habit.id);
+    }
+  };
+
   return (
     <div className="relative">
       <Card 
         ref={cardRef}
         className={cn(
-          "cursor-pointer transition-all border-2 relative overflow-hidden",
+          "cursor-pointer transition-all border-2 relative overflow-hidden select-none",
           isSelected 
             ? 'border-primary bg-primary/10' 
             : 'border-transparent hover:border-primary/50',
-          isDragging && "select-none"
+          isDragging && "transition-none"
         )}
         style={{
           transform: `translateX(${currentX}px)`,
@@ -102,35 +135,24 @@ const SwipeableHabitCard = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={() => !isDragging && onToggle(habit.id)}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleCardClick}
       >
-        {/* Swipe Actions */}
-        {swipeDirection === 'left' && (
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
-            <Button
-              size="sm"
-              variant="destructive"
-              className="rounded-full"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete();
-              }}
-            >
+        {/* Left Action - Delete */}
+        {swipeDirection === 'left' && onDelete && (
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
+            <div className="bg-destructive text-destructive-foreground rounded-full p-2">
               <X className="h-4 w-4" />
-            </Button>
+            </div>
           </div>
         )}
         
+        {/* Right Action - Repeat Options */}
         {swipeDirection === 'right' && showRepeatOptions && (
-          <div className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10">
-            <Button
-              size="sm"
-              variant="outline"
-              className="rounded-full"
-            >
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+            <div className="bg-primary text-primary-foreground rounded-full p-2">
               <Plus className="h-4 w-4" />
-            </Button>
+            </div>
           </div>
         )}
 
@@ -166,7 +188,7 @@ const SwipeableHabitCard = ({
           </Badge>
           
           {/* Repeat Days Selection */}
-          {showRepeatOptions && swipeDirection === 'right' && (
+          {showRepeatOptions && showRepeatSelection && (
             <div className="mt-3 p-3 bg-muted rounded-lg">
               <p className="text-xs font-medium mb-2">Repetir nos dias:</p>
               <div className="flex gap-1 justify-between">
@@ -176,7 +198,7 @@ const SwipeableHabitCard = ({
                     className={cn(
                       "w-6 h-6 rounded-full text-xs font-medium transition-colors",
                       repeatDays.includes(index)
-                        ? "bg-primary text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-background border border-border hover:bg-muted"
                     )}
                     onClick={(e) => {
@@ -187,6 +209,12 @@ const SwipeableHabitCard = ({
                     {day}
                   </button>
                 ))}
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground">
+                {repeatDays.length === 0 
+                  ? "Nenhum dia selecionado" 
+                  : `${repeatDays.length} dia${repeatDays.length > 1 ? 's' : ''} selecionado${repeatDays.length > 1 ? 's' : ''}`
+                }
               </div>
             </div>
           )}
