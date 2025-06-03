@@ -8,6 +8,7 @@ import AccessorySelection from "@/components/AccessorySelection";
 import { Coins, Gift, ShoppingCart, Plus, Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import SwipeableHabitCard from "@/components/SwipeableHabitCard";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -20,13 +21,83 @@ const Onboarding = () => {
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
   const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState([
-    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
-    { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
-    { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
-    { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },
-    { id: "h5", name: "Fazer algo que me faz feliz", icon: "😊", description: "Dedicar tempo para atividades prazerosas", category: "Bem-estar" },
-    { id: "h6", name: "Fazer 3 respirações profundas", icon: "🌬️", description: "Relaxar com exercícios de respiração", category: "Mindfulness" },
-    { id: "h7", name: "Beber 1 copo de água", icon: "💧", description: "Manter-se hidratado", category: "Saúde" }
+    { 
+      id: "h1", 
+      name: "Levantar da cama", 
+      icon: "🛏️", 
+      description: "Começar o dia saindo da cama", 
+      category: "Manhã",
+      info: {
+        whyDo: "Acordar cedo regula o ritmo circadiano, melhora a qualidade do sono e aumenta a produtividade ao longo do dia. Estudos mostram que pessoas matutinas têm menos stress e melhor humor.",
+        howDo: "Coloque o despertador longe da cama, abra as cortinas imediatamente ao acordar para exposição à luz natural, e evite o botão soneca. Mantenha um horário consistente mesmo nos fins de semana."
+      }
+    },
+    { 
+      id: "h2", 
+      name: "Escovar os dentes", 
+      icon: "🦷", 
+      description: "Cuidar da higiene bucal", 
+      category: "Higiene",
+      info: {
+        whyDo: "A escovação remove 99% das bactérias da boca, previne cáries, gengivite e doenças cardíacas. Bactérias orais podem entrar na corrente sanguínea e afetar o coração.",
+        howDo: "Escove por 2 minutos com movimentos circulares suaves, use pasta com flúor, escove a língua e troque a escova a cada 3 meses. Escove 30-60 minutos após as refeições."
+      }
+    },
+    { 
+      id: "h3", 
+      name: "Lavar meu rosto pela manhã", 
+      icon: "💧", 
+      description: "Refrescar o rosto ao acordar", 
+      category: "Higiene",
+      info: {
+        whyDo: "Lavar o rosto remove oleosidade, células mortas e resíduos acumulados durante a noite, prevenindo acne e mantendo a pele saudável. Também ativa a circulação e desperta o corpo.",
+        howDo: "Use água morna, aplique um sabonete neutro ou específico para seu tipo de pele, massageie suavemente em movimentos circulares por 30 segundos e enxágue bem."
+      }
+    },
+    { 
+      id: "h4", 
+      name: "Levantar da cadeira e fazer 1 alongamento", 
+      icon: "🤸‍♂️", 
+      description: "Movimentar o corpo durante o dia", 
+      category: "Movimento",
+      info: {
+        whyDo: "Ficar sentado por longos períodos reduz o metabolismo em 90%, aumenta o risco de diabetes e problemas cardiovasculares. Alongar melhora a circulação e previne dores musculares.",
+        howDo: "A cada hora, levante-se e faça um alongamento simples como elevar os braços, rotacionar o pescoço ou alongar as pernas. Mantenha por 15-30 segundos respirando profundamente."
+      }
+    },
+    { 
+      id: "h5", 
+      name: "Fazer algo que me faz feliz", 
+      icon: "😊", 
+      description: "Dedicar tempo para atividades prazerosas", 
+      category: "Bem-estar",
+      info: {
+        whyDo: "Atividades prazerosas liberam dopamina e serotonina, neurotransmissores que melhoram o humor, reduzem stress e fortalecem o sistema imunológico. É essencial para a saúde mental.",
+        howDo: "Reserve 10-15 minutos para algo que genuinamente te dá prazer: ouvir música, desenhar, conversar com um amigo, ou qualquer hobby. O importante é estar presente no momento."
+      }
+    },
+    { 
+      id: "h6", 
+      name: "Fazer 3 respirações profundas", 
+      icon: "🌬️", 
+      description: "Relaxar com exercícios de respiração", 
+      category: "Mindfulness",
+      info: {
+        whyDo: "A respiração profunda ativa o sistema nervoso parassimpático, reduzindo cortisol (hormônio do stress) em até 25% e diminuindo a pressão arterial e frequência cardíaca.",
+        howDo: "Inspire lentamente pelo nariz por 4 segundos, segure por 4 segundos, expire pela boca por 6 segundos. Repita 3 vezes. Foque apenas na respiração durante o exercício."
+      }
+    },
+    { 
+      id: "h7", 
+      name: "Beber 1 copo de água", 
+      icon: "💧", 
+      description: "Manter-se hidratado", 
+      category: "Saúde",
+      info: {
+        whyDo: "O corpo é 60% água e perde 2-3 litros por dia. Desidratação de apenas 2% reduz performance física e mental, causa fadiga e dores de cabeça. Água melhora concentração e humor.",
+        howDo: "Beba um copo de 250ml de água pura, preferencialmente em temperatura ambiente. Mantenha uma garrafa visível como lembrete e distribua a ingestão ao longo do dia."
+      }
+    }
   ]);
 
   // Simples definições de arquétipos para mostrar no onboarding
@@ -73,6 +144,11 @@ const Onboarding = () => {
     } else {
       setSelectedHabits([...selectedHabits, habitId]);
     }
+  };
+
+  const handleHabitDelete = (habitId: string) => {
+    setHabits(habits.filter(h => h.id !== habitId));
+    setSelectedHabits(selectedHabits.filter(id => id !== habitId));
   };
 
   const handleAddCustomHabit = () => {
@@ -265,7 +341,7 @@ const Onboarding = () => {
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-6">Escolha seus Hábitos Iniciais</h2>
             <p className="text-muted-foreground text-center mb-6">
-              Selecione os hábitos que você quer fazer e remova os que não quer. Você pode adicionar hábitos personalizados também!
+              Selecione os hábitos que você quer fazer. Deslize para a esquerda para deletar ou para a direita para configurar repetição.
             </p>
             
             <div className="w-full max-w-2xl mb-6">
@@ -318,35 +394,15 @@ const Onboarding = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {habits.map((habit) => (
-                  <Card 
+                  <SwipeableHabitCard
                     key={habit.id}
-                    className={`cursor-pointer transition border-2 ${
-                      selectedHabits.includes(habit.id) 
-                        ? 'border-primary bg-primary/10' 
-                        : 'border-transparent hover:border-primary/50'
-                    }`}
-                    onClick={() => handleHabitToggle(habit.id)}
-                  >
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{habit.icon}</span>
-                          <CardTitle className="text-base">{habit.name}</CardTitle>
-                        </div>
-                        {selectedHabits.includes(habit.id) && (
-                          <Check className="h-5 w-5 text-primary" />
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <CardDescription className="text-sm mb-2">
-                        {habit.description}
-                      </CardDescription>
-                      <Badge variant="outline" className="text-xs">
-                        {habit.category}
-                      </Badge>
-                    </CardContent>
-                  </Card>
+                    habit={habit}
+                    isSelected={selectedHabits.includes(habit.id)}
+                    onToggle={handleHabitToggle}
+                    onDelete={handleHabitDelete}
+                    showRepeatOptions={true}
+                    habitInfo={habit.info}
+                  />
                 ))}
               </div>
             </div>

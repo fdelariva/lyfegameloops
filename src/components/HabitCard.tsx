@@ -3,8 +3,9 @@ import React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle } from "lucide-react";
+import { CheckCircle, Circle, Brain } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
+import HabitInfoPopover from "./HabitInfoPopover";
 
 interface HabitCardProps {
   title: string;
@@ -15,6 +16,10 @@ interface HabitCardProps {
   completed?: boolean;
   onComplete?: () => void;
   dayZeroBoost?: boolean;
+  habitInfo?: {
+    whyDo: string;
+    howDo: string;
+  };
 }
 
 const HabitCard = ({ 
@@ -25,7 +30,11 @@ const HabitCard = ({
   skillBoost = 0,
   completed = false,
   onComplete,
-  dayZeroBoost = false
+  dayZeroBoost = false,
+  habitInfo = {
+    whyDo: "Informações científicas sobre os benefícios deste hábito.",
+    howDo: "Instruções detalhadas sobre como realizar este hábito."
+  }
 }: HabitCardProps) => {
   
   const handleComplete = () => {
@@ -58,11 +67,22 @@ const HabitCard = ({
       <CardContent className="pt-6 pb-2">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-lg">{title}</h3>
-          {completed ? (
-            <CheckCircle className="text-primary h-6 w-6" />
-          ) : (
-            <Circle className="text-muted-foreground h-6 w-6" />
-          )}
+          <div className="flex items-center gap-2">
+            <HabitInfoPopover habitName={title} habitInfo={habitInfo}>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="p-1 h-6 w-6"
+              >
+                <Brain className="h-3 w-3" />
+              </Button>
+            </HabitInfoPopover>
+            {completed ? (
+              <CheckCircle className="text-primary h-6 w-6" />
+            ) : (
+              <Circle className="text-muted-foreground h-6 w-6" />
+            )}
+          </div>
         </div>
         <p className="text-sm text-muted-foreground mb-4">{description}</p>
         
