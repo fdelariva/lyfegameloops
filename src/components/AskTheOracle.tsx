@@ -1,23 +1,11 @@
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, CheckCircle, X, ArrowLeft, ArrowRight } from "lucide-react";
+import { Users, ThumbsUp, ThumbsDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface Habit {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  category: string;
-  info: {
-    whyDo: string;
-    howDo: string;
-  };
-}
 
 interface AskTheOracleProps {
   isOpen: boolean;
@@ -25,7 +13,7 @@ interface AskTheOracleProps {
   onAddHabit: (habitName: string) => void;
 }
 
-const oracleSuggestions: Omit<Habit, 'id'>[] = [
+const oracleSuggestions = [
   {
     name: "Meditar por 5 minutos",
     icon: "🧘",
@@ -37,43 +25,43 @@ const oracleSuggestions: Omit<Habit, 'id'>[] = [
     }
   },
   {
+    name: "Fazer uma caminhada de 10 minutos",
+    icon: "🚶",
+    description: "Movimento suave para ativar o corpo",
+    category: "Exercício",
+    info: {
+      whyDo: "Caminhadas melhoram a circulação, reduzem o stress e aumentam a criatividade em 60%. É o exercício mais natural para o corpo humano.",
+      howDo: "Caminhe em ritmo confortável, preferencialmente ao ar livre. Mantenha postura ereta e respire naturalmente."
+    }
+  },
+  {
+    name: "Escrever 3 gratidões",
+    icon: "📝",
+    description: "Anotar coisas pelas quais você é grato",
+    category: "Mindfulness",
+    info: {
+      whyDo: "A gratidão aumenta os níveis de serotonina, melhora o sono e fortalece relacionamentos. Pessoas gratas são 25% mais felizes.",
+      howDo: "Anote 3 coisas específicas pelas quais você é grato hoje. Seja específico e sinta genuinamente a gratidão ao escrever."
+    }
+  },
+  {
     name: "Ler 10 páginas de um livro",
     icon: "📚",
-    description: "Expandir conhecimento através da leitura",
-    category: "Educação",
+    description: "Alimentar a mente com conhecimento",
+    category: "Aprendizado",
     info: {
-      whyDo: "A leitura melhora vocabulário, concentração e empatia. Estimula neuroplasticidade e reduz o declínio cognitivo em 32%.",
-      howDo: "Escolha um horário fixo, elimine distrações, tenha um marcador e faça pequenas anotações sobre pontos interessantes."
+      whyDo: "A leitura melhora o vocabulário, reduz o declínio cognitivo e diminui o stress em 68%. É ginástica para o cérebro.",
+      howDo: "Escolha um local silencioso, elimine distrações e leia com atenção plena. Faça pausas para refletir sobre o conteúdo."
     }
   },
   {
-    name: "Fazer uma caminhada de 15 minutos",
-    icon: "🚶",
-    description: "Exercício leve para energia e bem-estar",
-    category: "Movimento",
-    info: {
-      whyDo: "Caminhadas liberam endorfinas, melhoram circulação e reduzem risco de doenças cardíacas. 15 minutos aumentam criatividade em 60%.",
-      howDo: "Mantenha ritmo confortável, balance os braços naturalmente, observe o ambiente ao redor e respire profundamente."
-    }
-  },
-  {
-    name: "Escrever 3 coisas pelas quais sou grato",
-    icon: "📝",
-    description: "Prática de gratidão para bem-estar mental",
-    category: "Bem-estar",
-    info: {
-      whyDo: "Gratidão aumenta felicidade em 25%, melhora relacionamentos e reduz depressão. Reconecta com aspectos positivos da vida.",
-      howDo: "Escreva 3 itens específicos diariamente, seja detalhado sobre o porquê, inclua pessoas e experiências pequenas mas significativas."
-    }
-  },
-  {
-    name: "Organizar um espaço da casa",
-    icon: "🏠",
-    description: "Manter ambiente organizado e harmonioso",
+    name: "Organizar uma gaveta ou mesa",
+    icon: "🗂️",
+    description: "Criar ordem no ambiente",
     category: "Organização",
     info: {
-      whyDo: "Ambientes organizados reduzem cortisol em 20%, melhoram foco e produtividade. Ordem externa reflete ordem mental.",
-      howDo: "Escolha um espaço pequeno, remova tudo, limpe, organize por categoria e devolva apenas o necessário."
+      whyDo: "Ambientes organizados reduzem o cortisol, melhoram o foco e aumentam a produtividade. A ordem externa reflete ordem mental.",
+      howDo: "Escolha um espaço pequeno, remova tudo, limpe e recoloque apenas o necessário. Dê um lugar específico para cada item."
     }
   }
 ];
@@ -82,36 +70,45 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
   const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
 
-  const SWIPE_THRESHOLD = 100;
+  const SWIPE_THRESHOLD = 80;
   const currentSuggestion = oracleSuggestions[currentSuggestionIndex];
 
   console.log("AskTheOracle render:", { isOpen, currentSuggestionIndex, currentSuggestion });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setStartX(e.clientX);
+  // Unified start handler for both mouse and touch
+  const handleStart = (clientX: number, clientY: number) => {
+    setStartX(clientX);
+    setStartY(clientY);
     setCurrentX(0);
     setIsDragging(true);
     setSwipeDirection(null);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  // Unified move handler for both mouse and touch
+  const handleMove = (clientX: number, clientY: number) => {
     if (!isDragging) return;
     
-    const diff = e.clientX - startX;
-    setCurrentX(Math.max(-200, Math.min(200, diff)));
+    const diffX = clientX - startX;
+    const diffY = Math.abs(clientY - startY);
     
-    if (Math.abs(diff) > SWIPE_THRESHOLD) {
-      setSwipeDirection(diff > 0 ? 'right' : 'left');
+    // Ignore if moving too much vertically (likely scrolling)
+    if (diffY > 50) return;
+    
+    setCurrentX(Math.max(-150, Math.min(150, diffX)));
+    
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+      setSwipeDirection(diffX > 0 ? 'right' : 'left');
     } else {
       setSwipeDirection(null);
     }
   };
 
-  const handleMouseUp = () => {
+  // Unified end handler for both mouse and touch
+  const handleEnd = () => {
     if (!isDragging) return;
     
     setIsDragging(false);
@@ -124,8 +121,23 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
       }
     }
     
+    // Reset position
     setCurrentX(0);
     setSwipeDirection(null);
+  };
+
+  // Mouse event handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleMove(e.clientX, e.clientY);
+  };
+
+  const handleMouseUp = () => {
+    handleEnd();
   };
 
   const handleMouseLeave = () => {
@@ -134,6 +146,22 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
       setCurrentX(0);
       setSwipeDirection(null);
     }
+  };
+
+  // Touch event handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent scrolling
+    const touch = e.touches[0];
+    handleMove(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchEnd = () => {
+    handleEnd();
   };
 
   const handleAccept = () => {
@@ -160,6 +188,7 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
     setCurrentSuggestionIndex(0);
     setCurrentX(0);
     setSwipeDirection(null);
+    setIsDragging(false);
     onClose();
   };
 
@@ -178,18 +207,20 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
           </DialogTitle>
         </DialogHeader>
         
-        <div className="text-center text-sm text-muted-foreground mb-4">
-          Deslize para a direita para aceitar ou para a esquerda para rejeitar
+        <div className="text-center mb-4">
+          <p className="text-sm text-muted-foreground">
+            Deslize para a direita para aceitar ou esquerda para rejeitar
+          </p>
+          <Badge variant="outline" className="mt-2">
+            {currentSuggestionIndex + 1} de {oracleSuggestions.length}
+          </Badge>
         </div>
 
         <div className="relative overflow-hidden">
           <Card 
-            ref={cardRef}
             className={cn(
-              "cursor-grab transition-all select-none relative",
-              isDragging && "cursor-grabbing transition-none",
-              swipeDirection === 'right' && "border-green-500 bg-green-50",
-              swipeDirection === 'left' && "border-red-500 bg-red-50"
+              "cursor-grab active:cursor-grabbing transition-transform select-none touch-pan-y",
+              isDragging && "transition-none"
             )}
             style={{
               transform: `translateX(${currentX}px)`,
@@ -198,11 +229,14 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {swipeDirection === 'right' && (
               <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
                 <div className="bg-green-500 text-white rounded-full p-2">
-                  <CheckCircle className="h-5 w-5" />
+                  <ThumbsUp className="h-4 w-4" />
                 </div>
               </div>
             )}
@@ -210,60 +244,56 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
             {swipeDirection === 'left' && (
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
                 <div className="bg-red-500 text-white rounded-full p-2">
-                  <X className="h-5 w-5" />
+                  <ThumbsDown className="h-4 w-4" />
                 </div>
               </div>
             )}
 
-            <CardHeader className="text-center">
-              <div className="text-4xl mb-2">{currentSuggestion.icon}</div>
-              <CardTitle className="text-lg">{currentSuggestion.name}</CardTitle>
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{currentSuggestion.icon}</span>
+                <CardTitle className="text-lg">{currentSuggestion.name}</CardTitle>
+              </div>
             </CardHeader>
-            
-            <CardContent className="text-center">
-              <p className="text-sm text-muted-foreground mb-3">
+            <CardContent>
+              <CardDescription className="mb-2">
                 {currentSuggestion.description}
-              </p>
-              <Badge variant="outline" className="mb-4">
+              </CardDescription>
+              <Badge variant="outline" className="text-xs">
                 {currentSuggestion.category}
               </Badge>
-              
-              <div className="text-xs text-muted-foreground">
-                {currentSuggestionIndex + 1} de {oracleSuggestions.length}
-              </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="flex gap-2 justify-center mt-4">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex gap-2 mt-4">
+          <Button 
+            variant="outline" 
+            className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
             onClick={handleReject}
-            className="flex items-center gap-1"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ThumbsDown className="h-4 w-4 mr-2" />
             Rejeitar
           </Button>
-          
-          <Button
-            size="sm"
+          <Button 
+            variant="outline" 
+            className="flex-1 text-green-600 border-green-200 hover:bg-green-50"
             onClick={handleAccept}
-            className="flex items-center gap-1"
           >
-            <ArrowRight className="h-4 w-4" />
+            <ThumbsUp className="h-4 w-4 mr-2" />
             Aceitar
           </Button>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleClose}
-          className="w-full mt-2"
-        >
-          Chega por Hoje
-        </Button>
+        <div className="flex justify-between items-center mt-4">
+          <Button variant="ghost" onClick={handleClose}>
+            <X className="h-4 w-4 mr-2" />
+            Chega
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            Toque fora para fechar
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );
