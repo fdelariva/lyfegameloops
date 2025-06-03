@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
-import { CheckCircle, User, Calendar, ShoppingCart, Users, Plus } from "lucide-react";
+import { CheckCircle, User, Calendar, ShoppingCart, Users, Plus, Check, X } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
@@ -45,6 +46,8 @@ const Dashboard = () => {
   
   // Load habits from onboarding or use defaults
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [customHabit, setCustomHabit] = useState("");
+  const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
   
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
@@ -205,6 +208,28 @@ const Dashboard = () => {
     
     return () => clearTimeout(timer);
   }, []);
+
+  const handleAddCustomHabit = () => {
+    if (customHabit.trim()) {
+      const newHabit = {
+        id: `custom-${Date.now()}`,
+        title: customHabit.trim(),
+        description: "Hábito personalizado",
+        energyBoost: 5,
+        skillBoost: 5,
+        connectionBoost: 5,
+        completed: false,
+        info: {
+          whyDo: "Este é um hábito personalizado criado por você. Hábitos consistentes são a base para mudanças duradouras e desenvolvimento pessoal.",
+          howDo: "Execute este hábito de forma consistente, prestando atenção aos benefícios que ele traz para sua vida. A regularidade é mais importante que a perfeição."
+        }
+      };
+      setHabits([...habits, newHabit]);
+      setCustomHabit("");
+      setShowCustomHabitInput(false);
+      toast.success("Hábito customizado adicionado!");
+    }
+  };
 
   const handleHabitComplete = (habitId: string) => {
     // Play habit completion sound
@@ -485,18 +510,64 @@ const Dashboard = () => {
           <h2 className="text-xl font-bold flex items-center">
             Hábitos de Hoje <Badge className="ml-2 bg-primary/30">{habits.length}</Badge>
           </h2>
+        </div>
+
+        {/* Add Habit Section */}
+        <div className="mb-6">
           <div className="flex flex-col gap-2">
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setShowCustomHabitInput(true)}
+              className="flex items-center gap-2 w-full"
+            >
+              <Plus className="h-4 w-4" />
+              Adicionar Hábito Customizado
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleOracleOpen}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full"
             >
               <Users className="h-4 w-4" />
               Perguntar ao Oráculo
             </Button>
           </div>
+
+          {showCustomHabitInput && (
+            <Card className="mt-4 border-primary bg-primary/5">
+              <CardContent className="p-4">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Digite seu hábito personalizado..."
+                    value={customHabit}
+                    onChange={(e) => setCustomHabit(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddCustomHabit()}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={handleAddCustomHabit}
+                    disabled={!customHabit.trim()}
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setShowCustomHabitInput(false);
+                      setCustomHabit("");
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {habits.map(habit => (
             <DashboardHabitCard 

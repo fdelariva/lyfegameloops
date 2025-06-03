@@ -47,6 +47,49 @@ const SwipeableHabitCard = ({
   const dayLabels = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
   const SWIPE_THRESHOLD = 80;
 
+  // Touch event handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    setStartX(touch.clientX);
+    setCurrentX(0);
+    setIsDragging(true);
+    setSwipeDirection(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    const diffX = touch.clientX - startX;
+    
+    setCurrentX(Math.max(-150, Math.min(150, diffX)));
+    
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+      setSwipeDirection(diffX > 0 ? 'right' : 'left');
+    } else {
+      setSwipeDirection(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    
+    setIsDragging(false);
+    
+    if (Math.abs(currentX) > SWIPE_THRESHOLD) {
+      if (currentX > 0 && showRepeatOptions) {
+        setShowRepeatSelection(!showRepeatSelection);
+      } else if (currentX < 0 && onDelete) {
+        handleDelete();
+      }
+    }
+    
+    setCurrentX(0);
+    setSwipeDirection(null);
+  };
+
+  // Mouse event handlers for desktop
   const handleMouseDown = (e: React.MouseEvent) => {
     setStartX(e.clientX);
     setCurrentX(0);
@@ -72,18 +115,14 @@ const SwipeableHabitCard = ({
     
     setIsDragging(false);
     
-    // If swiped far enough, trigger the action
     if (Math.abs(currentX) > SWIPE_THRESHOLD) {
       if (currentX > 0 && showRepeatOptions) {
-        // Right swipe - show repeat options
         setShowRepeatSelection(!showRepeatSelection);
       } else if (currentX < 0 && onDelete) {
-        // Left swipe - delete
         handleDelete();
       }
     }
     
-    // Reset position
     setCurrentX(0);
     setSwipeDirection(null);
   };
@@ -131,11 +170,15 @@ const SwipeableHabitCard = ({
         )}
         style={{
           transform: `translateX(${currentX}px)`,
+          touchAction: 'pan-y pinch-zoom'
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onClick={handleCardClick}
       >
         {/* Left Action - Delete */}
