@@ -70,7 +70,6 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
   const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -79,25 +78,66 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
 
   console.log("AskTheOracle render:", { isOpen, currentSuggestionIndex, currentSuggestion });
 
-  // Unified start handler for both mouse and touch
-  const handleStart = (clientX: number, clientY: number) => {
-    setStartX(clientX);
-    setStartY(clientY);
+  // Touch event handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    setStartX(touch.clientX);
+    setCurrentX(0);
+    setIsDragging(true);
+    setSwipeDirection(null);
+    console.log("Touch start:", touch.clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    
+    e.preventDefault(); // Prevent scrolling
+    const touch = e.touches[0];
+    const diffX = touch.clientX - startX;
+    
+    setCurrentX(Math.max(-150, Math.min(150, diffX)));
+    
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+      setSwipeDirection(diffX > 0 ? 'right' : 'left');
+    } else {
+      setSwipeDirection(null);
+    }
+    
+    console.log("Touch move:", { diffX, currentX, swipeDirection });
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    
+    console.log("Touch end:", { currentX, swipeDirection });
+    setIsDragging(false);
+    
+    if (Math.abs(currentX) > SWIPE_THRESHOLD) {
+      if (currentX > 0) {
+        handleAccept();
+      } else {
+        handleReject();
+      }
+    }
+    
+    // Reset position
+    setCurrentX(0);
+    setSwipeDirection(null);
+  };
+
+  // Mouse event handlers for desktop
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setStartX(e.clientX);
     setCurrentX(0);
     setIsDragging(true);
     setSwipeDirection(null);
   };
 
-  // Unified move handler for both mouse and touch
-  const handleMove = (clientX: number, clientY: number) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
     
-    const diffX = clientX - startX;
-    const diffY = Math.abs(clientY - startY);
-    
-    // Ignore if moving too much vertically (likely scrolling)
-    if (diffY > 50) return;
-    
+    const diffX = e.clientX - startX;
     setCurrentX(Math.max(-150, Math.min(150, diffX)));
     
     if (Math.abs(diffX) > SWIPE_THRESHOLD) {
@@ -107,8 +147,7 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
     }
   };
 
-  // Unified end handler for both mouse and touch
-  const handleEnd = () => {
+  const handleMouseUp = () => {
     if (!isDragging) return;
     
     setIsDragging(false);
@@ -126,42 +165,12 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
     setSwipeDirection(null);
   };
 
-  // Mouse event handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleStart(e.clientX, e.clientY);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    handleMove(e.clientX, e.clientY);
-  };
-
-  const handleMouseUp = () => {
-    handleEnd();
-  };
-
   const handleMouseLeave = () => {
     if (isDragging) {
       setIsDragging(false);
       setCurrentX(0);
       setSwipeDirection(null);
     }
-  };
-
-  // Touch event handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    handleStart(touch.clientX, touch.clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent scrolling
-    const touch = e.touches[0];
-    handleMove(touch.clientX, touch.clientY);
-  };
-
-  const handleTouchEnd = () => {
-    handleEnd();
   };
 
   const handleAccept = () => {
@@ -219,11 +228,12 @@ const AskTheOracle = ({ isOpen, onClose, onAddHabit }: AskTheOracleProps) => {
         <div className="relative overflow-hidden">
           <Card 
             className={cn(
-              "cursor-grab active:cursor-grabbing transition-transform select-none touch-pan-y",
+              "cursor-grab active:cursor-grabbing transition-transform select-none",
               isDragging && "transition-none"
             )}
             style={{
               transform: `translateX(${currentX}px)`,
+              touchAction: 'pan-y pinch-zoom'
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
