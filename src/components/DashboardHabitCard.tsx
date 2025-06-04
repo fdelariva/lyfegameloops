@@ -43,12 +43,60 @@ const DashboardHabitCard = ({
   const [startX, setStartX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showRepeatSelection, setShowRepeatSelection] = useState(false);
+  const [repeatDays, setRepeatDays] = useState<number[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  const dayLabels = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
   const SWIPE_THRESHOLD = 80;
 
+  // Touch event handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (completed) return;
+    const touch = e.touches[0];
+    setStartX(touch.clientX);
+    setCurrentX(0);
+    setIsDragging(true);
+    setSwipeDirection(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || completed) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    const diffX = touch.clientX - startX;
+    
+    setCurrentX(Math.max(-150, Math.min(150, diffX)));
+    
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+      setSwipeDirection(diffX > 0 ? 'right' : 'left');
+    } else {
+      setSwipeDirection(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging || completed) return;
+    
+    setIsDragging(false);
+    
+    if (Math.abs(currentX) > SWIPE_THRESHOLD) {
+      if (currentX > 0) {
+        // Right swipe - show repeat configuration
+        setShowRepeatSelection(!showRepeatSelection);
+      } else if (currentX < 0 && onDelete) {
+        // Left swipe - delete
+        handleDelete();
+      }
+    }
+    
+    setCurrentX(0);
+    setSwipeDirection(null);
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (completed) return; // Don't allow swipe on completed habits
+    if (completed) return;
     setStartX(e.clientX);
     setCurrentX(0);
     setIsDragging(true);
@@ -79,8 +127,8 @@ const DashboardHabitCard = ({
         // Left swipe - delete
         handleDelete();
       } else if (currentX > 0) {
-        // Right swipe - show settings/config (future feature)
-        toast("Configurações do hábito em breve!");
+        // Right swipe - show repeat configuration
+        setShowRepeatSelection(!showRepeatSelection);
       }
     }
     
@@ -95,6 +143,15 @@ const DashboardHabitCard = ({
       setCurrentX(0);
       setSwipeDirection(null);
     }
+  };
+
+  const handleDayToggle = (dayIndex: number) => {
+    const newDays = repeatDays.includes(dayIndex)
+      ? repeatDays.filter(d => d !== dayIndex)
+      : [...repeatDays, dayIndex];
+    
+    setRepeatDays(newDays);
+    toast.success(`Configuração de repetição atualizada`);
   };
   
   const handleComplete = () => {
@@ -134,11 +191,15 @@ const DashboardHabitCard = ({
         )}
         style={{
           transform: !completed ? `translateX(${currentX}px)` : 'translateX(0px)',
+          touchAction: 'pan-y pinch-zoom'
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Day Zero Boost Badge */}
         {dayZeroBoost && (
@@ -159,7 +220,7 @@ const DashboardHabitCard = ({
         {/* Right Action - Settings */}
         {swipeDirection === 'right' && !completed && (
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-            <div className="bg-muted text-muted-foreground rounded-full p-2">
+            <div className="bg-primary text-primary-foreground rounded-full p-2">
               <Settings className="h-4 w-4" />
             </div>
           </div>
@@ -204,6 +265,38 @@ const DashboardHabitCard = ({
               </Badge>
             )}
           </div>
+
+          {/* Repeat Days Selection */}
+          {showRepeatSelection && !completed && (
+            <div className="mt-4 p-3 bg-muted rounded-lg">
+              <p className="text-xs font-medium mb-2">Repetir nos dias:</p>
+              <div className="flex gap-1 justify-between">
+                {dayLabels.map((day, index) => (
+                  <button
+                    key={index}
+                    className={cn(
+                      "w-6 h-6 rounded-full text-xs font-medium transition-colors",
+                      repeatDays.includes(index)
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-background border border-border hover:bg-muted"
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDayToggle(index);
+                    }}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground">
+                {repeatDays.length === 0 
+                  ? "Nenhum dia selecionado" 
+                  : `${repeatDays.length} dia${repeatDays.length > 1 ? 's' : ''} selecionado${repeatDays.length > 1 ? 's' : ''}`
+                }
+              </div>
+            </div>
+          )}
         </CardContent>
         
         <CardFooter className="pb-4 pt-2">
