@@ -116,7 +116,7 @@ const Index = () => {
               onClick={() => navigate("/onboarding")}
             >
               <span className="mr-2">👤</span>
-              Jornada do Avatar (Original)
+              Main bet: Progress & Achievement
             </Button>
           </div>
         </CardContent>
