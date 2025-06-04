@@ -111,6 +111,16 @@ const Index = () => {
             
             <Button 
               size="lg" 
+              className="w-full mb-3 bg-gradient-to-r from-cyan-500 to-blue-600" 
+              onClick={() => navigate("/onboarding-q3")}
+            >
+              <span className="mr-2">🚀</span>
+              Main Bet: Q3 Future Scenario
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+            
+            <Button 
+              size="lg" 
               className="w-full" 
               variant="outline"
               onClick={() => navigate("/onboarding")}
