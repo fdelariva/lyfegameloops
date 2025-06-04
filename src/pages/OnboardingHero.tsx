@@ -142,7 +142,7 @@ const OnboardingHero = () => {
     localStorage.setItem('userArchetype', heroClass);
     
     toast.success("Quest Completa!", {
-      description: "Tutorial do Herói concluído! +100 Gold adicionado!",
+      description: "Main bet: Progress & Achievement concluído! +100 Gold adicionado!",
     });
     navigate("/dashboard");
   };
@@ -409,7 +409,7 @@ const OnboardingHero = () => {
       case 5:
         return (
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-6">🎯 Quest: Tutorial do Herói</h2>
+            <h2 className="text-2xl font-bold mb-6">🎯 Quest: Main bet: Progress & Achievement</h2>
             <p className="text-muted-foreground text-center mb-6">
               Complete seus primeiros 2 hábitos em 24h para provar que você é um verdadeiro herói!
             </p>
