@@ -1,6 +1,5 @@
-
 import React, { useState, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Check, X, Plus, Brain } from "lucide-react";
@@ -162,7 +161,7 @@ const SwipeableHabitCard = ({
       <Card 
         ref={cardRef}
         className={cn(
-          "cursor-pointer transition-all border-2 relative overflow-hidden select-none",
+          "cursor-pointer transition-all border-2 relative overflow-hidden select-none h-20",
           isSelected 
             ? 'border-primary bg-primary/10' 
             : 'border-transparent hover:border-primary/50',
@@ -199,69 +198,58 @@ const SwipeableHabitCard = ({
           </div>
         )}
 
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">{habit.icon}</span>
-              <CardTitle className="text-base">{habit.name}</CardTitle>
-            </div>
-            <div className="flex items-center gap-2">
-              <HabitInfoPopover habitName={habit.name} habitInfo={habitInfo}>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="p-1 h-6 w-6"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Brain className="h-3 w-3" />
-                </Button>
-              </HabitInfoPopover>
-              {isSelected && (
-                <Check className="h-5 w-5 text-primary" />
-              )}
+        <CardContent className="p-4 h-full flex items-center justify-between">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <span className="text-lg flex-shrink-0">{habit.icon}</span>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-sm truncate">{habit.name}</CardTitle>
+              <Badge variant="outline" className="text-xs mt-1">
+                {habit.category}
+              </Badge>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <CardDescription className="text-sm mb-2">
-            {habit.description}
-          </CardDescription>
-          <Badge variant="outline" className="text-xs mb-3">
-            {habit.category}
-          </Badge>
           
-          {/* Repeat Days Selection */}
-          {showRepeatOptions && showRepeatSelection && (
-            <div className="mt-3 p-3 bg-muted rounded-lg">
-              <p className="text-xs font-medium mb-2">Repetir nos dias:</p>
-              <div className="flex gap-1 justify-between">
-                {dayLabels.map((day, index) => (
-                  <button
-                    key={index}
-                    className={cn(
-                      "w-6 h-6 rounded-full text-xs font-medium transition-colors",
-                      repeatDays.includes(index)
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-background border border-border hover:bg-muted"
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDayToggle(index);
-                    }}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-2 text-xs text-muted-foreground">
-                {repeatDays.length === 0 
-                  ? "Nenhum dia selecionado" 
-                  : `${repeatDays.length} dia${repeatDays.length > 1 ? 's' : ''} selecionado${repeatDays.length > 1 ? 's' : ''}`
-                }
-              </div>
-            </div>
-          )}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <HabitInfoPopover habitName={habit.name} habitInfo={habitInfo}>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="p-1 h-6 w-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Brain className="h-3 w-3" />
+              </Button>
+            </HabitInfoPopover>
+            {isSelected && (
+              <Check className="h-5 w-5 text-primary" />
+            )}
+          </div>
         </CardContent>
+
+        {/* Repeat Days Selection - Compact version */}
+        {showRepeatOptions && showRepeatSelection && (
+          <div className="absolute bottom-0 left-0 right-0 bg-muted p-2 border-t">
+            <div className="flex gap-1 justify-center">
+              {dayLabels.map((day, index) => (
+                <button
+                  key={index}
+                  className={cn(
+                    "w-5 h-5 rounded-full text-xs font-medium transition-colors",
+                    repeatDays.includes(index)
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background border border-border hover:bg-muted"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDayToggle(index);
+                  }}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

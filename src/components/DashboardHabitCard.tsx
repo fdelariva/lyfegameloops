@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,10 +82,8 @@ const DashboardHabitCard = ({
     
     if (Math.abs(currentX) > SWIPE_THRESHOLD) {
       if (currentX > 0) {
-        // Right swipe - show repeat configuration
         setShowRepeatSelection(!showRepeatSelection);
       } else if (currentX < 0 && onDelete) {
-        // Left swipe - delete
         handleDelete();
       }
     }
@@ -121,18 +118,14 @@ const DashboardHabitCard = ({
     
     setIsDragging(false);
     
-    // If swiped far enough, trigger the action
     if (Math.abs(currentX) > SWIPE_THRESHOLD) {
       if (currentX < 0 && onDelete) {
-        // Left swipe - delete
         handleDelete();
       } else if (currentX > 0) {
-        // Right swipe - show repeat configuration
         setShowRepeatSelection(!showRepeatSelection);
       }
     }
     
-    // Reset position
     setCurrentX(0);
     setSwipeDirection(null);
   };
@@ -158,7 +151,6 @@ const DashboardHabitCard = ({
     if (onComplete && !completed) {
       onComplete();
       
-      // Show toast with appropriate message
       if (dayZeroBoost) {
         toast("Hábito completado!", {
           description: "Bônus Dia 0: +200% em todas as características!",
@@ -185,7 +177,7 @@ const DashboardHabitCard = ({
       <Card 
         ref={cardRef}
         className={cn(
-          "relative overflow-hidden transition-all select-none",
+          "relative overflow-hidden transition-all select-none h-24",
           completed ? 'bg-primary/5 border-primary/30' : '',
           !completed && isDragging && "transition-none"
         )}
@@ -204,7 +196,7 @@ const DashboardHabitCard = ({
         {/* Day Zero Boost Badge */}
         {dayZeroBoost && (
           <div className="absolute right-0 top-0 bg-primary text-white text-xs py-1 px-2 rounded-bl">
-            +200% hoje!
+            +200%
           </div>
         )}
 
@@ -226,90 +218,82 @@ const DashboardHabitCard = ({
           </div>
         )}
         
-        <CardContent className="pt-6 pb-2">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-semibold text-lg">{title}</h3>
-            <div className="flex items-center gap-2">
-              <HabitInfoPopover habitName={title} habitInfo={habitInfo}>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="p-1 h-6 w-6"
-                >
-                  <Brain className="h-3 w-3" />
-                </Button>
-              </HabitInfoPopover>
-              {completed ? (
-                <CheckCircle className="text-primary h-6 w-6" />
-              ) : (
-                <Circle className="text-muted-foreground h-6 w-6" />
+        <CardContent className="p-3 h-full flex items-center justify-between">
+          <div className="flex-1 min-w-0">
+            <div className="flex justify-between items-start mb-1">
+              <h3 className="font-semibold text-sm truncate pr-2">{title}</h3>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <HabitInfoPopover habitName={title} habitInfo={habitInfo}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="p-1 h-5 w-5"
+                  >
+                    <Brain className="h-3 w-3" />
+                  </Button>
+                </HabitInfoPopover>
+                {completed ? (
+                  <CheckCircle className="text-primary h-5 w-5" />
+                ) : (
+                  <Circle className="text-muted-foreground h-5 w-5" />
+                )}
+              </div>
+            </div>
+            
+            <div className="flex gap-1 flex-wrap mb-2">
+              {energyBoost > 0 && (
+                <Badge variant="outline" className="text-xs bg-orange-50 px-1">
+                  +{dayZeroBoost ? energyBoost * 2 : energyBoost}E
+                </Badge>
+              )}
+              {connectionBoost > 0 && (
+                <Badge variant="outline" className="text-xs bg-blue-50 px-1">
+                  +{dayZeroBoost ? connectionBoost * 2 : connectionBoost}C
+                </Badge>
+              )}
+              {skillBoost > 0 && (
+                <Badge variant="outline" className="text-xs bg-green-50 px-1">
+                  +{dayZeroBoost ? skillBoost * 2 : skillBoost}S
+                </Badge>
               )}
             </div>
-          </div>
-          <p className="text-sm text-muted-foreground mb-4">{description}</p>
-          
-          <div className="flex gap-2 flex-wrap">
-            {energyBoost > 0 && (
-              <Badge variant="outline" className="bg-orange-50">
-                +{dayZeroBoost ? energyBoost * 2 : energyBoost} Energia
-              </Badge>
-            )}
-            {connectionBoost > 0 && (
-              <Badge variant="outline" className="bg-blue-50">
-                +{dayZeroBoost ? connectionBoost * 2 : connectionBoost} Conexão
-              </Badge>
-            )}
-            {skillBoost > 0 && (
-              <Badge variant="outline" className="bg-green-50">
-                +{dayZeroBoost ? skillBoost * 2 : skillBoost} Habilidade
-              </Badge>
-            )}
-          </div>
 
-          {/* Repeat Days Selection */}
-          {showRepeatSelection && !completed && (
-            <div className="mt-4 p-3 bg-muted rounded-lg">
-              <p className="text-xs font-medium mb-2">Repetir nos dias:</p>
-              <div className="flex gap-1 justify-between">
-                {dayLabels.map((day, index) => (
-                  <button
-                    key={index}
-                    className={cn(
-                      "w-6 h-6 rounded-full text-xs font-medium transition-colors",
-                      repeatDays.includes(index)
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-background border border-border hover:bg-muted"
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDayToggle(index);
-                    }}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-2 text-xs text-muted-foreground">
-                {repeatDays.length === 0 
-                  ? "Nenhum dia selecionado" 
-                  : `${repeatDays.length} dia${repeatDays.length > 1 ? 's' : ''} selecionado${repeatDays.length > 1 ? 's' : ''}`
-                }
-              </div>
-            </div>
-          )}
+            {!completed ? (
+              <Button onClick={handleComplete} size="sm" className="w-full h-6 text-xs">
+                Completar
+              </Button>
+            ) : (
+              <Button variant="outline" disabled size="sm" className="w-full h-6 text-xs opacity-70">
+                Completado
+              </Button>
+            )}
+          </div>
         </CardContent>
-        
-        <CardFooter className="pb-4 pt-2">
-          {!completed ? (
-            <Button onClick={handleComplete} className="w-full">
-              Completar Hábito
-            </Button>
-          ) : (
-            <Button variant="outline" disabled className="w-full opacity-70">
-              Completado
-            </Button>
-          )}
-        </CardFooter>
+
+        {/* Compact Repeat Days Selection */}
+        {showRepeatSelection && !completed && (
+          <div className="absolute bottom-0 left-0 right-0 bg-muted p-2 border-t">
+            <div className="flex gap-1 justify-center">
+              {dayLabels.map((day, index) => (
+                <button
+                  key={index}
+                  className={cn(
+                    "w-5 h-5 rounded-full text-xs font-medium transition-colors",
+                    repeatDays.includes(index)
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background border border-border hover:bg-muted"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDayToggle(index);
+                  }}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
