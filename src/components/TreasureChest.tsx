@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { Package, Brain, CheckCircle, XCircle } from "lucide-react";
+import { Brain, CheckCircle, XCircle } from "lucide-react";
 
 interface TreasureChestProps {
   isOpen: boolean;
@@ -116,6 +116,56 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
     setIsCorrect(false);
   };
 
+  // Custom treasure chest component inspired by the image
+  const TreasureChestSVG = ({ isOpen = false, className = "" }) => (
+    <div className={`relative ${className}`}>
+      <svg width="120" height="100" viewBox="0 0 120 100" className="drop-shadow-lg">
+        {/* Chest base */}
+        <rect
+          x="10"
+          y="45"
+          width="100"
+          height="45"
+          rx="8"
+          className="fill-purple-medium stroke-purple-dark"
+          strokeWidth="3"
+        />
+        
+        {/* Chest lid */}
+        <path
+          d={isOpen ? "M 10 45 Q 60 15 110 45" : "M 10 45 Q 60 25 110 45"}
+          className="fill-purple-dark stroke-purple-dark"
+          strokeWidth="3"
+        />
+        
+        {/* Chest bands */}
+        <rect x="5" y="55" width="110" height="4" className="fill-purple-dark" />
+        <rect x="5" y="75" width="110" height="4" className="fill-purple-dark" />
+        
+        {/* Lock */}
+        {!isOpen && (
+          <circle cx="60" cy="65" r="8" className="fill-orange-medium stroke-orange-dark" strokeWidth="2" />
+        )}
+        
+        {/* Sparkles when open */}
+        {isOpen && (
+          <>
+            <circle cx="40" cy="30" r="2" className="fill-yellow-400 animate-pulse" />
+            <circle cx="80" cy="25" r="2" className="fill-yellow-400 animate-pulse" />
+            <circle cx="60" cy="20" r="3" className="fill-yellow-300 animate-bounce" />
+            <circle cx="30" cy="35" r="1.5" className="fill-yellow-400 animate-pulse" />
+            <circle cx="90" cy="30" r="1.5" className="fill-yellow-400 animate-pulse" />
+          </>
+        )}
+      </svg>
+      
+      {/* Floating light effect */}
+      {isOpen && (
+        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-yellow-200/30 to-yellow-100/50 rounded-lg animate-pulse" />
+      )}
+    </div>
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-2xl">
@@ -131,15 +181,7 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
               className="cursor-pointer transform transition-all duration-300 hover:scale-110"
               onClick={handleChestClick}
             >
-              <div className="relative">
-                <Package 
-                  size={120} 
-                  className="text-amber-600 drop-shadow-lg animate-pulse"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl">✨</span>
-                </div>
-              </div>
+              <TreasureChestSVG isOpen={false} className="animate-pulse" />
             </div>
             <p className="text-center text-muted-foreground mt-4">
               Clique no baú para abrir e enfrentar o desafio do conhecimento!
@@ -148,13 +190,7 @@ const TreasureChest = ({ isOpen, onClose }: TreasureChestProps) => {
         ) : !showQuiz ? (
           <div className="flex flex-col items-center py-8">
             <div className="relative animate-bounce mb-4">
-              <Package 
-                size={80} 
-                className="text-amber-600"
-              />
-              <div className="absolute -top-2 -right-2 animate-spin">
-                <span className="text-2xl">✨</span>
-              </div>
+              <TreasureChestSVG isOpen={true} />
             </div>
             <p className="text-center text-lg font-medium">
               Preparando seu desafio...
