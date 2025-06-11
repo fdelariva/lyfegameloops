@@ -519,12 +519,9 @@ const DashboardQ3 = () => {
       <EndOfDayReview 
         isOpen={showEndOfDay} 
         onClose={() => setShowEndOfDay(false)}
-        completedHabits={habits.filter(h => h.completed)}
-        totalGains={{
-          energy: habits.filter(h => h.completed).reduce((sum, h) => sum + (h.energyBoost || 0), 0),
-          connection: habits.filter(h => h.completed).reduce((sum, h) => sum + (h.connectionBoost || 0), 0),
-          skill: habits.filter(h => h.completed).reduce((sum, h) => sum + (h.skillBoost || 0), 0)
-        }}
+        completedHabits={completedToday}
+        totalHabits={totalHabits}
+        coinsEarned={habits.filter(h => h.completed).reduce((sum, h) => sum + (isDayZero ? 20 : 10), 0)}
       />
       
       <EvolutionAnimation 
