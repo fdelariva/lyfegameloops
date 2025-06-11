@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +34,7 @@ import LevelUpAnimation from "@/components/LevelUpAnimation";
 import CompetitiveChallenge from "@/components/CompetitiveChallenge";
 import { defaultHabits } from "@/data/defaultHabits";
 import { useNavigate } from "react-router-dom";
+import AristosWelcomeMessages from "@/components/AristosWelcomeMessages";
 
 const DashboardQ3 = () => {
   const navigate = useNavigate();
@@ -59,6 +59,7 @@ const DashboardQ3 = () => {
   const [showEvolution, setShowEvolution] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [showCompetitiveChallenge, setShowCompetitiveChallenge] = useState(false);
+  const [showAristosWelcome, setShowAristosWelcome] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
   const [previousLevel, setPreviousLevel] = useState(1);
   
@@ -126,11 +127,16 @@ const DashboardQ3 = () => {
     if (savedTotal) setTotalHabitsCompleted(parseInt(savedTotal));
     if (savedDayZero) setIsDayZero(savedDayZero === 'true');
     
-    // Show morning brief on first visit
+    // Show Aristos welcome messages on first visit or if not seen today
+    const hasSeenAristosToday = localStorage.getItem(`hasSeenAristos-${new Date().toDateString()}`);
+    if (!hasSeenAristosToday) {
+      setTimeout(() => setShowAristosWelcome(true), 1500);
+    }
+    
+    // Show morning brief after Aristos messages if not seen
     const hasSeenMorning = localStorage.getItem('hasSeenMorningBrief');
-    if (!hasSeenMorning) {
+    if (!hasSeenMorning && hasSeenAristosToday) {
       setTimeout(() => setShowMorningBrief(true), 1000);
-      localStorage.setItem('hasSeenMorningBrief', 'true');
     }
   }, []);
 
@@ -480,6 +486,20 @@ const DashboardQ3 = () => {
       </div>
 
       {/* Modals and Dialogs */}
+      <AristosWelcomeMessages
+        isOpen={showAristosWelcome}
+        onClose={() => {
+          setShowAristosWelcome(false);
+          localStorage.setItem(`hasSeenAristos-${new Date().toDateString()}`, 'true');
+          // Show morning brief after closing Aristos messages if not seen
+          const hasSeenMorning = localStorage.getItem('hasSeenMorningBrief');
+          if (!hasSeenMorning) {
+            setTimeout(() => setShowMorningBrief(true), 500);
+          }
+        }}
+        userName="Viajante"
+      />
+      
       <TreasureChest 
         isOpen={showTreasureChest} 
         onClose={() => setShowTreasureChest(false)} 
