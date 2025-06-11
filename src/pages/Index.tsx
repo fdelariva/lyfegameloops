@@ -41,16 +41,6 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-indigo-500 to-purple-500" 
-              onClick={() => navigate("/onboarding-destiny")}
-            >
-              <span className="mr-2">✨</span>
-              Cartas do Destino
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
               className="w-full mb-3 bg-gradient-to-r from-blue-500 to-purple-600" 
               onClick={() => navigate("/onboarding-oracle")}
             >
