@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,6 +57,7 @@ const DashboardQ3 = () => {
   const [showEvolution, setShowEvolution] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
+  const [previousLevel, setPreviousLevel] = useState(1);
   
   // Habits state
   const [habits, setHabits] = useState(() => {
@@ -186,6 +186,7 @@ const DashboardQ3 = () => {
     const newLevel = Math.floor(newTotal / 100) + 1;
     
     if (newLevel > level) {
+      setPreviousLevel(level);
       setLevel(newLevel);
       setShowLevelUp(true);
       setCoins(prev => prev + 50); // Level up bonus
@@ -483,12 +484,16 @@ const DashboardQ3 = () => {
       
       <OracleCompanion 
         isOpen={showOracle} 
-        onClose={() => setShowOracle(false)} 
+        onClose={() => setShowOracle(false)}
+        userProgress={completionRate}
+        completedHabits={completedToday}
+        totalHabits={totalHabits}
       />
       
       <SocialFeed 
         isOpen={showSocialFeed} 
-        onClose={() => setShowSocialFeed(false)} 
+        onClose={() => setShowSocialFeed(false)}
+        userProgress={completionRate}
       />
       
       <FriendsList 
@@ -498,7 +503,17 @@ const DashboardQ3 = () => {
       
       <MorningBrief 
         isOpen={showMorningBrief} 
-        onClose={() => setShowMorningBrief(false)} 
+        onClose={() => setShowMorningBrief(false)}
+        isFirstVisit={isDayZero}
+        todayHabits={habits.map(habit => ({
+          id: habit.id,
+          title: habit.name,
+          description: habit.description,
+          energyBoost: habit.energyBoost || 0,
+          skillBoost: habit.skillBoost || 0,
+          connectionBoost: habit.connectionBoost || 0,
+          completed: habit.completed
+        }))}
       />
       
       <EndOfDayReview 
@@ -514,7 +529,10 @@ const DashboardQ3 = () => {
       
       <EvolutionAnimation 
         isOpen={showEvolution} 
-        onClose={() => setShowEvolution(false)} 
+        onClose={() => setShowEvolution(false)}
+        archetype={archetype}
+        fromLevel={previousLevel}
+        toLevel={level}
       />
       
       <LevelUpAnimation 
