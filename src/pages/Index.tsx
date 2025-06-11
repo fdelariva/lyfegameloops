@@ -42,7 +42,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-blue-500 to-purple-600" 
+              className="w-full mb-3 bg-muted text-white" 
               onClick={() => navigate("/onboarding-oracle")}
             >
               <span className="mr-2">🔮</span>
@@ -52,7 +52,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-orange-500 to-red-500" 
+              className="w-full mb-3 bg-muted text-white" 
               onClick={() => navigate("/onboarding-streak")}
             >
               <span className="mr-2">🔥</span>
@@ -62,7 +62,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-red-500 to-amber-500" 
+              className="w-full mb-3 bg-muted text-white" 
               onClick={() => navigate("/onboarding-competitive")}
             >
               <span className="mr-2">🏆</span>
@@ -72,7 +72,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-purple-600 to-pink-600" 
+              className="w-full mb-3 bg-muted text-white" 
               onClick={() => navigate("/onboarding-hero")}
             >
               <span className="mr-2">⚔️</span>
@@ -82,7 +82,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-pink-500 to-rose-500" 
+              className="w-full mb-3 bg-muted text-white" 
               onClick={() => navigate("/onboarding-finch")}
             >
               <span className="mr-2">💖</span>
@@ -92,7 +92,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-cyan-500 to-blue-600" 
+              className="w-full mb-3 bg-gradient-to-r from-purple-medium to-orange-medium text-white" 
               onClick={() => navigate("/onboarding-q3")}
             >
               <span className="mr-2">🚀</span>
@@ -102,8 +102,7 @@ const Index = () => {
             
             <Button 
               size="lg" 
-              className="w-full" 
-              variant="outline"
+              className="w-full bg-gradient-to-r from-teal-medium to-purple-medium text-white" 
               onClick={() => navigate("/onboarding")}
             >
               <span className="mr-2">👤</span>
