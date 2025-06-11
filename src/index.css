@@ -101,6 +101,9 @@
   }
 }
 
+/* Import DM Sans and Inter fonts */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@100..900&display=swap');
+
 @layer base {
   * {
     @apply border-border;
@@ -108,7 +111,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 }
 
@@ -124,5 +127,169 @@
   
   .gradient-accent {
     background: linear-gradient(135deg, hsl(var(--orange-light)), hsl(var(--teal-light)));
+  }
+
+  /* Typography system based on design specifications */
+  .display-large {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 3.5rem; /* 56px */
+    line-height: 1.4; /* 140% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .display-medium {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 2.5rem; /* 40px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .display-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 2rem; /* 32px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .headline-large {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 2rem; /* 32px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .headline-medium {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1.75rem; /* 28px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .headline-small {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .title-large {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.5; /* 150% */
+    letter-spacing: -0.01em; /* -1% */
+  }
+
+  .title-medium {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .title-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-large {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-medium {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-large-highlight {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-medium-highlight {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .body-small-highlight {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .label-large {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .label-medium {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .label-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.6875rem; /* 11px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .cta-button {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .cta-button-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5; /* 150% */
+  }
+
+  .cta-link {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5; /* 150% */
+    text-decoration: underline;
+  }
+
+  .cta-link-small {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5; /* 150% */
+    text-decoration: underline;
   }
 }

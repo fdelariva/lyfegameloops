@@ -80,7 +80,47 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+				sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+				'dm-sans': ['DM Sans', 'sans-serif'],
+				'inter': ['Inter', 'sans-serif'],
+			},
+			fontSize: {
+				// Display sizes
+				'display-lg': ['3.5rem', { lineHeight: '1.4', letterSpacing: '-0.01em' }], // 56px
+				'display-md': ['2.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 40px
+				'display-sm': ['2rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 32px
+				
+				// Headline sizes
+				'headline-lg': ['2rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 32px
+				'headline-md': ['1.75rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 28px
+				'headline-sm': ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 24px
+				
+				// Title sizes
+				'title-lg': ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }], // 24px
+				'title-md': ['1.125rem', { lineHeight: '1.5' }], // 18px
+				'title-sm': ['0.875rem', { lineHeight: '1.5' }], // 14px
+				
+				// Body sizes
+				'body-lg': ['1.125rem', { lineHeight: '1.5' }], // 18px
+				'body-md': ['0.9375rem', { lineHeight: '1.5' }], // 15px
+				'body-sm': ['0.8125rem', { lineHeight: '1.5' }], // 13px
+				
+				// Label sizes
+				'label-lg': ['0.9375rem', { lineHeight: '1.5' }], // 15px
+				'label-md': ['0.8125rem', { lineHeight: '1.5' }], // 13px
+				'label-sm': ['0.6875rem', { lineHeight: '1.5' }], // 11px
+				
+				// CTA sizes
+				'cta-button': ['0.9375rem', { lineHeight: '1.5' }], // 15px
+				'cta-button-sm': ['0.8125rem', { lineHeight: '1.5' }], // 13px
+			},
+			fontWeight: {
+				'dm-regular': '400',
+				'dm-medium': '500',
+				'dm-semibold': '600',
+				'dm-bold': '700',
+				'inter-regular': '400',
+				'inter-medium': '500',
 			},
 			keyframes: {
 				'accordion-down': {
