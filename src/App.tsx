@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
-import OnboardingDestinyCards from "./pages/OnboardingDestinyCards";
 import OnboardingOracle from "./pages/OnboardingOracle";
 import OnboardingStreak from "./pages/OnboardingStreak";
 import OnboardingChallenges from "./pages/OnboardingChallenges";
@@ -29,7 +28,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/onboarding-destiny" element={<OnboardingDestinyCards />} />
             <Route path="/onboarding-oracle" element={<OnboardingOracle />} />
             <Route path="/onboarding-streak" element={<OnboardingStreak />} />
             <Route path="/onboarding-challenges" element={<OnboardingChallenges />} />
