@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
-import { ArrowLeft, Trophy, Users, Brain } from "lucide-react";
+import { ArrowLeft, Trophy, Users, Brain, Target, Calendar, Star } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
@@ -28,10 +28,16 @@ const OnboardingQ3Future = () => {
     localStorage.setItem('customHabits', JSON.stringify(customHabits));
     localStorage.setItem('onboardingCompleted', 'true');
     localStorage.setItem('gameMode', 'q3-future');
+    localStorage.setItem('userLevel', '1');
+    localStorage.setItem('userEnergy', '25');
+    localStorage.setItem('userConnection', '20');
+    localStorage.setItem('userSkill', '15');
+    localStorage.setItem('userCoins', '200'); // Bonus coins for Q3 future
+    localStorage.setItem('isDayZero', 'true');
     
     toast.success("Onboarding completo!");
-    toast("Bônus de boas-vindas!", {
-      description: "+ 100 moedas adicionadas à sua conta!",
+    toast("Bônus de boas-vindas Q3 Future!", {
+      description: "+ 200 moedas e Oracle pessoal ativado!",
     });
     navigate("/dashboard-q3");
   };
@@ -45,7 +51,6 @@ const OnboardingQ3Future = () => {
   };
 
   const handleHabitDelete = (habitId: string) => {
-    // Remove from selected habits and custom habits
     setSelectedHabits(prev => prev.filter(id => id !== habitId));
     setCustomHabits(prev => prev.filter(habit => habit !== habitId));
   };
@@ -82,37 +87,72 @@ const OnboardingQ3Future = () => {
       case 1:
         return (
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-4xl font-bold mb-6">Main Bet: Q3 Future Scenario</h1>
-            <p className="text-muted-foreground mb-8">
-              Desenvolva hábitos com Oracle personalizado e conexões sociais
+            <h1 className="text-4xl font-bold mb-6 gradient-primary bg-clip-text text-transparent">
+              Main Bet: Q3 Future Scenario
+            </h1>
+            <p className="text-muted-foreground mb-8 max-w-2xl">
+              Desenvolva hábitos com Oracle personalizado, conexões sociais e sistema de progressão avançado
             </p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl mb-8">
-              <Card className="bg-primary/5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mb-8">
+              <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4 text-center">
                   <Brain className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <h3 className="font-semibold">Oracle Pessoal</h3>
                   <p className="text-sm text-muted-foreground">Orientação diária inteligente</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary/5">
+              <Card className="bg-accent/5 border-accent/20">
                 <CardContent className="p-4 text-center">
-                  <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h3 className="font-semibold">Aliados</h3>
+                  <Users className="h-8 w-8 mx-auto mb-2 text-accent" />
+                  <h3 className="font-semibold">Aliados & Social</h3>
                   <p className="text-sm text-muted-foreground">Conecte-se com amigos</p>
                 </CardContent>
               </Card>
-              <Card className="bg-primary/5">
+              <Card className="bg-orange-medium/10 border-orange-medium/20">
                 <CardContent className="p-4 text-center">
-                  <Trophy className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h3 className="font-semibold">Progressão</h3>
-                  <p className="text-sm text-muted-foreground">Evolua seu avatar</p>
+                  <Trophy className="h-8 w-8 mx-auto mb-2 text-orange-medium" />
+                  <h3 className="font-semibold">Progressão Avançada</h3>
+                  <p className="text-sm text-muted-foreground">Sistema completo de evolução</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-purple-medium/10 border-purple-medium/20">
+                <CardContent className="p-4 text-center">
+                  <Target className="h-8 w-8 mx-auto mb-2 text-purple-medium" />
+                  <h3 className="font-semibold">Baú Diário</h3>
+                  <p className="text-sm text-muted-foreground">Desafios e recompensas</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-teal-medium/10 border-teal-medium/20">
+                <CardContent className="p-4 text-center">
+                  <Calendar className="h-8 w-8 mx-auto mb-2 text-teal-medium" />
+                  <h3 className="font-semibold">Séries & Streaks</h3>
+                  <p className="text-sm text-muted-foreground">Mantenha a consistência</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-secondary/10 border-secondary/20">
+                <CardContent className="p-4 text-center">
+                  <Star className="h-8 w-8 mx-auto mb-2 text-secondary-foreground" />
+                  <h3 className="font-semibold">Loja Premium</h3>
+                  <p className="text-sm text-muted-foreground">Recompensas exclusivas</p>
                 </CardContent>
               </Card>
             </div>
             
-            <Button size="lg" onClick={() => setStep(2)}>
-              Iniciar Jornada
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-6 rounded-lg mb-8 max-w-2xl">
+              <h3 className="font-bold text-lg mb-2">🚀 Recursos Exclusivos Q3 Future</h3>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Oracle com IA personalizada para orientação diária</li>
+                <li>• Sistema social com aliados e feed de atividades</li>
+                <li>• Baú do tesouro com desafios de conhecimento</li>
+                <li>• Evolução de avatar com sistema de características</li>
+                <li>• Séries e streaks para manter consistência</li>
+                <li>• Loja com recompensas reais e virtuais</li>
+              </ul>
+            </div>
+            
+            <Button size="lg" onClick={() => setStep(2)} className="gradient-primary">
+              Iniciar Jornada Q3 Future
             </Button>
           </div>
         );
@@ -162,7 +202,7 @@ const OnboardingQ3Future = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
       {step > 1 && (
         <Button 
           variant="ghost" 
@@ -175,7 +215,19 @@ const OnboardingQ3Future = () => {
         </Button>
       )}
       
-      <div className="w-full max-w-2xl">
+      {/* Progress indicator */}
+      <div className="absolute top-4 right-4 flex gap-2">
+        {[1, 2, 3, 4].map((stepNumber) => (
+          <div
+            key={stepNumber}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              step >= stepNumber ? 'bg-primary' : 'bg-muted'
+            }`}
+          />
+        ))}
+      </div>
+      
+      <div className="w-full max-w-4xl">
         {renderStep()}
       </div>
     </div>
