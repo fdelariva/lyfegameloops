@@ -7,7 +7,6 @@ import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import OnboardingOracle from "./pages/OnboardingOracle";
 import OnboardingStreak from "./pages/OnboardingStreak";
-import OnboardingChallenges from "./pages/OnboardingChallenges";
 import OnboardingCompetitive from "./pages/OnboardingCompetitive";
 import OnboardingHero from "./pages/OnboardingHero";
 import OnboardingFinch from "./pages/OnboardingFinch";
@@ -30,7 +29,6 @@ function App() {
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/onboarding-oracle" element={<OnboardingOracle />} />
             <Route path="/onboarding-streak" element={<OnboardingStreak />} />
-            <Route path="/onboarding-challenges" element={<OnboardingChallenges />} />
             <Route path="/onboarding-competitive" element={<OnboardingCompetitive />} />
             <Route path="/onboarding-hero" element={<OnboardingHero />} />
             <Route path="/onboarding-finch" element={<OnboardingFinch />} />
