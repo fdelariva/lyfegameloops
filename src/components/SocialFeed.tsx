@@ -4,16 +4,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Share2, Trophy, Flame, Users } from "lucide-react";
+import { Heart, MessageCircle, Share2, Trophy, Flame, Users, Target, Sword } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 
 interface SocialFeedProps {
   isOpen: boolean;
   onClose: () => void;
   userProgress: number;
+  onOpenCompetitiveChallenge?: () => void;
 }
 
-const SocialFeed = ({ isOpen, onClose, userProgress }: SocialFeedProps) => {
+const SocialFeed = ({ isOpen, onClose, userProgress, onOpenCompetitiveChallenge }: SocialFeedProps) => {
   const [liked, setLiked] = useState<string[]>([]);
 
   const mockFeedData = [
@@ -65,6 +66,13 @@ const SocialFeed = ({ isOpen, onClose, userProgress }: SocialFeedProps) => {
     toast.success("Progresso compartilhado com seus aliados!");
   };
 
+  const handleCompetitiveChallenge = () => {
+    onClose();
+    if (onOpenCompetitiveChallenge) {
+      onOpenCompetitiveChallenge();
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[80vh]">
@@ -76,6 +84,32 @@ const SocialFeed = ({ isOpen, onClose, userProgress }: SocialFeedProps) => {
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Competitive Challenge Card */}
+          <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-red-50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl">⚔️</div>
+                  <div>
+                    <h3 className="font-semibold text-orange-800">Desafio Competitivo</h3>
+                    <p className="text-sm text-orange-600">Desafie seus amigos com seus hábitos</p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleCompetitiveChallenge}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  <Sword className="h-4 w-4 mr-2" />
+                  Criar Desafio
+                </Button>
+              </div>
+              
+              <div className="text-xs text-orange-600">
+                💡 Convide amigos para fazer os mesmos hábitos e vejam quem consegue manter a melhor sequência!
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Share Progress Card */}
           <Card className="border-primary bg-primary/5">
             <CardContent className="p-4">

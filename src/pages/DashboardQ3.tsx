@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ import MorningBrief from "@/components/MorningBrief";
 import EndOfDayReview from "@/components/EndOfDayReview";
 import EvolutionAnimation from "@/components/EvolutionAnimation";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
+import CompetitiveChallenge from "@/components/CompetitiveChallenge";
 import { defaultHabits } from "@/data/defaultHabits";
 import { useNavigate } from "react-router-dom";
 
@@ -56,6 +58,7 @@ const DashboardQ3 = () => {
   const [showEndOfDay, setShowEndOfDay] = useState(false);
   const [showEvolution, setShowEvolution] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showCompetitiveChallenge, setShowCompetitiveChallenge] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
   const [previousLevel, setPreviousLevel] = useState(1);
   
@@ -494,6 +497,7 @@ const DashboardQ3 = () => {
         isOpen={showSocialFeed} 
         onClose={() => setShowSocialFeed(false)}
         userProgress={completionRate}
+        onOpenCompetitiveChallenge={() => setShowCompetitiveChallenge(true)}
       />
       
       <FriendsList 
@@ -536,6 +540,14 @@ const DashboardQ3 = () => {
         isOpen={showLevelUp} 
         onClose={() => setShowLevelUp(false)}
         newLevel={level}
+      />
+      
+      <CompetitiveChallenge
+        isOpen={showCompetitiveChallenge}
+        onClose={() => setShowCompetitiveChallenge(false)}
+        userHabits={habits}
+        userProgress={completionRate}
+        userName="Você"
       />
     </div>
   );
