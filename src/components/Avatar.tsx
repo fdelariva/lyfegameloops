@@ -27,9 +27,9 @@ const UserAvatar = ({
   const getAvatarEmoji = (type: string, avatarLevel: number) => {
     const avatars = {
       guerreiro: {
-        1: "⚔️", // Espada básica
-        2: "🛡️", // Escudo de bronze
-        5: "🏛️"  // Guerreiro romano completo
+        1: "🗡️", // Sword - basic warrior weapon
+        2: "⚔️", // Crossed swords - advancing warrior
+        5: "🛡️"  // Shield - master warrior defender
       },
       mestre: {
         1: "🎭", // Máscara teatral
