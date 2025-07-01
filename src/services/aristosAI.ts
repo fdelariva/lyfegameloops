@@ -1,3 +1,4 @@
+
 const ARISTOS_PROMPT = `# LIFE MANAGEMENT COACH - PROMPT AVANÇADO
 
 ## IDENTIDADE PRINCIPAL
@@ -73,11 +74,12 @@ interface AristosResponse {
 }
 
 export class AristosAIService {
-  private apiKey: string;
+  private apiKey: string | null = null;
   private baseUrl = "https://api.openai.com/v1/chat/completions";
 
   constructor() {
-    this.apiKey = "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";
+    // Em produção, esta chave deve vir de variáveis de ambiente
+    this.apiKey = null; // Removido process.env para evitar erro no browser
   }
 
   async generateResponse(
@@ -90,6 +92,11 @@ export class AristosAIService {
       userName?: string;
     }
   ): Promise<AristosResponse> {
+    if (!this.apiKey) {
+      // Fallback para demonstração - em produção, retornaria erro
+      return this.getFallbackResponse(userMessage, userContext);
+    }
+
     try {
       const contextualPrompt = this.buildContextualPrompt(userContext);
       const messages = this.buildMessageHistory(conversationHistory, contextualPrompt);
