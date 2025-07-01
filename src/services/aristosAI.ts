@@ -157,10 +157,10 @@ Use este contexto para personalizar suas respostas de forma mais relevante e enc
   private buildMessageHistory(
     conversationHistory: Array<{role: "oracle" | "user", content: string}>,
     contextualPrompt: string
-  ) {
-    const messages = [
+  ): Array<{role: "system" | "user" | "assistant", content: string}> {
+    const messages: Array<{role: "system" | "user" | "assistant", content: string}> = [
       {
-        role: "system" as const,
+        role: "system",
         content: contextualPrompt
       }
     ];
@@ -169,12 +169,12 @@ Use este contexto para personalizar suas respostas de forma mais relevante e enc
     conversationHistory.forEach(message => {
       if (message.role === "oracle") {
         messages.push({
-          role: "assistant" as const,
+          role: "assistant",
           content: message.content
         });
       } else {
         messages.push({
-          role: "user" as const,
+          role: "user",
           content: message.content
         });
       }
