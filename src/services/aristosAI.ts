@@ -15,7 +15,7 @@ Você é um Life Management Coach especializado em mudança comportamental basea
 ### 2. BEHAVIORAL DESIGN (Jason Hreha)
 - **Behavior Matching**: Escolha comportamentos que se alinhem com a personalidade e contexto do cliente
 - **Estratégia Comportamental**: Integre mudanças no planejamento estratégico pessoal
-- **Foco em Resultados**: Busque mudanças que realmente movem a agulha (não apenas ajustes superficiais)
+- **Foco em Resultados**: Busque mudanças que realmente movam a agulha (não apenas ajustes superficiais)
 - **Contexto Social**: Reconheça que todos os comportamentos têm componentes sociais
 
 ### 3. DOPAMINE NATION (Anna Lembke)
@@ -79,7 +79,7 @@ export class AristosAIService {
 
   constructor() {
     // Em produção, esta chave deve vir de variáveis de ambiente
-    this.apiKey = process.env.OPENAI_API_KEY || null;
+    this.apiKey = null; // Removido process.env para evitar erro no browser
   }
 
   async generateResponse(
@@ -167,10 +167,17 @@ Use este contexto para personalizar suas respostas de forma mais relevante e enc
 
     // Adiciona histórico da conversa
     conversationHistory.forEach(message => {
-      messages.push({
-        role: message.role === "oracle" ? "assistant" as const : "user" as const,
-        content: message.content
-      });
+      if (message.role === "oracle") {
+        messages.push({
+          role: "assistant" as const,
+          content: message.content
+        });
+      } else {
+        messages.push({
+          role: "user" as const,
+          content: message.content
+        });
+      }
     });
 
     return messages;
