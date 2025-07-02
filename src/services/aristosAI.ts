@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 const ARISTOS_PROMPT = `# LIFE MANAGEMENT COACH - PROMPT AVANÇADO
 
 ## IDENTIDADE PRINCIPAL
@@ -73,11 +75,31 @@ interface AristosResponse {
 }
 
 export class AristosAIService {
-  private apiKey: string;
+  private apiKey: string | null = null;
   private baseUrl = "https://api.openai.com/v1/chat/completions";
 
   constructor() {
-    this.apiKey = "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";
+    this.initializeApiKey();
+  }
+
+  private async initializeApiKey() {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-openai-key');
+      
+      if (error) {
+        console.error('Error fetching OpenAI API key:', error);
+        return;
+      }
+      
+      if (data?.apiKey) {
+        this.apiKey = data.apiKey;
+        console.log('OpenAI API key loaded from Supabase');
+      } else {
+        console.warn('No OpenAI API key found in Supabase secrets');
+      }
+    } catch (error) {
+      console.error('Failed to initialize API key from Supabase:', error);
+    }
   }
 
   async generateResponse(
@@ -91,6 +113,15 @@ export class AristosAIService {
     }
   ): Promise<AristosResponse> {
     try {
+      // Ensure API key is loaded
+      if (!this.apiKey) {
+        await this.initializeApiKey();
+      }
+
+      if (!this.apiKey) {
+        throw new Error('OpenAI API key not available');
+      }
+
       const contextualPrompt = this.buildContextualPrompt(userContext);
       const messages = this.buildMessageHistory(conversationHistory, contextualPrompt);
       

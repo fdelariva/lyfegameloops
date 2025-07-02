@@ -1,130 +1,136 @@
 
-import { Button } from "@/components/ui/button";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Trophy, Users, Sword, Heart, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Brain, Users, Trophy, Target, Calendar, Star, ArrowRight } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if user has completed onboarding
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    const gameMode = localStorage.getItem('gameMode');
+    
+    if (onboardingCompleted === 'true' && gameMode === 'q3-future') {
+      navigate("/dashboard-q3");
+    }
+  }, [navigate]);
+
+  const handleStart = () => {
+    navigate("/onboarding-q3");
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-primary/5 p-4">
-      <div className="text-center mb-10">
-        <h1 className="text-5xl font-bold mb-4">Lyfe</h1>
-        <p className="text-xl text-muted-foreground">
-          Transforme hábitos em evolução pessoal
-        </p>
-      </div>
-
-      <Card className="w-full max-w-md mb-8">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <div className="text-4xl mb-2">🏆</div>
-              <div className="font-semibold">Desenvolva Hábitos</div>
-            </div>
-            <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <div className="text-4xl mb-2">⬆️</div>
-              <div className="font-semibold">Evolua seu Avatar</div>
-            </div>
-            <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <div className="text-4xl mb-2">🎲</div>
-              <div className="font-semibold">Ganhe Recompensas</div>
-            </div>
-            <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <div className="text-4xl mb-2">🤝</div>
-              <div className="font-semibold">Conecte-se</div>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg font-medium mb-3 text-center">Escolha uma versão</h3>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-muted text-white" 
-              onClick={() => navigate("/onboarding-oracle")}
-            >
-              <span className="mr-2">🔮</span>
-              Jornada do Oráculo
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-muted text-white" 
-              onClick={() => navigate("/onboarding-streak")}
-            >
-              <span className="mr-2">🔥</span>
-              Streak Acelerado
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-muted text-white" 
-              onClick={() => navigate("/onboarding-competitive")}
-            >
-              <span className="mr-2">🏆</span>
-              Desafio Competitivo
-              <Users className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-muted text-white" 
-              onClick={() => navigate("/onboarding-hero")}
-            >
-              <span className="mr-2">⚔️</span>
-              Jornada do Herói
-              <Sword className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-muted text-white" 
-              onClick={() => navigate("/onboarding-finch")}
-            >
-              <span className="mr-2">💖</span>
-              Companheiro de Autocuidado
-              <Heart className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full mb-3 bg-gradient-to-r from-purple-medium to-orange-medium text-white" 
-              onClick={() => navigate("/onboarding-q3")}
-            >
-              <span className="mr-2">🚀</span>
-              Main Bet: Q3 Future Scenario
-              <ExternalLink className="ml-2 h-4 w-4" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              className="w-full bg-gradient-to-r from-teal-medium to-purple-medium text-white" 
-              onClick={() => navigate("/onboarding")}
-            >
-              <span className="mr-2">👤</span>
-              Main bet: Progress & Achievement
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-3 text-center">
-        <p className="text-sm text-muted-foreground">
-          Protótipo do novo onboarding com múltiplas versões de game loop para testes
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <div className="text-center max-w-4xl mx-auto">
+        <h1 className="text-5xl font-bold mb-6 gradient-primary bg-clip-text text-transparent">
+          Habit Quest
+        </h1>
+        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          Desenvolva hábitos com Oracle personalizado, conexões sociais e sistema de progressão avançado
         </p>
         
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <Card className="bg-primary/5 border-primary/20 hover:bg-primary/10 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Brain className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <h3 className="font-bold text-lg mb-2">Oracle Pessoal</h3>
+              <p className="text-sm text-muted-foreground">
+                Orientação diária inteligente baseada em ciência comportamental
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-accent/5 border-accent/20 hover:bg-accent/10 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Users className="h-12 w-12 mx-auto mb-4 text-accent" />
+              <h3 className="font-bold text-lg mb-2">Conexões Sociais</h3>
+              <p className="text-sm text-muted-foreground">
+                Conecte-se com aliados e compartilhe sua jornada
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-orange-medium/10 border-orange-medium/20 hover:bg-orange-medium/15 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Trophy className="h-12 w-12 mx-auto mb-4 text-orange-medium" />
+              <h3 className="font-bold text-lg mb-2">Progressão Avançada</h3>
+              <p className="text-sm text-muted-foreground">
+                Sistema completo de evolução com níveis e recompensas
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-purple-medium/10 border-purple-medium/20 hover:bg-purple-medium/15 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Target className="h-12 w-12 mx-auto mb-4 text-purple-medium" />
+              <h3 className="font-bold text-lg mb-2">Baú do Tesouro</h3>
+              <p className="text-sm text-muted-foreground">
+                Desafios diários de conhecimento e recompensas especiais
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-teal-medium/10 border-teal-medium/20 hover:bg-teal-medium/15 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-teal-medium" />
+              <h3 className="font-bold text-lg mb-2">Séries & Streaks</h3>
+              <p className="text-sm text-muted-foreground">
+                Mantenha a consistência e desenvolva momentum
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-secondary/10 border-secondary/20 hover:bg-secondary/15 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Star className="h-12 w-12 mx-auto mb-4 text-secondary-foreground" />
+              <h3 className="font-bold text-lg mb-2">Loja Premium</h3>
+              <p className="text-sm text-muted-foreground">
+                Recompensas exclusivas e itens de personalização
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-8 rounded-xl mb-8 max-w-3xl mx-auto">
+          <h2 className="font-bold text-2xl mb-4">🚀 Recursos Exclusivos</h2>
+          <ul className="text-left text-muted-foreground space-y-2 mb-6">
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Oracle com IA personalizada para orientação diária
+            </li>
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Sistema social com aliados e feed de atividades
+            </li>
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Baú do tesouro com desafios de conhecimento
+            </li>
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Evolução de avatar com sistema de características
+            </li>
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Séries e streaks para manter consistência
+            </li>
+            <li className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-primary" />
+              Loja com recompensas reais e virtuais
+            </li>
+          </ul>
+        </div>
+        
         <Button 
-          variant="ghost" 
-          size="sm" 
-          className="text-muted-foreground hover:text-foreground"
-          onClick={() => window.open('https://github.com/fdelariva/lyfegameloops/wiki', '_blank')}
+          size="lg" 
+          onClick={handleStart}
+          className="text-lg px-8 py-4 gradient-primary"
         >
-          <ExternalLink className="w-4 h-4 mr-2" />
-          Documentação do Projeto
+          Iniciar Minha Jornada
+          <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
     </div>
