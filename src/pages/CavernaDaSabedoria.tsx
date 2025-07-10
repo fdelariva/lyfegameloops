@@ -3,7 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Skull, Trophy, Brain } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { CheckCircle, XCircle, Skull, Trophy, Brain, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Challenge {
@@ -20,6 +22,134 @@ interface Question {
   correctAnswer: number;
   explanation: string;
 }
+
+interface AthenaHelp {
+  title: string;
+  content: string;
+  tip: string;
+}
+
+const athenaHelp: Record<string, AthenaHelp[]> = {
+  "Sono": [
+    {
+      title: "O Poder do Sono Reparador",
+      content: "O sono é quando seu corpo e mente se regeneram. Durante o sono profundo, seu cérebro consolida memórias e remove toxinas. A falta de sono afeta hormônios, humor e capacidade de decisão.",
+      tip: "Mantenha uma rotina: durma e acorde sempre no mesmo horário, mesmo nos fins de semana."
+    },
+    {
+      title: "Criando o Ambiente Ideal",
+      content: "Seu quarto deve ser um santuário para o descanso. Temperatura entre 18-21°C, escuridão total e silêncio são essenciais. A luz azul de dispositivos eletrônicos suprime a melatonina.",
+      tip: "Use cortinas blackout e desligue eletrônicos 1 hora antes de dormir."
+    },
+    {
+      title: "Vencendo a Ruminação",
+      content: "Pensamentos repetitivos antes de dormir são o maior inimigo do sono. Pratique técnicas de relaxamento como respiração profunda ou meditação para acalmar a mente.",
+      tip: "Mantenha um diário ao lado da cama para anotar preocupações e liberar a mente."
+    }
+  ],
+  "Alimentação": [
+    {
+      title: "Nutrição Consciente",
+      content: "Alimentos integrais fornecem energia sustentável e nutrientes essenciais. Evite processados que causam picos de açúcar e inflamação no corpo.",
+      tip: "Regra 80/20: 80% alimentos naturais, 20% pode ser flexível."
+    },
+    {
+      title: "Hidratação Inteligente",
+      content: "Água é vida! Seu corpo é 60% água e cada célula precisa dela para funcionar. Desidratação causa fadiga, dores de cabeça e baixa concentração.",
+      tip: "Beba 1 copo de água ao acordar e mantenha uma garrafa sempre por perto."
+    },
+    {
+      title: "Resistindo aos Processados",
+      content: "Alimentos ultraprocessados viciam seu cérebro com açúcar, sal e gordura. Eles não saciam e levam ao ganho de peso e problemas de saúde.",
+      tip: "Leia rótulos: se tem mais de 5 ingredientes ou nomes que não reconhece, evite."
+    }
+  ],
+  "Exercício": [
+    {
+      title: "Movimento é Medicina",
+      content: "Exercício libera endorfinas, melhora humor, fortalece músculos e ossos, e protege contra doenças. Apenas 30 minutos por dia fazem diferença.",
+      tip: "Comece pequeno: 10 minutos de caminhada já é um victory!"
+    },
+    {
+      title: "Força e Resistência",
+      content: "Exercícios de força preservam massa muscular e aceleram metabolismo. Cardio fortalece coração e pulmões. Combine ambos para resultados máximos.",
+      tip: "Use escadas em vez de elevador e estacione mais longe - cada movimento conta."
+    },
+    {
+      title: "Vencendo a Preguiça",
+      content: "Preguiça é resistência mental, não física. Crie rituais que tornem o exercício automático e encontre atividades que você genuinamente goste.",
+      tip: "Prepare roupas de treino na noite anterior - diminui a fricção para começar."
+    }
+  ],
+  "Meditação": [
+    {
+      title: "Mente Calma, Vida Tranquila",
+      content: "Meditação é treino para a mente. Melhora foco, reduz stress e aumenta autoconsciência. É como academia para o cérebro.",
+      tip: "Comece com 5 minutos diários - consistência é mais importante que duração."
+    },
+    {
+      title: "Técnicas Simples",
+      content: "Respiração consciente é a base. Conte respirações de 1 a 10 e recomece. Quando a mente vagar (e vai vagar), gentilmente volte ao foco.",
+      tip: "Use apps como Headspace ou Calm, ou apenas observe sua respiração natural."
+    },
+    {
+      title: "Controlando a Ansiedade",
+      content: "Ansiedade é medo do futuro. Meditação traz você para o presente, onde ansiedade não pode existir. Pratique aceitação sem julgamento.",
+      tip: "Técnica 5-4-3-2-1: veja 5 coisas, ouça 4, toque 3, cheire 2, prove 1."
+    }
+  ],
+  "Gratidão": [
+    {
+      title: "O Poder da Gratidão",
+      content: "Gratidão rewira seu cérebro para focar no positivo. Melhora humor, relacionamentos e até sistema imunológico. É antídoto natural para depressão.",
+      tip: "Anote 3 coisas pelas quais é grato todo dia - mesmo pequenas contam."
+    },
+    {
+      title: "Abundância vs Escassez",
+      content: "Mente de abundância vê oportunidades everywhere. Mente de escassez só vê limitações. Gratidão cultiva abundância e atrai mais coisas boas.",
+      tip: "Em vez de 'por que eu?', pergunte 'para que isso serve em minha jornada?'"
+    },
+    {
+      title: "Vencendo a Insaciedade",
+      content: "Insaciedade é ilusão de que felicidade está sempre 'no próximo' conquista. Gratidão encontra alegria no que você já tem, aqui e agora.",
+      tip: "Celebre pequenas vitórias diárias - elas se acumulam em grandes transformações."
+    }
+  ],
+  "Relacionamentos": [
+    {
+      title: "Conexões Autênticas",
+      content: "Relacionamentos saudáveis são base do bem-estar. Humanos são seres sociais - isolamento causa depressão e problemas de saúde física.",
+      tip: "Escute mais do que fala. Presença genuína é o maior presente que pode dar."
+    },
+    {
+      title: "Comunicação Efetiva",
+      content: "Comunique sentimentos sem culpar. Use 'eu sinto' em vez de 'você sempre'. Conflitos são oportunidades de crescimento quando bem manejados.",
+      tip: "Regra dos 24 segundos: pause antes de reagir emocionalmente em conflitos."
+    },
+    {
+      title: "Superando a Solidão",
+      content: "Solidão não é estar só, é sentir-se desconectado. Invista em relacionamentos de qualidade. Uma amizade profunda vale mais que 100 conhecidos superficiais.",
+      tip: "Seja vulnerável primeiro - compartilhe algo pessoal para aprofundar conexões."
+    }
+  ],
+  "Concienciosidade": [
+    {
+      title: "Disciplina é Liberdade",
+      content: "Pessoas conscientes fazem o que precisa ser feito, mesmo quando não sentem vontade. Disciplina cria sistemas que geram resultados automáticos.",
+      tip: "Comece com 1% melhor todo dia - pequenas melhorias compostas geram grandes resultados."
+    },
+    {
+      title: "Organização Mental",
+      content: "Mente organizada toma melhores decisões. Use listas, calendários e sistemas para não sobrecarregar memória com tarefas simples.",
+      tip: "Método GTD: capture tudo em um lugar confiável para liberar mente para criatividade."
+    },
+    {
+      title: "Combatendo a Apatia",
+      content: "Apatia é ausência de propósito. Reconecte-se com seus valores profundos e por que faz o que faz. Sentido transforma tarefas em missões.",
+      tip: "Pergunte-se: 'Como isso que estou fazendo serve algo maior que eu?'"
+    }
+  ]
+};
 
 const challenges: Challenge[] = [
   {
@@ -122,6 +252,8 @@ const CavernaDaSabedoria: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showAthenaModal, setShowAthenaModal] = useState(false);
+  const [athenaUsedToday, setAthenaUsedToday] = useState<Record<number, boolean>>({});
 
   const currentChallenge = challenges.find(c => c.day === currentDay);
   const currentQuestion = currentChallenge?.questions[currentQuestionIndex];
@@ -178,6 +310,15 @@ const CavernaDaSabedoria: React.FC = () => {
     setShowFeedback(false);
   };
 
+  const handleAthenaHelp = () => {
+    setShowAthenaModal(true);
+    setAthenaUsedToday(prev => ({ ...prev, [currentDay]: true }));
+  };
+
+  const isAthenaAvailable = () => {
+    return !athenaUsedToday[currentDay];
+  };
+
   if (gameState === 'intro') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-4">
@@ -219,6 +360,16 @@ const CavernaDaSabedoria: React.FC = () => {
                 Acerte mais de 80% das questões e vencerá a <strong>Sombra</strong> do dia - 
                 forças internas que bloqueiam seu crescimento.
               </p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 flex items-center gap-2">
+                  <Heart className="w-4 h-4" />
+                  Athena, Agente do Bem
+                </p>
+                <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                  Em cada dia da jornada, Athena pode te ajudar uma vez com conselhos sábios sobre o tema. 
+                  Use sua ajuda com cuidado - ela só estará disponível novamente no próximo dia!
+                </p>
+              </div>
               <div className="bg-primary/5 p-4 rounded-lg">
                 <p className="font-semibold text-primary">
                   Está pronto para enfrentar suas sombras internas?
@@ -338,16 +489,29 @@ const CavernaDaSabedoria: React.FC = () => {
                 ))}
               </div>
               
-              {!showFeedback && (
+              <div className="flex gap-3 mt-6">
                 <Button 
-                  onClick={submitAnswer} 
-                  disabled={selectedAnswer === null}
-                  className="w-full mt-6"
+                  onClick={handleAthenaHelp}
+                  disabled={!isAthenaAvailable() || showFeedback}
+                  variant="outline"
+                  className="flex-1"
                   size="lg"
                 >
-                  Confirmar Resposta
+                  <Heart className="w-4 h-4 mr-2" />
+                  {isAthenaAvailable() ? "Peça Ajuda à Athena" : "Athena Usada Hoje"}
                 </Button>
-              )}
+                
+                {!showFeedback && (
+                  <Button 
+                    onClick={submitAnswer} 
+                    disabled={selectedAnswer === null}
+                    className="flex-1"
+                    size="lg"
+                  >
+                    Confirmar Resposta
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -375,70 +539,65 @@ const CavernaDaSabedoria: React.FC = () => {
               </CardContent>
             </Card>
           )}
-        </div>
-      </div>
-    );
-  }
 
-  if (gameState === 'result') {
-    const score = calculateScore();
-    const won = score >= 80;
-    
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <Card className={`border-2 ${won ? 'border-green-500' : 'border-red-500'}`}>
-            <CardContent className="pt-8 pb-8">
-              <div className="space-y-6">
-                {won ? (
-                  <Trophy className="w-20 h-20 text-yellow-500 mx-auto" />
-                ) : (
-                  <Skull className="w-20 h-20 text-red-500 mx-auto" />
-                )}
-                
-                <div>
-                  <h2 className={`text-3xl font-bold ${won ? 'text-green-600' : 'text-red-600'}`}>
-                    {won ? 'Vitória!' : 'Derrota!'}
-                  </h2>
-                  <p className="text-xl text-muted-foreground mt-2">
-                    Você acertou {Math.round(score)}% das perguntas
+          {/* Athena Help Modal */}
+          <Dialog open={showAthenaModal} onOpenChange={setShowAthenaModal}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-xl">
+                  <Heart className="w-6 h-6 text-pink-500" />
+                  Athena, Agente do Bem
+                </DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="bg-pink-50 dark:bg-pink-900/20 p-4 rounded-lg border border-pink-200 dark:border-pink-800">
+                  <p className="text-sm text-pink-800 dark:text-pink-200">
+                    <strong>💡 Sabedoria sobre {currentChallenge?.theme}:</strong> Aqui estão insights valiosos 
+                    para te ajudar a responder as perguntas e vencer a {currentChallenge?.shadow}.
                   </p>
                 </div>
 
-                <div className="bg-background/50 p-4 rounded-lg">
-                  <p className="font-semibold">
-                    {won 
-                      ? `Parabéns! Você venceu a ${currentChallenge?.shadow}!` 
-                      : `A ${currentChallenge?.shadow} prevaleceu desta vez.`
-                    }
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {won 
-                      ? 'Você está mais forte e pode avançar para o próximo dia.'
-                      : 'Não desista! Tente novamente quando estiver pronto.'
-                    }
-                  </p>
-                </div>
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {athenaHelp[currentChallenge?.theme || ""]?.map((help, index) => (
+                      <CarouselItem key={index}>
+                        <Card className="h-full">
+                          <CardHeader>
+                            <CardTitle className="text-lg text-primary flex items-center gap-2">
+                              <Brain className="w-5 h-5" />
+                              {help.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <p className="text-muted-foreground leading-relaxed">
+                              {help.content}
+                            </p>
+                            <div className="bg-primary/5 p-3 rounded-lg border border-primary/20">
+                              <p className="text-sm font-semibold text-primary">
+                                💡 Dica Prática:
+                              </p>
+                              <p className="text-sm text-primary/80 mt-1">
+                                {help.tip}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
 
-                <div className="space-y-3">
-                  <Button 
-                    onClick={() => navigate('/dashboard-q3')} 
-                    className="w-full"
-                    size="lg"
-                  >
-                    Voltar ao Dashboard
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={resetChallenge}
-                    className="w-full"
-                  >
-                    Tentar Novamente
+                <div className="text-center pt-4">
+                  <Button onClick={() => setShowAthenaModal(false)} variant="outline">
+                    Obrigado, Athena! 
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );
