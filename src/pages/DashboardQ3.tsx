@@ -34,6 +34,8 @@ import CompetitiveChallenge from "@/components/CompetitiveChallenge";
 import { defaultHabits } from "@/data/defaultHabits";
 import { useNavigate } from "react-router-dom";
 import AristosWelcomeMessages from "@/components/AristosWelcomeMessages";
+import OracleMessageCarousel from "@/components/OracleMessageCarousel";
+import AddHabitModal from "@/components/AddHabitModal";
 
 const DashboardQ3 = () => {
   const navigate = useNavigate();
@@ -59,6 +61,7 @@ const DashboardQ3 = () => {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [showCompetitiveChallenge, setShowCompetitiveChallenge] = useState(false);
   const [showAristosWelcome, setShowAristosWelcome] = useState(false);
+  const [showAddHabit, setShowAddHabit] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
   const [previousLevel, setPreviousLevel] = useState(1);
   
@@ -214,6 +217,21 @@ const DashboardQ3 = () => {
     setHabits(prev => prev.filter(h => h.id !== habitId));
   };
 
+  const handleAddHabit = (newHabit: any) => {
+    const habitToAdd = {
+      ...newHabit,
+      id: `custom-${Date.now()}`,
+      completed: false,
+      streak: 0,
+      info: {
+        whyDo: "Este é um hábito personalizado criado por você. Hábitos consistentes são a base para mudanças duradouras e desenvolvimento pessoal.",
+        howDo: "Execute este hábito de forma consistente, prestando atenção aos benefícios que ele traz para sua vida. A regularidade é mais importante que a perfeição."
+      }
+    };
+    
+    setHabits(prev => [...prev, habitToAdd]);
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 p-4">
@@ -247,8 +265,19 @@ const DashboardQ3 = () => {
               <Brain className="h-4 w-4 mr-2" />
               Oracle
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAddHabit(true)}
+            >
+              <Target className="h-4 w-4 mr-2" />
+              + Hábito
+            </Button>
           </div>
         </div>
+
+        {/* Oracle Message Carousel */}
+        <OracleMessageCarousel className="mb-6" />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -431,15 +460,26 @@ const DashboardQ3 = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Seus Hábitos Hoje</span>
-              <Badge variant="secondary">
-                {completedToday}/{totalHabits}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">
+                  {completedToday}/{totalHabits}
+                </Badge>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => setShowAddHabit(true)}
+                >
+                  <Target className="h-3 w-3 mr-1" />
+                  Adicionar
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {habits.map((habit) => (
               <DashboardHabitCard
                 key={habit.id}
+                habitId={habit.id}
                 title={habit.name}
                 description={habit.description}
                 energyBoost={habit.energyBoost}
@@ -557,6 +597,12 @@ const DashboardQ3 = () => {
         userHabits={habits}
         userProgress={completionRate}
         userName="Você"
+      />
+      
+      <AddHabitModal
+        isOpen={showAddHabit}
+        onClose={() => setShowAddHabit(false)}
+        onAddHabit={handleAddHabit}
       />
     </div>
   );

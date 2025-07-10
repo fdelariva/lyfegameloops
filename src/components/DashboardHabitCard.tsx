@@ -6,10 +6,12 @@ import { CheckCircle, Circle, Brain, X, Settings } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import HabitInfoPopover from "./HabitInfoPopover";
+import HabitConfigModal from "./HabitConfigModal";
 
 interface DashboardHabitCardProps {
   title: string;
   description: string;
+  habitId: string;
   energyBoost?: number;
   connectionBoost?: number;
   skillBoost?: number;
@@ -26,6 +28,7 @@ interface DashboardHabitCardProps {
 const DashboardHabitCard = ({ 
   title, 
   description, 
+  habitId,
   energyBoost = 0, 
   connectionBoost = 0, 
   skillBoost = 0,
@@ -42,8 +45,7 @@ const DashboardHabitCard = ({
   const [startX, setStartX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [showRepeatSelection, setShowRepeatSelection] = useState(false);
-  const [repeatDays, setRepeatDays] = useState<number[]>([]);
+  const [showConfigModal, setShowConfigModal] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const dayLabels = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
@@ -82,7 +84,7 @@ const DashboardHabitCard = ({
     
     if (Math.abs(currentX) > SWIPE_THRESHOLD) {
       if (currentX > 0) {
-        setShowRepeatSelection(!showRepeatSelection);
+        setShowConfigModal(true);
       } else if (currentX < 0 && onDelete) {
         handleDelete();
       }
@@ -122,7 +124,7 @@ const DashboardHabitCard = ({
       if (currentX < 0 && onDelete) {
         handleDelete();
       } else if (currentX > 0) {
-        setShowRepeatSelection(!showRepeatSelection);
+        setShowConfigModal(true);
       }
     }
     
@@ -138,13 +140,8 @@ const DashboardHabitCard = ({
     }
   };
 
-  const handleDayToggle = (dayIndex: number) => {
-    const newDays = repeatDays.includes(dayIndex)
-      ? repeatDays.filter(d => d !== dayIndex)
-      : [...repeatDays, dayIndex];
-    
-    setRepeatDays(newDays);
-    toast.success(`Configuração de repetição atualizada`);
+  const handleConfigSave = (config: any) => {
+    toast.success(`Configuração do hábito "${title}" salva!`);
   };
   
   const handleComplete = () => {
@@ -270,31 +267,16 @@ const DashboardHabitCard = ({
           </div>
         </CardContent>
 
-        {/* Compact Repeat Days Selection */}
-        {showRepeatSelection && !completed && (
-          <div className="absolute bottom-0 left-0 right-0 bg-muted p-2 border-t">
-            <div className="flex gap-1 justify-center">
-              {dayLabels.map((day, index) => (
-                <button
-                  key={index}
-                  className={cn(
-                    "w-5 h-5 rounded-full text-xs font-medium transition-colors",
-                    repeatDays.includes(index)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-background border border-border hover:bg-muted"
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDayToggle(index);
-                  }}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </Card>
+      
+      {/* Config Modal */}
+      <HabitConfigModal
+        isOpen={showConfigModal}
+        onClose={() => setShowConfigModal(false)}
+        habitName={title}
+        habitId={habitId}
+        onSave={handleConfigSave}
+      />
     </div>
   );
 };

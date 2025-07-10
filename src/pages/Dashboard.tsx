@@ -572,6 +572,7 @@ const Dashboard = () => {
           {habits.map(habit => (
             <DashboardHabitCard 
               key={habit.id}
+              habitId={habit.id}
               title={habit.title}
               description={habit.description}
               energyBoost={habit.energyBoost}
