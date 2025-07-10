@@ -64,7 +64,54 @@ const challenges: Challenge[] = [
       }
     ]
   },
-  // Outros dias serão implementados conforme necessário
+  {
+    day: 2,
+    theme: "Alimentação",
+    shadow: "Alimentos Processados",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  {
+    day: 3,
+    theme: "Exercício",
+    shadow: "Preguiça",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  {
+    day: 4,
+    theme: "Meditação",
+    shadow: "Ansiedade",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  {
+    day: 5,
+    theme: "Gratidão",
+    shadow: "Insasciedade",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  {
+    day: 6,
+    theme: "Relacionamentos",
+    shadow: "Solidão",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  {
+    day: 7,
+    theme: "Concienciosidade",
+    shadow: "Apatia",
+    questions: [
+      // Questions will be added later
+    ]
+  }
 ];
 
 const CavernaDaSabedoria: React.FC = () => {
@@ -215,24 +262,32 @@ const CavernaDaSabedoria: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                  <div key={day} className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
-                      day < currentDay ? 'bg-primary text-primary-foreground border-primary' :
-                      day === currentDay ? 'border-primary text-primary' :
-                      'border-muted text-muted-foreground'
-                    }`}>
-                      {day < currentDay ? <CheckCircle className="w-4 h-4" /> : day}
+                {[1, 2, 3, 4, 5, 6, 7].map((day) => {
+                  const challenge = challenges.find(c => c.day === day);
+                  return (
+                    <div key={day} className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
+                        day < currentDay ? 'bg-primary text-primary-foreground border-primary' :
+                        day === currentDay ? 'border-primary text-primary' :
+                        'border-muted text-muted-foreground'
+                      }`}>
+                        {day < currentDay ? <CheckCircle className="w-4 h-4" /> : day}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">
+                          Dia {day}: {challenge?.theme || 'Em breve'}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {challenge ? `vs ${challenge.shadow}` : 'Aguarde...'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {day < currentDay ? 'Concluído' : 
+                           day === currentDay ? 'Atual' : 'Bloqueado'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{challenges[0]?.theme || `Dia ${day}`}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {day < currentDay ? 'Concluído' : 
-                         day === currentDay ? 'Atual' : 'Bloqueado'}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
