@@ -11,7 +11,7 @@ const Index = () => {
   // Removed automatic redirect to dashboard - users should always go through onboarding
 
   const handleStart = () => {
-    navigate("/onboarding-q3");
+    navigate("/onboarding-q3", { state: { skipWelcome: true } });
   };
 
   return (

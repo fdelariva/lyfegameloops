@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Brain, Sparkles } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
+import AskTheOracle from "@/components/AskTheOracle";
 
 interface AddHabitModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ interface NewHabit {
 const AddHabitModal = ({ isOpen, onClose, onAddHabit }: AddHabitModalProps) => {
   const [habitName, setHabitName] = useState("");
   const [habitDescription, setHabitDescription] = useState("");
-  const [isLoadingSuggestion, setIsLoadingSuggestion] = useState(false);
+  const [showOracle, setShowOracle] = useState(false);
 
   const handleAddCustomHabit = () => {
     if (!habitName.trim()) {
@@ -53,43 +54,30 @@ const AddHabitModal = ({ isOpen, onClose, onAddHabit }: AddHabitModalProps) => {
     toast.success("Hábito adicionado com sucesso!");
   };
 
-  const handleGetOracleSuggestion = async () => {
-    if (!habitName.trim()) {
-      toast.error("Digite uma ideia de hábito primeiro");
-      return;
-    }
+  const handleOracleOpen = () => {
+    setShowOracle(true);
+  };
 
-    setIsLoadingSuggestion(true);
-    
-    try {
-      // Simular sugestão do Oracle (aqui você integraria com a API)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const suggestions = [
-        {
-          name: `${habitName} - Versão Otimizada`,
-          description: `Uma versão melhorada do seu hábito "${habitName}" com base na ciência de mudança de comportamento. Inclui técnicas de microhábitos e recompensas progressivas.`,
-          tips: "💡 Dica do Oracle: Comece com apenas 2 minutos por dia para criar consistência."
-        },
-        {
-          name: `Preparação para ${habitName}`,
-          description: `Um hábito preparatório que aumenta suas chances de sucesso com "${habitName}". Inclui ritual de preparação mental e física.`,
-          tips: "💡 Dica do Oracle: A preparação é 80% do sucesso de qualquer hábito."
-        }
-      ];
+  const handleOracleClose = () => {
+    setShowOracle(false);
+  };
 
-      const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-      
-      setHabitName(randomSuggestion.name);
-      setHabitDescription(randomSuggestion.description);
-      
-      toast.success(randomSuggestion.tips);
-      
-    } catch (error) {
-      toast.error("Erro ao obter sugestão do Oracle");
-    } finally {
-      setIsLoadingSuggestion(false);
-    }
+  const handleOracleAddHabit = (habitName: string) => {
+    const newHabit: NewHabit = {
+      name: habitName,
+      description: "Sugestão do Oráculo dos Hábitos",
+      category: "Sugestão do Oráculo",
+      energyBoost: 3,
+      connectionBoost: 2,
+      skillBoost: 2,
+      icon: "🧙‍♂️",
+      isCustom: true
+    };
+
+    onAddHabit(newHabit);
+    setShowOracle(false);
+    onClose();
+    toast.success("Sugestão do Oráculo adicionada com sucesso!");
   };
 
   const resetForm = () => {
@@ -122,21 +110,11 @@ const AddHabitModal = ({ isOpen, onClose, onAddHabit }: AddHabitModalProps) => {
               <Button 
                 size="sm" 
                 variant="outline" 
-                onClick={handleGetOracleSuggestion}
-                disabled={isLoadingSuggestion || !habitName.trim()}
+                onClick={handleOracleOpen}
                 className="w-full"
               >
-                {isLoadingSuggestion ? (
-                  <>
-                    <Brain className="h-3 w-3 mr-2 animate-pulse" />
-                    Oracle pensando...
-                  </>
-                ) : (
-                  <>
-                    <Brain className="h-3 w-3 mr-2" />
-                    Pedir Sugestão do Oracle
-                  </>
-                )}
+                <Brain className="h-3 w-3 mr-2" />
+                Pedir Sugestão do Oracle
               </Button>
             </CardContent>
           </Card>
@@ -192,6 +170,12 @@ const AddHabitModal = ({ isOpen, onClose, onAddHabit }: AddHabitModalProps) => {
           </div>
         </div>
       </DialogContent>
+
+      <AskTheOracle
+        isOpen={showOracle}
+        onClose={handleOracleClose}
+        onAddHabit={handleOracleAddHabit}
+      />
     </Dialog>
   );
 };

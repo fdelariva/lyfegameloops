@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,15 @@ import { defaultHabits } from "@/data/defaultHabits";
 
 const OnboardingQ3Future = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    // Skip the welcome step if coming from Index page
+    if (location.state?.skipWelcome) {
+      setStep(2);
+    }
+  }, [location.state]);
   const [archetype, setArchetype] = useState<"Mestre" | "Guardião" | "Guerreiro" | "Sábio" | "Indefinido">("Indefinido");
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabits, setCustomHabits] = useState<string[]>([]);
