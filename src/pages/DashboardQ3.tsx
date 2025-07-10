@@ -8,7 +8,6 @@ import { toast } from "@/components/ui/sonner";
 import { 
   Trophy, 
   Coins, 
-  ShoppingCart, 
   Calendar, 
   Users, 
   Brain,
@@ -215,9 +214,6 @@ const DashboardQ3 = () => {
     setHabits(prev => prev.filter(h => h.id !== habitId));
   };
 
-  const handleShopClick = () => {
-    navigate("/shop");
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 p-4">
@@ -250,10 +246,6 @@ const DashboardQ3 = () => {
             >
               <Brain className="h-4 w-4 mr-2" />
               Oracle
-            </Button>
-            <Button onClick={handleShopClick} size="sm">
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Loja
             </Button>
           </div>
         </div>
@@ -346,11 +338,8 @@ const DashboardQ3 = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-center items-center">
                 <span className="text-sm font-medium">{coins} moedas</span>
-                <Button size="sm" variant="outline" onClick={handleShopClick}>
-                  <ShoppingCart className="h-3 w-3" />
-                </Button>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button
