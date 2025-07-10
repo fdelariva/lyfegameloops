@@ -248,40 +248,24 @@ const DashboardQ3 = () => {
             </p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              size="sm"
+              size="lg"
               onClick={() => navigate('/caverna-da-sabedoria')}
-              className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30 hover:from-purple-500/20 hover:to-indigo-500/20"
+              className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30 hover:from-purple-500/20 hover:to-indigo-500/20 text-purple-700 font-semibold px-6 py-3 h-auto"
             >
-              <Skull className="h-4 w-4 mr-2 text-purple-600" />
-              Caverna
+              <Skull className="h-5 w-5 mr-2 text-purple-600" />
+              Caverna da Sabedoria
             </Button>
             <Button
               variant="outline"
-              size="sm"
-              onClick={() => setShowFriends(true)}
-              className="hidden sm:flex"
-            >
-              <Users className="h-4 w-4 mr-2" />
-              Aliados
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
+              size="lg"
               onClick={() => setShowOracle(true)}
+              className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 hover:from-blue-500/20 hover:to-cyan-500/20 text-blue-700 font-semibold px-6 py-3 h-auto"
             >
-              <Brain className="h-4 w-4 mr-2" />
+              <Brain className="h-5 w-5 mr-2" />
               Oracle
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAddHabit(true)}
-            >
-              <Target className="h-4 w-4 mr-2" />
-              + Hábito
             </Button>
           </div>
         </div>

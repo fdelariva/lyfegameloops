@@ -110,12 +110,16 @@ const OracleCompanion = ({ isOpen, onClose, userProgress, completedHabits, total
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-blue-600" />
-            Aristos - Seu Life Coach
+            Aristos - Seu Oracle Pessoal
             <Sparkles className="h-4 w-4 text-yellow-500" />
           </DialogTitle>
+          <div className="text-sm text-muted-foreground bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-200 mt-2">
+            <p className="mb-2">🏛️ <strong>Caverna da Sabedoria:</strong> Seu local de treinamento para se tornar um mestre no desenvolvimento pessoal através de desafios diários.</p>
+            <p className="text-xs">💡 <strong>Seu Oracle pode:</strong> Ajudar você a estabelecer objetivos, criar um plano de comportamentos e hábitos para alcançá-los, revisar este plano e te guiar em sua execução.</p>
+          </div>
         </DialogHeader>
 
-        <div className="flex flex-col h-[60vh]">
+        <div className="flex flex-col h-[65vh]">
           <ScrollArea className="flex-1 p-4 border rounded-lg bg-gradient-to-b from-blue-50/30 to-purple-50/30">
             <div className="space-y-4">
               {messages.map((message, index) => (
@@ -173,7 +177,7 @@ const OracleCompanion = ({ isOpen, onClose, userProgress, completedHabits, total
           </div>
 
           <div className="text-xs text-center text-muted-foreground mt-2">
-            💡 Aristos combina ciência comportamental com sabedoria prática
+            💡 Aristos combina ciência comportamental com sabedoria prática para te guiar na jornada
           </div>
         </div>
       </DialogContent>
