@@ -8,15 +8,7 @@ import { Brain, Users, Trophy, Target, Calendar, Star, ArrowRight } from "lucide
 const Index = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if user has completed onboarding
-    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
-    const gameMode = localStorage.getItem('gameMode');
-    
-    if (onboardingCompleted === 'true' && gameMode === 'q3-future') {
-      navigate("/dashboard-q3");
-    }
-  }, [navigate]);
+  // Removed automatic redirect to dashboard - users should always go through onboarding
 
   const handleStart = () => {
     navigate("/onboarding-q3");
