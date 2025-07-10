@@ -18,7 +18,8 @@ import {
   Flame,
   TrendingUp,
   MessageCircle,
-  Settings
+  Settings,
+  Skull
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -248,6 +249,15 @@ const DashboardQ3 = () => {
           </div>
           
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/caverna-da-sabedoria')}
+              className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30 hover:from-purple-500/20 hover:to-indigo-500/20"
+            >
+              <Skull className="h-4 w-4 mr-2 text-purple-600" />
+              Caverna
+            </Button>
             <Button
               variant="outline"
               size="sm"
