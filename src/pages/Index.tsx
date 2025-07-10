@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Users, Trophy, Target, Calendar, Star, ArrowRight } from "lucide-react";
+import { Brain, Users, Trophy, Target, Calendar, Skull, ArrowRight } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -75,12 +75,12 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-secondary/10 border-secondary/20 hover:bg-secondary/15 transition-colors">
+          <Card className="bg-purple-600/10 border-purple-600/20 hover:bg-purple-600/15 transition-colors">
             <CardContent className="p-6 text-center">
-              <Star className="h-12 w-12 mx-auto mb-4 text-secondary-foreground" />
-              <h3 className="font-bold text-lg mb-2">Loja Premium</h3>
+              <Skull className="h-12 w-12 mx-auto mb-4 text-purple-600" />
+              <h3 className="font-bold text-lg mb-2">Caverna da Sabedoria</h3>
               <p className="text-sm text-muted-foreground">
-                Recompensas exclusivas e itens de personalização
+                Onde você vai treinar para ser um mestre no desenvolvimento pessoal
               </p>
             </CardContent>
           </Card>
@@ -111,7 +111,7 @@ const Index = () => {
             </li>
             <li className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4 text-primary" />
-              Loja com recompensas reais e virtuais
+              Caverna da Sabedoria para treinamento em desenvolvimento pessoal
             </li>
           </ul>
         </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
-import { ArrowLeft, Trophy, Users, Brain, Target, Calendar, Star } from "lucide-react";
+import { ArrowLeft, Trophy, Users, Brain, Target, Calendar, Skull } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
@@ -138,11 +138,11 @@ const OnboardingQ3Future = () => {
                   <p className="text-sm text-muted-foreground">Mantenha a consistência</p>
                 </CardContent>
               </Card>
-              <Card className="bg-secondary/10 border-secondary/20">
+              <Card className="bg-purple-600/10 border-purple-600/20">
                 <CardContent className="p-4 text-center">
-                  <Star className="h-8 w-8 mx-auto mb-2 text-secondary-foreground" />
-                  <h3 className="font-semibold">Loja Premium</h3>
-                  <p className="text-sm text-muted-foreground">Recompensas exclusivas</p>
+                  <Skull className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                  <h3 className="font-semibold">Caverna da Sabedoria</h3>
+                  <p className="text-sm text-muted-foreground">Treinamento em desenvolvimento pessoal</p>
                 </CardContent>
               </Card>
             </div>
@@ -155,7 +155,7 @@ const OnboardingQ3Future = () => {
                 <li>• Baú do tesouro com desafios de conhecimento</li>
                 <li>• Evolução de avatar com sistema de características</li>
                 <li>• Séries e streaks para manter consistência</li>
-                <li>• Loja com recompensas reais e virtuais</li>
+                <li>• Caverna da Sabedoria para treinamento em desenvolvimento pessoal</li>
               </ul>
             </div>
             
