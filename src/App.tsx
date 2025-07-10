@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import OnboardingQ3Future from "./pages/OnboardingQ3Future";
 import DashboardQ3 from "./pages/DashboardQ3";
-import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,7 +20,6 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/onboarding-q3" element={<OnboardingQ3Future />} />
             <Route path="/dashboard-q3" element={<DashboardQ3 />} />
-            <Route path="/shop" element={<Shop />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
