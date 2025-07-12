@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -331,6 +331,17 @@ const CavernaDaSabedoria: React.FC = () => {
   const isAthenaAvailable = () => {
     return !athenaUsedToday[currentDay];
   };
+
+  // Redirecionar automaticamente após mostrar o resultado
+  useEffect(() => {
+    if (gameState === 'result') {
+      const timer = setTimeout(() => {
+        setGameState('intro');
+      }, 4000); // 4 segundos para mostrar o resultado
+      
+      return () => clearTimeout(timer);
+    }
+  }, [gameState]);
 
   if (gameState === 'intro') {
     return (
@@ -672,6 +683,82 @@ const CavernaDaSabedoria: React.FC = () => {
             </DialogContent>
           </Dialog>
         </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'result') {
+    const score = calculateScore();
+    const shadowDefeated = score >= 80;
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-4 flex items-center justify-center">
+        <Card className="max-w-md mx-auto text-center animate-scale-in">
+          <CardContent className="pt-8 pb-6">
+            <div className="space-y-6">
+              {shadowDefeated ? (
+                <>
+                  <div className="w-24 h-24 mx-auto mb-4">
+                    <img 
+                      src="/lovable-uploads/5fe94979-7376-401f-96e1-6d02bfd376ab.png" 
+                      alt="Carta da Exaustão Vencida"
+                      className="w-full h-full object-contain animate-fade-in"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Trophy className="w-16 h-16 text-yellow-500 mx-auto animate-bounce" />
+                    <h2 className="text-2xl font-bold text-green-600">
+                      Sombra Vencida! 🎉
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Você derrotou a <strong>{currentChallenge?.shadow}</strong>
+                    </p>
+                    <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                      <p className="text-sm text-green-800 dark:text-green-200">
+                        <strong>Pontuação: {score.toFixed(0)}%</strong>
+                      </p>
+                      <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+                        Carta coletada! Você ganhou a carta da {currentChallenge?.shadow}.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Skull className="w-16 h-16 text-red-500 mx-auto" />
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold text-red-600">
+                      Sombra Resistiu
+                    </h2>
+                    <p className="text-muted-foreground">
+                      A <strong>{currentChallenge?.shadow}</strong> ainda está forte
+                    </p>
+                    <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                      <p className="text-sm text-red-800 dark:text-red-200">
+                        <strong>Pontuação: {score.toFixed(0)}%</strong>
+                      </p>
+                      <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+                        Precisa de 80% ou mais para vencer a sombra.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              <div className="pt-4">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Retornando à Caverna da Sabedoria...
+                </p>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-3000 animate-[width_3s_ease-in-out]"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
