@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { CheckCircle, XCircle, Skull, Trophy, Brain, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckCircle, XCircle, Skull, Trophy, Brain, Heart, ChevronLeft, ChevronRight, Star, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Challenge {
@@ -155,7 +155,7 @@ const challenges: Challenge[] = [
   {
     day: 1,
     theme: "Sono",
-    shadow: "Ruminação",
+    shadow: "Exaustão",
     questions: [
       {
         id: 1,
@@ -197,7 +197,7 @@ const challenges: Challenge[] = [
   {
     day: 2,
     theme: "Alimentação",
-    shadow: "Alimentos Processados",
+    shadow: "Gula",
     questions: [
       // Questions will be added later
     ]
@@ -254,6 +254,7 @@ const CavernaDaSabedoria: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showAthenaModal, setShowAthenaModal] = useState(false);
   const [athenaUsedToday, setAthenaUsedToday] = useState<Record<number, boolean>>({});
+  const [collectedCards, setCollectedCards] = useState<Set<number>>(new Set());
 
   const currentChallenge = challenges.find(c => c.day === currentDay);
   const currentQuestion = currentChallenge?.questions[currentQuestionIndex];
@@ -285,6 +286,18 @@ const CavernaDaSabedoria: React.FC = () => {
       } else {
         // Fim do desafio
         setGameState('result');
+        
+        // Verificar se venceu a sombra (score > 80%) e coletar carta
+        setTimeout(() => {
+          const correctAnswers = newAnswers.filter((answer, index) => 
+            answer === currentChallenge?.questions[index].correctAnswer
+          ).length;
+          const score = (correctAnswers / 5) * 100;
+          
+          if (score >= 80) {
+            setCollectedCards(prev => new Set([...prev, currentDay]));
+          }
+        }, 100);
       }
     }, 3000);
   };
@@ -407,7 +420,7 @@ const CavernaDaSabedoria: React.FC = () => {
           </Card>
 
           {/* Progress Overview */}
-          <Card>
+          <Card className="mb-8">
             <CardHeader>
               <CardTitle>Progresso da Jornada</CardTitle>
             </CardHeader>
@@ -439,6 +452,66 @@ const CavernaDaSabedoria: React.FC = () => {
                     </div>
                   );
                 })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Card Collection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-yellow-500" />
+                Coleção de Cartas das Sombras Vencidas
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-7 gap-3">
+                {[1, 2, 3, 4, 5, 6, 7].map((day) => {
+                  const challenge = challenges.find(c => c.day === day);
+                  const hasCard = collectedCards.has(day);
+                  
+                  return (
+                    <div 
+                      key={day} 
+                      className={`relative aspect-[3/4] rounded-lg border-2 transition-all duration-300 ${
+                        hasCard 
+                          ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 shadow-md hover:shadow-lg' 
+                          : 'border-dashed border-muted bg-muted/20'
+                      }`}
+                    >
+                      {hasCard ? (
+                        <div className="p-2 h-full flex flex-col items-center justify-center text-center">
+                          <Trophy className="w-6 h-6 text-yellow-600 mb-1" />
+                          <p className="text-xs font-bold text-yellow-700 dark:text-yellow-300">
+                            {challenge?.theme}
+                          </p>
+                          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                            vs {challenge?.shadow}
+                          </p>
+                          <Sparkles className="w-3 h-3 text-yellow-500 mt-1" />
+                        </div>
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
+                          <div className="w-6 h-6 border-2 border-dashed border-muted-foreground rounded mb-1" />
+                          <p className="text-xs text-muted-foreground">
+                            Dia {day}
+                          </p>
+                          <p className="text-xs text-muted-foreground/70">
+                            {challenge?.theme || '?'}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-muted-foreground">
+                  <strong>{collectedCards.size}/7</strong> sombras vencidas
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Vença uma sombra acertando mais de 80% das perguntas para coletar sua carta!
+                </p>
               </div>
             </CardContent>
           </Card>
