@@ -367,8 +367,15 @@ const CavernaDaSabedoria: React.FC = () => {
           {/* Oracle Introduction */}
           <Card className="mb-8 border-primary/20">
             <CardHeader className="text-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Brain className="w-10 h-10 text-primary" />
+              <div className="w-32 h-32 mx-auto mb-4">
+                <img 
+                  src="/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png" 
+                  alt="Athena - Deusa da Sabedoria"
+                  className="w-full h-full object-contain"
+                  style={{
+                    filter: 'hue-rotate(200deg) saturate(0.7) brightness(0.8) contrast(1.2)'
+                  }}
+                />
               </div>
               <CardTitle className="text-2xl">🔮 Mensagem do Oráculo</CardTitle>
             </CardHeader>
