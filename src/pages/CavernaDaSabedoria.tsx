@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { CheckCircle, XCircle, Skull, Trophy, Brain, Heart, ChevronLeft, ChevronRight, Star, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { AthenaImage } from "@/components/AthenaImage";
 
 interface Challenge {
   day: number;
@@ -368,13 +369,9 @@ const CavernaDaSabedoria: React.FC = () => {
           <Card className="mb-8 border-primary/20">
             <CardHeader className="text-center">
               <div className="w-32 h-32 mx-auto mb-4">
-                <img 
-                  src="/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png" 
-                  alt="Athena - Deusa da Sabedoria"
+                <AthenaImage 
                   className="w-full h-full object-contain"
-                  style={{
-                    filter: 'hue-rotate(200deg) saturate(0.7) brightness(0.8) contrast(1.2)'
-                  }}
+                  alt="Athena - Deusa da Sabedoria"
                 />
               </div>
               <CardTitle className="text-2xl">🔮 Mensagem do Oráculo</CardTitle>
