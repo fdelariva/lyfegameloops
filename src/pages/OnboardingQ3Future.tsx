@@ -52,13 +52,30 @@ const OnboardingQ3Future = () => {
   };
 
   const handleCavernaAccept = () => {
-    // Add "Aprender sobre desenvolvimento pessoal" habit with all 7 days marked
+    // Add "Aprender sobre desenvolvimento pessoal" habit
     const cavernaHabit = "Aprender sobre desenvolvimento pessoal";
-    setCustomHabits(prev => [...prev, cavernaHabit]);
-    setSelectedHabits(prev => [...prev, `custom-caverna-${Date.now()}`]);
+    const cavernaHabitId = `caverna-aprendizado`;
     
-    // Save caverna challenge acceptance
+    setCustomHabits(prev => [...prev, cavernaHabit]);
+    setSelectedHabits(prev => [...prev, cavernaHabitId]);
+    
+    // Save caverna challenge acceptance and habit data
     localStorage.setItem('cavernaChallengeAccepted', 'true');
+    localStorage.setItem('cavernaHabitId', cavernaHabitId);
+    localStorage.setItem('cavernaHabitName', cavernaHabit);
+    
+    // Save user data to localStorage first
+    localStorage.setItem('userArchetype', archetype);
+    localStorage.setItem('selectedHabits', JSON.stringify([...selectedHabits, cavernaHabitId]));
+    localStorage.setItem('customHabits', JSON.stringify([...customHabits, cavernaHabit]));
+    localStorage.setItem('onboardingCompleted', 'true');
+    localStorage.setItem('gameMode', 'q3-future');
+    localStorage.setItem('userLevel', '1');
+    localStorage.setItem('userEnergy', '25');
+    localStorage.setItem('userConnection', '20');
+    localStorage.setItem('userSkill', '15');
+    localStorage.setItem('userCoins', '200');
+    localStorage.setItem('isDayZero', 'true');
     
     toast.success("Desafio aceito! Hábito adicionado.");
     

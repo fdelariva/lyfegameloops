@@ -60,6 +60,23 @@ const Dashboard = () => {
   const [evolutionToLevel, setEvolutionToLevel] = useState(2);
   const [showOracle, setShowOracle] = useState(false);
 
+  // Check for caverna habit completion on page load
+  useEffect(() => {
+    const cavernaCompleted = localStorage.getItem('cavernaHabitCompleted') === 'true';
+    if (cavernaCompleted) {
+      // Update the caverna habit if it exists
+      setHabits(prev => prev.map(habit => {
+        if (habit.id === 'caverna-aprendizado') {
+          return { ...habit, completed: true };
+        }
+        return habit;
+      }));
+      
+      // Clear the flag after processing
+      localStorage.removeItem('cavernaHabitCompleted');
+    }
+  }, []);
+
   // Load user's selected habits from onboarding
   useEffect(() => {
     // Default habits available for selection with detailed info
@@ -169,19 +186,29 @@ const Dashboard = () => {
         // Filter default habits based on selection and add custom habits
         const userHabits = [
           ...defaultHabits.filter(habit => selectedHabitIds.includes(habit.id)),
-          ...customHabits.map((customHabit: any, index: number) => ({
-            id: `custom-${index}`,
-            title: customHabit.name || customHabit,
-            description: "Hábito personalizado",
-            energyBoost: 5,
-            skillBoost: 5,
-            connectionBoost: 5,
-            completed: false,
-            info: {
-              whyDo: "Este é um hábito personalizado criado por você. Hábitos consistentes são a base para mudanças duradouras e desenvolvimento pessoal.",
-              howDo: "Execute este hábito de forma consistente, prestando atenção aos benefícios que ele traz para sua vida. A regularidade é mais importante que a perfeição."
-            }
-          }))
+          ...customHabits.map((customHabit: any, index: number) => {
+            const isCavernaHabit = (customHabit.name || customHabit) === "Aprender sobre desenvolvimento pessoal";
+            const cavernaCompleted = localStorage.getItem('cavernaHabitCompleted') === 'true';
+            
+            return {
+              id: isCavernaHabit ? 'caverna-aprendizado' : `custom-${index}`,
+              title: customHabit.name || customHabit,
+              description: isCavernaHabit ? "Hábito auto-tracked" : "Hábito personalizado",
+              energyBoost: 5,
+              skillBoost: 5,
+              connectionBoost: 5,
+              completed: isCavernaHabit ? cavernaCompleted : false,
+              isAutoTracked: isCavernaHabit,
+              info: {
+                whyDo: isCavernaHabit ? 
+                  "Este hábito é completado automaticamente quando você finaliza uma lição na Caverna da Sabedoria. Acompanhe sua jornada de 7 dias de desenvolvimento pessoal." : 
+                  "Este é um hábito personalizado criado por você. Hábitos consistentes são a base para mudanças duradouras e desenvolvimento pessoal.",
+                howDo: isCavernaHabit ? 
+                  "Vá até a Caverna da Sabedoria e complete o desafio do dia. Este hábito será marcado automaticamente quando você terminar a lição." : 
+                  "Execute este hábito de forma consistente, prestando atenção aos benefícios que ele traz para sua vida. A regularidade é mais importante que a perfeição."
+              }
+            };
+          })
         ];
         
         setHabits(userHabits);
@@ -536,23 +563,35 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {habits.map(habit => (
-            <DashboardHabitCard 
-              key={habit.id}
-              habitId={habit.id}
-              title={habit.title}
-              description={habit.description}
-              energyBoost={habit.energyBoost}
-              connectionBoost={habit.connectionBoost}
-              skillBoost={habit.skillBoost}
-              completed={habit.completed}
-              onComplete={() => handleHabitComplete(habit.id)}
-              onDelete={() => {
-                const updatedHabits = habits.filter(h => h.id !== habit.id);
-                setHabits(updatedHabits);
-              }}
-              dayZeroBoost={dayZeroBoost}
-              habitInfo={habit.info}
-            />
+            <div key={habit.id}>
+              {(habit as any).isAutoTracked && (
+                <div className="text-xs text-muted-foreground mb-1 pl-1">
+                  <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                    auto track
+                  </Badge>
+                </div>
+              )}
+              <DashboardHabitCard 
+                habitId={habit.id}
+                title={habit.title}
+                description={habit.description}
+                energyBoost={habit.energyBoost}
+                connectionBoost={habit.connectionBoost}
+                skillBoost={habit.skillBoost}
+                completed={habit.completed}
+                onComplete={() => {
+                  if (!(habit as any).isAutoTracked) {
+                    handleHabitComplete(habit.id);
+                  }
+                }}
+                onDelete={!(habit as any).isAutoTracked ? () => {
+                  const updatedHabits = habits.filter(h => h.id !== habit.id);
+                  setHabits(updatedHabits);
+                } : undefined}
+                dayZeroBoost={dayZeroBoost}
+                habitInfo={habit.info}
+              />
+            </div>
           ))}
         </div>
         

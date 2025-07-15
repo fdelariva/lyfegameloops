@@ -256,8 +256,13 @@ const DashboardHabitCard = ({
             </div>
 
             {!completed ? (
-              <Button onClick={handleComplete} size="sm" className="w-full h-6 text-xs">
-                Completar
+              <Button 
+                onClick={handleComplete} 
+                size="sm" 
+                className="w-full h-6 text-xs"
+                disabled={!onComplete}
+              >
+                {!onComplete ? "Auto-tracked" : "Completar"}
               </Button>
             ) : (
               <Button variant="outline" disabled size="sm" className="w-full h-6 text-xs opacity-70">
