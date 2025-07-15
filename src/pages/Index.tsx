@@ -22,7 +22,7 @@ const Index = () => {
           Habit Quest
         </h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Desenvolva hábitos com Oracle personalizado, conexões sociais e sistema de progressão avançado
+          Desenvolva hábitos com Oracle personalizado e sistema de progressão avançado
         </p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -36,32 +36,12 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-accent/5 border-accent/20 hover:bg-accent/10 transition-colors">
-            <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 mx-auto mb-4 text-accent" />
-              <h3 className="font-bold text-lg mb-2">Conexões Sociais</h3>
-              <p className="text-sm text-muted-foreground">
-                Conecte-se com aliados e compartilhe sua jornada
-              </p>
-            </CardContent>
-          </Card>
-          
           <Card className="bg-orange-medium/10 border-orange-medium/20 hover:bg-orange-medium/15 transition-colors">
             <CardContent className="p-6 text-center">
               <Trophy className="h-12 w-12 mx-auto mb-4 text-orange-medium" />
               <h3 className="font-bold text-lg mb-2">Progressão Avançada</h3>
               <p className="text-sm text-muted-foreground">
                 Sistema completo de evolução com níveis e recompensas
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-purple-medium/10 border-purple-medium/20 hover:bg-purple-medium/15 transition-colors">
-            <CardContent className="p-6 text-center">
-              <Target className="h-12 w-12 mx-auto mb-4 text-purple-medium" />
-              <h3 className="font-bold text-lg mb-2">Baú do Tesouro</h3>
-              <p className="text-sm text-muted-foreground">
-                Desafios diários de conhecimento e recompensas especiais
               </p>
             </CardContent>
           </Card>
@@ -98,14 +78,6 @@ const Index = () => {
             <li className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4 text-primary" />
               Oracle com IA personalizada para orientação diária
-            </li>
-            <li className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4 text-primary" />
-              Sistema social com aliados e feed de atividades
-            </li>
-            <li className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4 text-primary" />
-              Baú do tesouro com desafios de conhecimento
             </li>
             <li className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4 text-primary" />
