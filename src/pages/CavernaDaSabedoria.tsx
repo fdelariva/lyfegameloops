@@ -364,14 +364,8 @@ const CavernaDaSabedoria: React.FC = () => {
               variant="ghost" 
               onClick={() => {
                 // Mark the learning habit as completed when returning from lesson
-                const completedDay = localStorage.getItem('cavernaCompletedDay');
-                const today = new Date().toDateString();
-                
-                if (completedDay !== today) {
-                  localStorage.setItem('cavernaCompletedDay', today);
-                  localStorage.setItem('cavernaHabitCompleted', 'true');
-                }
-                
+                console.log('Caverna: Setting cavernaHabitCompleted to true');
+                localStorage.setItem('cavernaHabitCompleted', 'true');
                 navigate('/dashboard-q3');
               }}
               className="mb-4"

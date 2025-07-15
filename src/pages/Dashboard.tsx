@@ -60,23 +60,6 @@ const Dashboard = () => {
   const [evolutionToLevel, setEvolutionToLevel] = useState(2);
   const [showOracle, setShowOracle] = useState(false);
 
-  // Check for caverna habit completion on page load
-  useEffect(() => {
-    const cavernaCompleted = localStorage.getItem('cavernaHabitCompleted') === 'true';
-    if (cavernaCompleted) {
-      // Update the caverna habit if it exists
-      setHabits(prev => prev.map(habit => {
-        if (habit.id === 'caverna-aprendizado') {
-          return { ...habit, completed: true };
-        }
-        return habit;
-      }));
-      
-      // Clear the flag after processing
-      localStorage.removeItem('cavernaHabitCompleted');
-    }
-  }, []);
-
   // Load user's selected habits from onboarding
   useEffect(() => {
     // Default habits available for selection with detailed info
@@ -183,12 +166,17 @@ const Dashboard = () => {
         const selectedHabitIds = JSON.parse(savedHabits);
         const customHabits = savedCustomHabits ? JSON.parse(savedCustomHabits) : [];
         
+        console.log('Dashboard: Loading habits with custom habits:', customHabits);
+        
         // Filter default habits based on selection and add custom habits
         const userHabits = [
           ...defaultHabits.filter(habit => selectedHabitIds.includes(habit.id)),
           ...customHabits.map((customHabit: any, index: number) => {
             const isCavernaHabit = (customHabit.name || customHabit) === "Aprender sobre desenvolvimento pessoal";
+            // Check if caverna habit was completed this session
             const cavernaCompleted = localStorage.getItem('cavernaHabitCompleted') === 'true';
+            
+            console.log('Processing habit:', customHabit, 'isCavernaHabit:', isCavernaHabit, 'cavernaCompleted:', cavernaCompleted);
             
             return {
               id: isCavernaHabit ? 'caverna-aprendizado' : `custom-${index}`,
@@ -210,6 +198,14 @@ const Dashboard = () => {
             };
           })
         ];
+        
+        // Clear the caverna completion flag after processing
+        const cavernaCompletedFlag = localStorage.getItem('cavernaHabitCompleted') === 'true';
+        console.log('Dashboard: Caverna completion flag before clear:', cavernaCompletedFlag);
+        if (cavernaCompletedFlag) {
+          localStorage.removeItem('cavernaHabitCompleted');
+          console.log('Dashboard: Cleared caverna completion flag');
+        }
         
         setHabits(userHabits);
       } else {
