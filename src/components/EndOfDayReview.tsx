@@ -13,10 +13,9 @@ interface EndOfDayReviewProps {
   onClose: () => void;
   completedHabits: number;
   totalHabits: number;
-  coinsEarned: number;
 }
 
-const EndOfDayReview = ({ isOpen, onClose, completedHabits, totalHabits, coinsEarned }: EndOfDayReviewProps) => {
+const EndOfDayReview = ({ isOpen, onClose, completedHabits, totalHabits }: EndOfDayReviewProps) => {
   const [reflection, setReflection] = useState("");
   const [gratitude, setGratitude] = useState("");
   const [tomorrowFocus, setTomorrowFocus] = useState("");
@@ -97,7 +96,7 @@ const EndOfDayReview = ({ isOpen, onClose, completedHabits, totalHabits, coinsEa
               </h3>
               <p className="text-muted-foreground mb-4">{performance.message}</p>
               
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/50 rounded-lg p-3">
                   <div className="text-2xl font-bold">{completedHabits}/{totalHabits}</div>
                   <div className="text-xs text-muted-foreground">Hábitos</div>
@@ -105,10 +104,6 @@ const EndOfDayReview = ({ isOpen, onClose, completedHabits, totalHabits, coinsEa
                 <div className="bg-white/50 rounded-lg p-3">
                   <div className="text-2xl font-bold">{completionRate}%</div>
                   <div className="text-xs text-muted-foreground">Conclusão</div>
-                </div>
-                <div className="bg-white/50 rounded-lg p-3">
-                  <div className="text-2xl font-bold">{coinsEarned}</div>
-                  <div className="text-xs text-muted-foreground">Moedas</div>
                 </div>
               </div>
             </CardContent>

@@ -5,13 +5,13 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
-import { CheckCircle, User, Calendar, ShoppingCart, Users, Plus, Check, X } from "lucide-react";
+import { CheckCircle, User, Plus, Check, X } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import HabitCard from "@/components/HabitCard";
 import LuckyCards from "@/components/LuckyCards";
 import AvatarPreview from "@/components/AvatarPreview";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
-import TreasureChest from "@/components/TreasureChest";
+
 import EvolutionAnimation from "@/components/EvolutionAnimation";
 import AskTheOracle from "@/components/AskTheOracle";
 import { useNavigate } from "react-router-dom";
@@ -52,9 +52,7 @@ const Dashboard = () => {
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
   const [showLevelUpAnimation, setShowLevelUpAnimation] = useState(false);
-  const [showTreasureChest, setShowTreasureChest] = useState(false);
   const [completedHabitCount, setCompletedHabitCount] = useState(0);
-  const [coins, setCoins] = useState(100);
   const [dayZeroBoost, setDayZeroBoost] = useState(true);
   const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
   const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
@@ -260,10 +258,6 @@ const Dashboard = () => {
       connection: prev.connection + (completedHabit.connectionBoost * multiplier)
     }));
     
-    // Adiciona moedas
-    const coinsEarned = 20 * multiplier;
-    setCoins(prev => prev + coinsEarned);
-    
     // Check for level up
     const totalPoints = avatar.energy + avatar.skill + avatar.connection + 
                         (completedHabit.energyBoost + completedHabit.skillBoost + completedHabit.connectionBoost) * multiplier;
@@ -321,8 +315,6 @@ const Dashboard = () => {
     
     setDailyChallengeCompleted(true);
     toast.success("Desafio concluído!");
-    setShowTreasureChest(true);
-    setCoins(prev => prev + 50);
   };
 
   // Calcula o progresso diário
@@ -340,17 +332,9 @@ const Dashboard = () => {
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Lyfe</h1>
-            <div className="flex items-center gap-2">
-              <Badge 
-                className="bg-amber-500 cursor-pointer hover:bg-amber-600 transition-colors"
-                onClick={() => navigate("/shop")}
-              >
-                {coins} moedas
-              </Badge>
-              <Button size="sm" variant="outline">
-                <User className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button size="sm" variant="outline">
+              <User className="h-4 w-4" />
+            </Button>
           </div>
 
           <Card className="text-center py-12">
@@ -404,17 +388,9 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Lyfe</h1>
-          <div className="flex items-center gap-2">
-            <Badge 
-              className="bg-amber-500 cursor-pointer hover:bg-amber-600 transition-colors"
-              onClick={() => navigate("/shop")}
-            >
-              {coins} moedas
-            </Badge>
-            <Button size="sm" variant="outline">
-              <User className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button size="sm" variant="outline">
+            <User className="h-4 w-4" />
+          </Button>
         </div>
         
         {/* Boost do Dia 0 Alert */}
@@ -447,16 +423,6 @@ const Dashboard = () => {
                 skill={avatar.skill}
               />
             </CardContent>
-            <CardFooter>
-              <Button 
-                variant="outline" 
-                className="w-full" 
-                onClick={() => navigate("/shop")}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Loja de Itens
-              </Button>
-            </CardFooter>
           </Card>
           
           <Card className="md:col-span-2">
@@ -496,12 +462,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                <Calendar className="h-4 w-4 mr-2" />
-                Ver Calendário Semanal
-              </Button>
-            </CardFooter>
           </Card>
         </div>
         
@@ -619,7 +579,7 @@ const Dashboard = () => {
           <CardFooter className="pt-4">
             <div className="w-full flex justify-between items-center">
               <div className="text-sm text-muted-foreground">
-                Recompensa: <span className="font-medium text-foreground">Baú do Tesouro</span>
+                Recompensa: <span className="font-medium text-foreground">Experiência Bônus</span>
               </div>
               <Button 
                 size="sm" 
@@ -665,11 +625,6 @@ const Dashboard = () => {
           isOpen={showAvatarPreview} 
           onClose={() => setShowAvatarPreview(false)} 
           archetype={avatar.archetype}
-        />
-
-        <TreasureChest 
-          isOpen={showTreasureChest} 
-          onClose={() => setShowTreasureChest(false)} 
         />
         
         <AskTheOracle

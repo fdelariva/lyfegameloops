@@ -7,25 +7,20 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/sonner";
 import { 
   Trophy, 
-  Coins, 
   Calendar, 
   Users, 
   Brain,
   Zap,
   Target,
   Star,
-  Gift,
   Flame,
   TrendingUp,
-  MessageCircle,
   Settings,
   Skull
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
-import TreasureChest from "@/components/TreasureChest";
 import OracleCompanion from "@/components/OracleCompanion";
-import SocialFeed from "@/components/SocialFeed";
 import FriendsList from "@/components/FriendsList";
 import MorningBrief from "@/components/MorningBrief";
 import EndOfDayReview from "@/components/EndOfDayReview";
@@ -47,15 +42,12 @@ const DashboardQ3 = () => {
   const [energy, setEnergy] = useState(25);
   const [connection, setConnection] = useState(20);
   const [skill, setSkill] = useState(15);
-  const [coins, setCoins] = useState(200);
   const [archetype, setArchetype] = useState<"Mestre" | "Guardião" | "Guerreiro" | "Sábio">("Guerreiro");
   const [streak, setStreak] = useState(0);
   const [totalHabitsCompleted, setTotalHabitsCompleted] = useState(0);
   
   // UI state
-  const [showTreasureChest, setShowTreasureChest] = useState(false);
   const [showOracle, setShowOracle] = useState(false);
-  const [showSocialFeed, setShowSocialFeed] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
   const [showMorningBrief, setShowMorningBrief] = useState(false);
   const [showEndOfDay, setShowEndOfDay] = useState(false);
@@ -115,7 +107,6 @@ const DashboardQ3 = () => {
     const savedEnergy = localStorage.getItem('userEnergy');
     const savedConnection = localStorage.getItem('userConnection');
     const savedSkill = localStorage.getItem('userSkill');
-    const savedCoins = localStorage.getItem('userCoins');
     const savedArchetype = localStorage.getItem('userArchetype');
     const savedStreak = localStorage.getItem('userStreak');
     const savedTotal = localStorage.getItem('totalHabitsCompleted');
@@ -125,7 +116,6 @@ const DashboardQ3 = () => {
     if (savedEnergy) setEnergy(parseInt(savedEnergy));
     if (savedConnection) setConnection(parseInt(savedConnection));
     if (savedSkill) setSkill(parseInt(savedSkill));
-    if (savedCoins) setCoins(parseInt(savedCoins));
     if (savedArchetype) setArchetype(savedArchetype as any);
     if (savedStreak) setStreak(parseInt(savedStreak));
     if (savedTotal) setTotalHabitsCompleted(parseInt(savedTotal));
@@ -150,11 +140,10 @@ const DashboardQ3 = () => {
     localStorage.setItem('userEnergy', energy.toString());
     localStorage.setItem('userConnection', connection.toString());
     localStorage.setItem('userSkill', skill.toString());
-    localStorage.setItem('userCoins', coins.toString());
     localStorage.setItem('userStreak', streak.toString());
     localStorage.setItem('totalHabitsCompleted', totalHabitsCompleted.toString());
     localStorage.setItem('isDayZero', isDayZero.toString());
-  }, [level, energy, connection, skill, coins, streak, totalHabitsCompleted, isDayZero]);
+  }, [level, energy, connection, skill, streak, totalHabitsCompleted, isDayZero]);
 
   const completedToday = habits.filter(h => h.completed).length;
   const totalHabits = habits.length;
@@ -178,20 +167,17 @@ const DashboardQ3 = () => {
     let energyGain = habit.energyBoost || 0;
     let connectionGain = habit.connectionBoost || 0;
     let skillGain = habit.skillBoost || 0;
-    let coinGain = 10;
 
     // Day zero bonus
     if (isDayZero) {
       energyGain *= 3;
       connectionGain *= 3;
       skillGain *= 3;
-      coinGain *= 2;
     }
 
     setEnergy(prev => prev + energyGain);
     setConnection(prev => prev + connectionGain);
     setSkill(prev => prev + skillGain);
-    setCoins(prev => prev + coinGain);
     setTotalHabitsCompleted(prev => prev + 1);
 
     // Check for level up
@@ -202,7 +188,6 @@ const DashboardQ3 = () => {
       setPreviousLevel(level);
       setLevel(newLevel);
       setShowLevelUp(true);
-      setCoins(prev => prev + 50); // Level up bonus
     }
 
     // Check if all habits completed
@@ -358,38 +343,24 @@ const DashboardQ3 = () => {
             </CardContent>
           </Card>
 
-          {/* Coins & Actions */}
+          {/* Quick Actions */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center">
-                <Coins className="h-4 w-4 mr-1 text-orange-medium" />
-                Moedas & Ações
+                <Target className="h-4 w-4 mr-1 text-primary" />
+                Ações Rápidas
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex justify-center items-center">
-                <span className="text-sm font-medium">{coins} moedas</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowTreasureChest(true)}
-                  className="text-xs"
-                >
-                  <Gift className="h-3 w-3 mr-1" />
-                  Baú
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowSocialFeed(true)}
-                  className="text-xs"
-                >
-                  <MessageCircle className="h-3 w-3 mr-1" />
-                  Social
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowAddHabit(true)}
+                className="w-full text-xs"
+              >
+                <Target className="h-3 w-3 mr-1" />
+                Adicionar Hábito
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -529,24 +500,12 @@ const DashboardQ3 = () => {
         userName="Viajante"
       />
       
-      <TreasureChest 
-        isOpen={showTreasureChest} 
-        onClose={() => setShowTreasureChest(false)} 
-      />
-      
       <OracleCompanion 
         isOpen={showOracle} 
         onClose={() => setShowOracle(false)}
         userProgress={completionRate}
         completedHabits={completedToday}
         totalHabits={totalHabits}
-      />
-      
-      <SocialFeed 
-        isOpen={showSocialFeed} 
-        onClose={() => setShowSocialFeed(false)}
-        userProgress={completionRate}
-        onOpenCompetitiveChallenge={() => setShowCompetitiveChallenge(true)}
       />
       
       <FriendsList 
@@ -574,7 +533,6 @@ const DashboardQ3 = () => {
         onClose={() => setShowEndOfDay(false)}
         completedHabits={completedToday}
         totalHabits={totalHabits}
-        coinsEarned={habits.filter(h => h.completed).reduce((sum, h) => sum + (isDayZero ? 20 : 10), 0)}
       />
       
       <EvolutionAnimation 
