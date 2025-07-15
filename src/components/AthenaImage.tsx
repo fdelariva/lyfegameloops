@@ -34,8 +34,8 @@ export const AthenaImage: React.FC<AthenaImageProps> = ({
       } catch (err) {
         console.error('Failed to process Athena image:', err);
         setError('Falha ao processar imagem');
-        // Fallback to original image
-        setProcessedImageSrc('/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png');
+        // Fallback to new original image
+        setProcessedImageSrc('/lovable-uploads/f07a1b69-9076-4c21-a39e-0eebe950ecfb.png');
       } finally {
         setIsProcessing(false);
       }
@@ -62,7 +62,7 @@ export const AthenaImage: React.FC<AthenaImageProps> = ({
 
   return (
     <img 
-      src={processedImageSrc || '/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png'}
+      src={processedImageSrc || '/lovable-uploads/f07a1b69-9076-4c21-a39e-0eebe950ecfb.png'}
       alt={alt}
       className={className}
       style={style}

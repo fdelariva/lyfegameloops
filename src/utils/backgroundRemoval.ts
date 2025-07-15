@@ -123,8 +123,8 @@ export const loadImage = (file: Blob): Promise<HTMLImageElement> => {
 
 export const processAthenaImage = async (): Promise<string> => {
   try {
-    // Load the current Athena image
-    const response = await fetch('/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png');
+    // Load the new Athena image
+    const response = await fetch('/lovable-uploads/f07a1b69-9076-4c21-a39e-0eebe950ecfb.png');
     const blob = await response.blob();
     const imageElement = await loadImage(blob);
     
