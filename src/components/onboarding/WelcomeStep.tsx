@@ -39,7 +39,7 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => {
         <CardContent className="text-center space-y-4">
           <div className="flex justify-center mb-4">
             <img 
-              src="/lovable-uploads/e996b149-56f1-4403-8afb-293b881a648b.png" 
+              src="/lovable-uploads/d43b4096-ba1e-404a-9b10-1e22c3ac310a.png" 
               alt="Aristos - Seu guia no Lyfe" 
               className="w-32 h-32 object-contain"
             />
