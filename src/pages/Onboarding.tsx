@@ -6,27 +6,22 @@ import { ArchetypeType } from "@/data/archetypes";
 import { saveOnboardingData, createCustomHabit } from "@/utils/onboardingUtils";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
-import AvatarPreviewStep from "@/components/onboarding/AvatarPreviewStep";
+
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [archetype, setArchetype] = useState<ArchetypeType>("Indefinido");
-  const [showAccessorySelection, setShowAccessorySelection] = useState(false);
-  const [selectedAccessory, setSelectedAccessory] = useState("");
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState(defaultHabits);
 
   const handleSelectArchetype = (selected: ArchetypeType) => {
     setArchetype(selected);
-    setStep(3);
+    setStep(4);
   };
 
-  const handleAccessorySelect = (accessoryId: string) => {
-    setSelectedAccessory(accessoryId);
-  };
 
   const handleHabitToggle = (habitId: string) => {
     if (selectedHabits.includes(habitId)) {
@@ -70,16 +65,6 @@ const Onboarding = () => {
           />
         );
 
-      case 3:
-        return (
-          <AvatarPreviewStep 
-            archetype={archetype}
-            showAccessorySelection={showAccessorySelection}
-            onShowAccessorySelection={setShowAccessorySelection}
-            onAccessorySelect={handleAccessorySelect}
-            onNext={() => setStep(4)}
-          />
-        );
 
       case 4:
         return (

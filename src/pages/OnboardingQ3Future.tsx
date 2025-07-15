@@ -10,7 +10,7 @@ import UserAvatar from "@/components/Avatar";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
-import AvatarPreviewStep from "@/components/onboarding/AvatarPreviewStep";
+
 import { defaultHabits } from "@/data/defaultHabits";
 
 const OnboardingQ3Future = () => {
@@ -27,7 +27,7 @@ const OnboardingQ3Future = () => {
   const [archetype, setArchetype] = useState<"Mestre" | "Guardião" | "Guerreiro" | "Sábio" | "Indefinido">("Indefinido");
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabits, setCustomHabits] = useState<string[]>([]);
-  const [showAccessorySelection, setShowAccessorySelection] = useState(false);
+  
 
   const handleCompleteOnboarding = () => {
     // Save selected data to localStorage
@@ -69,10 +69,6 @@ const OnboardingQ3Future = () => {
     setSelectedHabits(prev => [...prev, customId]);
   };
 
-  const handleAccessorySelect = (accessoryId: string) => {
-    localStorage.setItem('selectedAccessory', accessoryId);
-    setShowAccessorySelection(false);
-  };
 
   // Create habits array combining default and custom habits
   const allHabits = [
@@ -190,19 +186,9 @@ const OnboardingQ3Future = () => {
               onHabitToggle={handleHabitToggle}
               onHabitDelete={handleHabitDelete}
               onAddCustomHabit={handleAddCustomHabit}
-              onComplete={() => setStep(4)}
+              onComplete={handleCompleteOnboarding}
             />
           </div>
-        );
-      case 4:
-        return (
-          <AvatarPreviewStep
-            archetype={archetype}
-            showAccessorySelection={showAccessorySelection}
-            onShowAccessorySelection={setShowAccessorySelection}
-            onAccessorySelect={handleAccessorySelect}
-            onNext={handleCompleteOnboarding}
-          />
         );
       default:
         return null;
@@ -225,7 +211,7 @@ const OnboardingQ3Future = () => {
       
       {/* Progress indicator */}
       <div className="absolute top-4 right-4 flex gap-2">
-        {[1, 2, 3, 4].map((stepNumber) => (
+        {[1, 2, 3].map((stepNumber) => (
           <div
             key={stepNumber}
             className={`w-2 h-2 rounded-full transition-colors ${

@@ -6,14 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "@/components/ui/sonner";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
-import AccessorySelection from "@/components/AccessorySelection";
+
 
 const OnboardingOracle = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [archetype, setArchetype] = useState<"Mestre" | "Guardião" | "Guerreiro" | "Sábio" | "Indefinido">("Indefinido");
-  const [showAccessorySelection, setShowAccessorySelection] = useState(false);
-  const [selectedAccessory, setSelectedAccessory] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: "oracle" | "user", message: string}[]>([
     {role: "oracle", message: "Olá! Sou o Oráculo do Lyfe. Estou aqui para ajudar você a descobrir seu verdadeiro potencial. Como está se sentindo hoje?"}
   ]);
