@@ -152,7 +152,15 @@ const athenaHelp: Record<string, AthenaHelp[]> = {
   ]
 };
 
+// Agrupamento por temas
+const themeGroups = {
+  "Energia": ["Sono", "Alimentação", "Exercício", "Meditação"],
+  "Habilidade": ["Concienciosidade"],
+  "Conexão": ["Gratidão", "Relacionamentos"]
+};
+
 const challenges: Challenge[] = [
+  // ENERGIA
   {
     day: 1,
     theme: "Sono",
@@ -219,8 +227,18 @@ const challenges: Challenge[] = [
       // Questions will be added later
     ]
   },
+  // HABILIDADE
   {
     day: 5,
+    theme: "Concienciosidade",
+    shadow: "Apatia",
+    questions: [
+      // Questions will be added later
+    ]
+  },
+  // CONEXÃO
+  {
+    day: 6,
     theme: "Gratidão",
     shadow: "Insasciedade",
     questions: [
@@ -228,17 +246,9 @@ const challenges: Challenge[] = [
     ]
   },
   {
-    day: 6,
+    day: 7,
     theme: "Relacionamentos",
     shadow: "Solidão",
-    questions: [
-      // Questions will be added later
-    ]
-  },
-  {
-    day: 7,
-    theme: "Concienciosidade",
-    shadow: "Apatia",
     questions: [
       // Questions will be added later
     ]
@@ -434,39 +444,77 @@ const CavernaDaSabedoria: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Progress Overview */}
+          {/* Progress Overview Grouped by Themes */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Progresso da Jornada</CardTitle>
+              <CardTitle>Jornada dos 7 Dias</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {[1, 2, 3, 4, 5, 6, 7].map((day) => {
-                  const challenge = challenges.find(c => c.day === day);
-                  return (
-                    <div key={day} className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
-                        day < currentDay ? 'bg-primary text-primary-foreground border-primary' :
-                        day === currentDay ? 'border-primary text-primary' :
-                        'border-muted text-muted-foreground'
+              <div className="space-y-6">
+                {Object.entries(themeGroups).map(([groupName, themes]) => (
+                  <div key={groupName} className="space-y-3">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
+                        groupName === 'Energia' ? 'bg-blue-100 text-blue-600' :
+                        groupName === 'Habilidade' ? 'bg-purple-100 text-purple-600' :
+                        'bg-green-100 text-green-600'
                       }`}>
-                        {day < currentDay ? <CheckCircle className="w-4 h-4" /> : day}
+                        {groupName === 'Energia' ? '⚡' : groupName === 'Habilidade' ? '🧠' : '❤️'}
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          Dia {day}: {challenge?.theme || 'Em breve'}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {challenge ? `vs ${challenge.shadow}` : 'Aguarde...'}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {day < currentDay ? 'Concluído' : 
-                           day === currentDay ? 'Atual' : 'Bloqueado'}
-                        </p>
+                      <h3 className="font-semibold text-lg">{groupName}</h3>
+                      <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        groupName === 'Energia' ? 'bg-blue-50 text-blue-600' :
+                        groupName === 'Habilidade' ? 'bg-purple-50 text-purple-600' :
+                        'bg-green-50 text-green-600'
+                      }`}>
+                        {themes.length} {themes.length === 1 ? 'desafio' : 'desafios'}
                       </div>
                     </div>
-                  );
-                })}
+                    
+                    <div className="grid gap-3">
+                      {themes.map((theme) => {
+                        const challenge = challenges.find(c => c.theme === theme);
+                        const day = challenge?.day || 0;
+                        return (
+                          <div key={theme} className={`flex items-center gap-3 p-3 rounded-lg border ${
+                            day < currentDay ? 'border-primary/20 bg-primary/5' :
+                            day === currentDay ? 'border-primary bg-primary/10' :
+                            'border-muted bg-muted/30'
+                          }`}>
+                            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${
+                              day < currentDay ? 'bg-primary text-primary-foreground border-primary' :
+                              day === currentDay ? 'border-primary text-primary' :
+                              'border-muted text-muted-foreground'
+                            }`}>
+                              {day < currentDay ? <CheckCircle className="w-4 h-4" /> : day}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">
+                                Dia {day}: {theme}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                vs {challenge?.shadow || 'Aguarde...'}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {day < currentDay ? 'Concluído' : 
+                                 day === currentDay ? 'Atual' : 'Bloqueado'}
+                              </p>
+                            </div>
+                            {day === currentDay && (
+                              <Button 
+                                onClick={startChallenge}
+                                size="sm"
+                                className="ml-auto"
+                              >
+                                Iniciar
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
