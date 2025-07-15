@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Users, Trophy, Target, Calendar, Skull, ArrowRight } from "lucide-react";
-import { AthenaImage } from "@/components/AthenaImage";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -59,9 +58,10 @@ const Index = () => {
           <Card className="bg-purple-600/10 border-purple-600/20 hover:bg-purple-600/15 transition-colors">
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 mx-auto mb-4">
-                <AthenaImage 
-                  className="w-full h-full object-contain"
-                  alt="Athena - Caverna da Sabedoria"
+                <img 
+                  src="/lovable-uploads/d43b4096-ba1e-404a-9b10-1e22c3ac310a.png" 
+                  alt="Oráculo Aristos - Caverna da Sabedoria"
+                  className="w-full h-full object-cover rounded-full"
                 />
               </div>
               <h3 className="font-bold text-lg mb-2">Caverna da Sabedoria</h3>

@@ -10,6 +10,7 @@ import UserAvatar from "@/components/Avatar";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
+import CavernaChallengeStep from "@/components/onboarding/CavernaChallengeStep";
 
 import { defaultHabits } from "@/data/defaultHabits";
 
@@ -48,6 +49,25 @@ const OnboardingQ3Future = () => {
       description: "+ 200 moedas e Oracle pessoal ativado!",
     });
     navigate("/dashboard-q3");
+  };
+
+  const handleCavernaAccept = () => {
+    // Add "Aprender sobre desenvolvimento pessoal" habit with all 7 days marked
+    const cavernaHabit = "Aprender sobre desenvolvimento pessoal";
+    setCustomHabits(prev => [...prev, cavernaHabit]);
+    setSelectedHabits(prev => [...prev, `custom-caverna-${Date.now()}`]);
+    
+    // Save caverna challenge acceptance
+    localStorage.setItem('cavernaChallengeAccepted', 'true');
+    
+    toast.success("Desafio aceito! Hábito adicionado.");
+    
+    // Navigate to Caverna da Sabedoria
+    navigate("/caverna-da-sabedoria");
+  };
+
+  const handleCavernaDecline = () => {
+    handleCompleteOnboarding();
   };
 
   const handleHabitToggle = (habitId: string) => {
@@ -186,7 +206,16 @@ const OnboardingQ3Future = () => {
               onHabitToggle={handleHabitToggle}
               onHabitDelete={handleHabitDelete}
               onAddCustomHabit={handleAddCustomHabit}
-              onComplete={handleCompleteOnboarding}
+              onComplete={() => setStep(4)}
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="flex flex-col items-center">
+            <CavernaChallengeStep
+              onAccept={handleCavernaAccept}
+              onDecline={handleCavernaDecline}
             />
           </div>
         );
@@ -211,7 +240,7 @@ const OnboardingQ3Future = () => {
       
       {/* Progress indicator */}
       <div className="absolute top-4 right-4 flex gap-2">
-        {[1, 2, 3].map((stepNumber) => (
+        {[1, 2, 3, 4].map((stepNumber) => (
           <div
             key={stepNumber}
             className={`w-2 h-2 rounded-full transition-colors ${

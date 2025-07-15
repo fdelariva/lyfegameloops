@@ -530,8 +530,14 @@ const Dashboard = () => {
               onClick={handleOracleOpen}
               className="flex items-center gap-2 w-full"
             >
-              <Users className="h-4 w-4" />
-              Perguntar ao Oráculo
+              <div className="w-4 h-4">
+                <img 
+                  src="/lovable-uploads/d43b4096-ba1e-404a-9b10-1e22c3ac310a.png" 
+                  alt="Oráculo Aristos"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+              Perguntar ao Oráculo Aristos
             </Button>
           </div>
 

@@ -180,7 +180,7 @@ const HabitSelectionStep = ({
           onClick={onComplete}
           disabled={selectedHabits.length === 0}
         >
-          Começar Minha Jornada ({selectedHabits.length} hábitos)
+          Continuar ({selectedHabits.length} hábitos)
         </Button>
       </div>
 
