@@ -255,7 +255,16 @@ const DashboardQ3 = () => {
               onClick={() => navigate('/caverna-da-sabedoria')}
               className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30 hover:from-purple-500/20 hover:to-indigo-500/20 text-purple-700 font-semibold px-6 py-3 h-auto"
             >
-              <Skull className="h-5 w-5 mr-2 text-purple-600" />
+              <div className="w-5 h-5 mr-2">
+                <img 
+                  src="/lovable-uploads/b9dd5581-f747-4408-99ce-1cd91abf1876.png" 
+                  alt="Athena - Caverna da Sabedoria"
+                  className="w-full h-full object-contain"
+                  style={{
+                    filter: 'hue-rotate(200deg) saturate(0.7) brightness(0.8) contrast(1.2)'
+                  }}
+                />
+              </div>
               Caverna da Sabedoria
             </Button>
             <Button
