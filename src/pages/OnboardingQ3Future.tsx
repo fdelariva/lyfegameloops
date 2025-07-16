@@ -175,7 +175,7 @@ const OnboardingQ3Future = () => {
                 <CardContent className="p-4 text-center">
                   <Skull className="h-8 w-8 mx-auto mb-2 text-purple-600" />
                   <h3 className="font-semibold">Caverna da Sabedoria</h3>
-                  <p className="text-sm text-muted-foreground">Treinamento em desenvolvimento pessoal</p>
+                  <p className="text-sm text-muted-foreground">Ganhe pergaminhos mágicos acertando 80%+ das lições</p>
                 </CardContent>
               </Card>
             </div>
@@ -188,7 +188,7 @@ const OnboardingQ3Future = () => {
                 <li>• Baú do tesouro com desafios de conhecimento</li>
                 <li>• Evolução de avatar com sistema de características</li>
                 <li>• Séries e streaks para manter consistência</li>
-                <li>• Caverna da Sabedoria para treinamento em desenvolvimento pessoal</li>
+                <li>• Caverna da Sabedoria: complete lições e ganhe pergaminhos mágicos para se preparar para seu primeiro quest</li>
               </ul>
             </div>
             

@@ -66,7 +66,7 @@ const Index = () => {
               </div>
               <h3 className="font-bold text-lg mb-2">Caverna da Sabedoria</h3>
               <p className="text-sm text-muted-foreground">
-                Onde você vai treinar para ser um mestre no desenvolvimento pessoal
+                Ganhe pergaminhos mágicos e prepare-se para enfrentar seus primeiros quests
               </p>
             </CardContent>
           </Card>
@@ -89,7 +89,7 @@ const Index = () => {
             </li>
             <li className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4 text-primary" />
-              Caverna da Sabedoria para treinamento em desenvolvimento pessoal
+              Caverna da Sabedoria: ganhe pergaminhos mágicos e prepare-se para quests
             </li>
           </ul>
         </div>

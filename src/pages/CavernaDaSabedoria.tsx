@@ -376,7 +376,7 @@ const CavernaDaSabedoria: React.FC = () => {
               🕳️ Caverna da Sabedoria
             </h1>
             <p className="text-muted-foreground text-lg">
-              Jornada de 7 dias para dominar seus hábitos
+              Sua jornada de 7 dias para ganhar pergaminhos mágicos e se preparar para seu primeiro quest
             </p>
           </div>
 

@@ -114,7 +114,7 @@ const OracleCompanion = ({ isOpen, onClose, userProgress, completedHabits, total
             <Sparkles className="h-4 w-4 text-yellow-500" />
           </DialogTitle>
           <div className="text-sm text-muted-foreground bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-200 mt-2">
-            <p className="mb-2">🏛️ <strong>Caverna da Sabedoria:</strong> Seu local de treinamento para se tornar um mestre no desenvolvimento pessoal através de desafios diários.</p>
+            <p className="mb-2">🏛️ <strong>Caverna da Sabedoria:</strong> Complete lições e ganhe pergaminhos mágicos acertando 80%+ das questões. Prepare-se para seu primeiro quest!</p>
             <p className="text-xs">💡 <strong>Seu Oracle pode:</strong> Ajudar você a estabelecer objetivos, criar um plano de comportamentos e hábitos para alcançá-los, revisar este plano e te guiar em sua execução.</p>
           </div>
         </DialogHeader>
