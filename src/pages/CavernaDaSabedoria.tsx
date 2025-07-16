@@ -400,8 +400,8 @@ const CavernaDaSabedoria: React.FC = () => {
                 Cada dia traz 5 perguntas sobre temas essenciais para transformação pessoal.
               </p>
               <p className="text-muted-foreground">
-                Acerte mais de 80% das questões e vencerá a <strong>Sombra</strong> do dia - 
-                forças internas que bloqueiam seu crescimento.
+                Acerte mais de 80% das questões e ganhará um <strong>pergaminho mágico</strong> para 
+                se preparar para seu primeiro quest!
               </p>
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
                 <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 flex items-center gap-2">
@@ -415,7 +415,7 @@ const CavernaDaSabedoria: React.FC = () => {
               </div>
               <div className="bg-primary/5 p-4 rounded-lg">
                 <p className="font-semibold text-primary">
-                  Está pronto para enfrentar suas sombras internas?
+                  Está pronto para começar sua jornada e ganhar pergaminhos mágicos?
                 </p>
               </div>
             </CardContent>
@@ -432,16 +432,16 @@ const CavernaDaSabedoria: React.FC = () => {
             <CardContent>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Sombra a vencer:</p>
-                  <p className="font-semibold text-destructive">{currentChallenge?.shadow}</p>
+                  <p className="text-sm text-muted-foreground">Tema de hoje:</p>
+                  <p className="font-semibold text-primary">{currentChallenge?.theme}</p>
                 </div>
                 <Badge variant="outline" className="text-primary border-primary">
                   5 Perguntas
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Responda 5 perguntas sobre {currentChallenge?.theme.toLowerCase()}. 
-                Acerte mais de 80% para vencer a {currentChallenge?.shadow}.
+                 Responda 5 perguntas sobre {currentChallenge?.theme.toLowerCase()}. 
+                 Acerte mais de 80% para ganhar um pergaminho mágico!
               </p>
               <Button onClick={startChallenge} className="w-full" size="lg">
                 Iniciar Desafio do Dia {currentDay}
@@ -497,9 +497,9 @@ const CavernaDaSabedoria: React.FC = () => {
                               <p className="font-medium">
                                 Dia {day}: {theme}
                               </p>
-                              <p className="text-sm text-muted-foreground">
-                                vs {challenge?.shadow || 'Aguarde...'}
-                              </p>
+                               <p className="text-sm text-muted-foreground">
+                                 Tema: {challenge?.theme || 'Aguarde...'}
+                               </p>
                               <p className="text-xs text-muted-foreground">
                                 {day < currentDay ? 'Concluído' : 
                                  day === currentDay ? 'Atual' : 'Bloqueado'}
@@ -529,7 +529,7 @@ const CavernaDaSabedoria: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-500" />
-                Coleção de Cartas das Sombras Vencidas
+                Coleção de Pergaminhos Mágicos
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -553,9 +553,9 @@ const CavernaDaSabedoria: React.FC = () => {
                           <p className="text-xs font-bold text-yellow-700 dark:text-yellow-300">
                             {challenge?.theme}
                           </p>
-                          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                            vs {challenge?.shadow}
-                          </p>
+                           <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                             Pergaminho
+                           </p>
                           <Sparkles className="w-3 h-3 text-yellow-500 mt-1" />
                         </div>
                       ) : (
@@ -574,12 +574,12 @@ const CavernaDaSabedoria: React.FC = () => {
                 })}
               </div>
               <div className="mt-4 text-center">
-                <p className="text-sm text-muted-foreground">
-                  <strong>{collectedCards.size}/7</strong> sombras vencidas
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Vença uma sombra acertando mais de 80% das perguntas para coletar sua carta!
-                </p>
+                 <p className="text-sm text-muted-foreground">
+                   <strong>{collectedCards.size}/7</strong> pergaminhos mágicos coletados
+                 </p>
+                 <p className="text-xs text-muted-foreground mt-1">
+                   Acerte mais de 80% das perguntas para ganhar um pergaminho mágico!
+                 </p>
               </div>
             </CardContent>
           </Card>
@@ -694,8 +694,8 @@ const CavernaDaSabedoria: React.FC = () => {
               <div className="space-y-4">
                 <div className="bg-pink-50 dark:bg-pink-900/20 p-4 rounded-lg border border-pink-200 dark:border-pink-800">
                   <p className="text-sm text-pink-800 dark:text-pink-200">
-                    <strong>💡 Sabedoria sobre {currentChallenge?.theme}:</strong> Aqui estão insights valiosos 
-                    para te ajudar a responder as perguntas e vencer a {currentChallenge?.shadow}.
+                     <strong>💡 Sabedoria sobre {currentChallenge?.theme}:</strong> Aqui estão insights valiosos 
+                     para te ajudar a responder as perguntas e ganhar seu pergaminho mágico.
                   </p>
                 </div>
 
@@ -764,19 +764,19 @@ const CavernaDaSabedoria: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <Trophy className="w-16 h-16 text-yellow-500 mx-auto animate-bounce" />
-                    <h2 className="text-2xl font-bold text-green-600">
-                      Sombra Vencida! 🎉
-                    </h2>
-                    <p className="text-muted-foreground">
-                      Você derrotou a <strong>{currentChallenge?.shadow}</strong>
-                    </p>
+                     <h2 className="text-2xl font-bold text-green-600">
+                       Pergaminho Mágico Conquistado! 🎉
+                     </h2>
+                     <p className="text-muted-foreground">
+                       Você ganhou um pergaminho sobre <strong>{currentChallenge?.theme}</strong>
+                     </p>
                     <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                       <p className="text-sm text-green-800 dark:text-green-200">
                         <strong>Pontuação: {score.toFixed(0)}%</strong>
                       </p>
-                      <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-                        Carta coletada! Você ganhou a carta da {currentChallenge?.shadow}.
-                      </p>
+                       <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+                         Pergaminho coletado! Você está mais preparado para seu primeiro quest.
+                       </p>
                     </div>
                   </div>
                 </>
@@ -784,19 +784,19 @@ const CavernaDaSabedoria: React.FC = () => {
                 <>
                   <Skull className="w-16 h-16 text-red-500 mx-auto" />
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold text-red-600">
-                      Sombra Resistiu
-                    </h2>
-                    <p className="text-muted-foreground">
-                      A <strong>{currentChallenge?.shadow}</strong> ainda está forte
-                    </p>
+                     <h2 className="text-2xl font-bold text-red-600">
+                       Tente Novamente
+                     </h2>
+                     <p className="text-muted-foreground">
+                       O pergaminho de <strong>{currentChallenge?.theme}</strong> ainda não foi conquistado
+                     </p>
                     <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
                       <p className="text-sm text-red-800 dark:text-red-200">
                         <strong>Pontuação: {score.toFixed(0)}%</strong>
                       </p>
-                      <p className="text-xs text-red-700 dark:text-red-300 mt-1">
-                        Precisa de 80% ou mais para vencer a sombra.
-                      </p>
+                       <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+                         Precisa de 80% ou mais para ganhar o pergaminho mágico.
+                       </p>
                     </div>
                   </div>
                 </>
