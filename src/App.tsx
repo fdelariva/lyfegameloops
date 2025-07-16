@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import OnboardingQ3Future from "./pages/OnboardingQ3Future";
 import DashboardQ3 from "./pages/DashboardQ3";
 import CavernaDaSabedoria from "./pages/CavernaDaSabedoria";
+import CavernaDoDesafio from "./pages/CavernaDoDesafio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ function App() {
             <Route path="/onboarding-q3" element={<OnboardingQ3Future />} />
             <Route path="/dashboard-q3" element={<DashboardQ3 />} />
             <Route path="/caverna-da-sabedoria" element={<CavernaDaSabedoria />} />
+            <Route path="/caverna-do-desafio" element={<CavernaDoDesafio />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

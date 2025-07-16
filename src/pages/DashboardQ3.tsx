@@ -16,7 +16,8 @@ import {
   Flame,
   TrendingUp,
   Settings,
-  Skull
+  Skull,
+  Sword
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -63,6 +64,9 @@ const DashboardQ3 = () => {
   const [habits, setHabits] = useState(() => {
     const savedHabits = localStorage.getItem('selectedHabits');
     const customHabits = localStorage.getItem('customHabits');
+    const userHabits = localStorage.getItem('userHabits');
+    
+    let baseHabits = [];
     
     if (savedHabits) {
       const selectedIds = JSON.parse(savedHabits);
@@ -87,21 +91,33 @@ const DashboardQ3 = () => {
         }
       }));
       
-      return [...selectedDefaultHabits, ...selectedCustomHabits].map(habit => ({
-        ...habit,
-        completed: false,
-        streak: 0
-      }));
+      baseHabits = [...selectedDefaultHabits, ...selectedCustomHabits];
+    } else {
+      baseHabits = defaultHabits.slice(0, 3);
     }
     
-    return defaultHabits.slice(0, 3).map(habit => ({
+    // Add quest habits from userHabits if they exist
+    if (userHabits) {
+      const questHabits = JSON.parse(userHabits);
+      const questHabit = questHabits.find((h: any) => h.id === 'combat-procrastination');
+      if (questHabit) {
+        const existingIndex = baseHabits.findIndex(h => h.id === 'combat-procrastination');
+        if (existingIndex >= 0) {
+          baseHabits[existingIndex] = questHabit;
+        } else {
+          baseHabits.push(questHabit);
+        }
+      }
+    }
+    
+    return baseHabits.map(habit => ({
       ...habit,
-      completed: false,
-      streak: 0
+      completed: habit.completed || false,
+      streak: habit.streak || 0
     }));
   });
 
-  // Load saved data
+  // Load saved data and check for auto-tracked habits
   useEffect(() => {
     const savedLevel = localStorage.getItem('userLevel');
     const savedEnergy = localStorage.getItem('userEnergy');
@@ -120,6 +136,17 @@ const DashboardQ3 = () => {
     if (savedStreak) setStreak(parseInt(savedStreak));
     if (savedTotal) setTotalHabitsCompleted(parseInt(savedTotal));
     if (savedDayZero) setIsDayZero(savedDayZero === 'true');
+    
+    // Check if quest habit was completed
+    const questHabitCompleted = localStorage.getItem('questHabitCompleted');
+    if (questHabitCompleted === 'true') {
+      setHabits(prev => prev.map(h => 
+        h.id === 'combat-procrastination' 
+          ? { ...h, completed: true, autoTrack: true }
+          : h
+      ));
+      localStorage.removeItem('questHabitCompleted'); // Clear the flag
+    }
     
     // Show Aristos welcome messages on first visit or if not seen today
     const hasSeenAristosToday = localStorage.getItem(`hasSeenAristos-${new Date().toDateString()}`);
@@ -248,6 +275,15 @@ const DashboardQ3 = () => {
                 />
               </div>
               Caverna da Sabedoria
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/caverna-do-desafio')}
+              className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border-red-500/30 hover:from-red-500/20 hover:to-orange-500/20 text-red-700 font-semibold px-6 py-3 h-auto"
+            >
+              <Sword className="h-5 w-5 mr-2" />
+              Caverna do Desafio
             </Button>
             <Button
               variant="outline"

@@ -307,6 +307,11 @@ const CavernaDaSabedoria: React.FC = () => {
           
           if (score >= 80) {
             setCollectedCards(prev => new Set([...prev, currentDay]));
+            
+            // Mark first lesson as completed to trigger quest message
+            if (currentDay === 1) {
+              localStorage.setItem('firstLessonCompleted', 'true');
+            }
           }
         }, 100);
       }

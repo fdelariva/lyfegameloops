@@ -28,9 +28,16 @@ const OracleCompanion = ({ isOpen, onClose, userProgress, completedHabits, total
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      // Initialize with greeting based on user progress
+      // Check if user just completed first lesson
+      const hasCompletedFirstLesson = localStorage.getItem('firstLessonCompleted') === 'true';
+      const hasSeenQuestMessage = localStorage.getItem('hasSeenQuestMessage') === 'true';
+      
       let greeting = "";
-      if (userProgress === 0) {
+      
+      if (hasCompletedFirstLesson && !hasSeenQuestMessage) {
+        greeting = `🎉 Parabéns! Com o pergaminho mágico você está pronto para sua primeira quest!\n\n⚔️ Entre na Caverna do Desafio e enfrente seu primeiro inimigo: SLOTH, a sombra da procrastinação.\n\n✨ Agora é a hora da ação! Juntando conhecimento e execução, vamos te ajudar a progredir na direção da pessoa que você quer ser.\n\n🏆 Criei um hábito especial em sua rotina: "Lutar contra a Procrastinação". Toda vez que você fizer uma lição e completar uma batalha na plataforma, esse hábito será marcado automaticamente!\n\nClique no botão "Caverna do Desafio" no dashboard para começar sua primeira quest!`;
+        localStorage.setItem('hasSeenQuestMessage', 'true');
+      } else if (userProgress === 0) {
         greeting = "Olá, Viajante! 🌟 Vejo que você ainda não começou seus hábitos hoje. Que tal começarmos com algo simples? \n\nBaseado nos princípios dos Tiny Habits de BJ Fogg, qual hábito te parece mais fácil de começar agora? Lembre-se: pequenas ações consistentes criam transformações extraordinárias! ✨";
       } else if (userProgress < 50) {
         greeting = `Ótimo começo! 🎯 Você já completou ${completedHabits} de ${totalHabits} hábitos. Vejo que você está no caminho da transformação!\n\nComo está se sentindo com esse progresso? Sua jornada de crescimento já está reprogramando seu cérebro para o sucesso. Precisa de motivação para continuar ou tem alguma reflexão sobre o processo?`;
