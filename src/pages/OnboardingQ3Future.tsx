@@ -11,6 +11,7 @@ import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 import CavernaChallengeStep from "@/components/onboarding/CavernaChallengeStep";
+import CavernaDesafioStep from "@/components/onboarding/CavernaDesafioStep";
 
 import { defaultHabits } from "@/data/defaultHabits";
 
@@ -79,8 +80,8 @@ const OnboardingQ3Future = () => {
     
     toast.success("Desafio aceito! Hábito adicionado.");
     
-    // Navigate to Caverna da Sabedoria
-    navigate("/caverna-da-sabedoria");
+    // Go to next step to show Caverna do Desafio info
+    setStep(5);
   };
 
   const handleCavernaDecline = () => {
@@ -236,6 +237,14 @@ const OnboardingQ3Future = () => {
             />
           </div>
         );
+      case 5:
+        return (
+          <div className="flex flex-col items-center">
+            <CavernaDesafioStep
+              onContinue={() => navigate("/caverna-da-sabedoria")}
+            />
+          </div>
+        );
       default:
         return null;
     }
@@ -257,7 +266,7 @@ const OnboardingQ3Future = () => {
       
       {/* Progress indicator */}
       <div className="absolute top-4 right-4 flex gap-2">
-        {[1, 2, 3, 4].map((stepNumber) => (
+        {[1, 2, 3, 4, 5].map((stepNumber) => (
           <div
             key={stepNumber}
             className={`w-2 h-2 rounded-full transition-colors ${

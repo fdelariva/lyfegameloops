@@ -22,7 +22,7 @@ interface Question {
   explanation: string;
 }
 
-const battles: Battle[] = [
+const slothBattles: Battle[] = [
   {
     day: 1,
     theme: "Combatendo a Procrastinação - Batalha 1",
@@ -263,8 +263,252 @@ const battles: Battle[] = [
   }
 ];
 
+const vertigoBattles: Battle[] = [
+  {
+    day: 1,
+    theme: "Combatendo Vertigo - Batalha 1: Estimulação Excessiva",
+    questions: [
+      {
+        id: 1,
+        question: "O que é o 'hijack de dopamina' das redes sociais?",
+        options: ["Perder senha", "Algoritmos que viciam", "Curtir posts", "Fazer amigos"],
+        correctAnswer: 1,
+        explanation: "Algoritmos são projetados para liberar dopamina e manter você viciado, sequestrando seu sistema de recompensas natural."
+      },
+      {
+        id: 2,
+        question: "Por que é difícil parar de usar o celular?",
+        options: ["É útil", "Reforço intermitente", "É barato", "É moderno"],
+        correctAnswer: 1,
+        explanation: "O reforço intermitente (como likes e notificações) é a forma mais viciante de condicionamento, usado também em jogos de azar."
+      },
+      {
+        id: 3,
+        question: "Qual o principal problema dos feeds infinitos?",
+        options: ["Gastam bateria", "Nunca acabam", "São pagos", "São lentos"],
+        correctAnswer: 1,
+        explanation: "Feeds infinitos eliminam pontos naturais de parada, mantendo você rolando indefinidamente sem perceber o tempo passar."
+      },
+      {
+        id: 4,
+        question: "Como as notificações afetam o cérebro?",
+        options: ["Melhoram foco", "Fragmentam atenção", "Aumentam memória", "Reduzem stress"],
+        correctAnswer: 1,
+        explanation: "Notificações fragmentam nossa atenção e destroem a capacidade de foco profundo, mesmo quando silenciadas."
+      }
+    ]
+  },
+  {
+    day: 2,
+    theme: "Combatendo Vertigo - Batalha 2: Apostas e Jogos",
+    questions: [
+      {
+        id: 1,
+        question: "Por que jogos mobile são tão viciantes?",
+        options: ["São grátis", "Loops de dopamina", "São fáceis", "Têm gráficos"],
+        correctAnswer: 1,
+        explanation: "Jogos mobile usam loops de dopamina calculados para manter você jogando, similar a máquinas caça-níqueis."
+      },
+      {
+        id: 2,
+        question: "O que são 'microtransações predatórias'?",
+        options: ["Compras baratas", "Táticas psicológicas para gastar", "Promoções", "Descontos"],
+        correctAnswer: 1,
+        explanation: "Microtransações usam pressão temporal, FOMO e outras táticas psicológicas para induzir gastos impulsivos."
+      },
+      {
+        id: 3,
+        question: "Como apostas online exploram vulnerabilidades?",
+        options: ["Oferecem bônus", "Simulam vitórias fáceis", "São convenientes", "Têm apps"],
+        correctAnswer: 1,
+        explanation: "Apostas online usam 'quase-vitórias' e vitórias iniciais para criar falsa sensação de controle e induzir mais apostas."
+      },
+      {
+        id: 4,
+        question: "Qual o perigo dos jogos 'free-to-play'?",
+        options: ["São ruins", "Monetização agressiva", "Ocupam espaço", "São lentos"],
+        correctAnswer: 1,
+        explanation: "Jogos 'gratuitos' usam monetização agressiva, criando dependência emocional antes de extrair dinheiro."
+      }
+    ]
+  },
+  {
+    day: 3,
+    theme: "Combatendo Vertigo - Batalha 3: Fragmentação da Atenção",
+    questions: [
+      {
+        id: 1,
+        question: "O que é 'task switching'?",
+        options: ["Mudar de app", "Alternar entre tarefas", "Usar dois celulares", "Trocar de celular"],
+        correctAnswer: 1,
+        explanation: "Task switching é alternar constantemente entre tarefas, causando fadiga mental e reduzindo produtividade drasticamente."
+      },
+      {
+        id: 2,
+        question: "Quanto tempo leva para recuperar foco após distração?",
+        options: ["5 segundos", "23 minutos", "1 minuto", "10 segundos"],
+        correctAnswer: 1,
+        explanation: "Pesquisas mostram que leva em média 23 minutos para recuperar foco total após uma interrupção ou distração."
+      },
+      {
+        id: 3,
+        question: "O que é 'attention residue'?",
+        options: ["Memória", "Parte da atenção fica na tarefa anterior", "Cansaço", "Concentração"],
+        correctAnswer: 1,
+        explanation: "Attention residue é quando parte da nossa atenção permanece 'grudada' na tarefa anterior, reduzindo performance."
+      },
+      {
+        id: 4,
+        question: "Como multitasking afeta o cérebro?",
+        options: ["Melhora", "Diminui QI temporariamente", "Não afeta", "Aumenta velocidade"],
+        correctAnswer: 1,
+        explanation: "Multitasking pode diminuir temporariamente o QI mais do que fumar maconha, segundo estudos científicos."
+      }
+    ]
+  },
+  {
+    day: 4,
+    theme: "Combatendo Vertigo - Batalha 4: Vício Digital",
+    questions: [
+      {
+        id: 1,
+        question: "Qual neurotransmissor está envolvido no vício digital?",
+        options: ["Serotonina", "Dopamina", "GABA", "Acetilcolina"],
+        correctAnswer: 1,
+        explanation: "Dopamina é o neurotransmissor central no vício digital, criando ciclos de busca e recompensa que mantêm o comportamento."
+      },
+      {
+        id: 2,
+        question: "O que é 'nomofobia'?",
+        options: ["Medo de números", "Medo de ficar sem celular", "Medo de wifi", "Medo de apps"],
+        correctAnswer: 1,
+        explanation: "Nomofobia é o medo irracional de ficar sem celular ou desconectado, um sinal claro de dependência digital."
+      },
+      {
+        id: 3,
+        question: "Como o vício digital afeta o sono?",
+        options: ["Melhora", "Luz azul suprime melatonina", "Não afeta", "Induz sono"],
+        correctAnswer: 1,
+        explanation: "Luz azul das telas suprime produção de melatonina, atrasando o sono e reduzindo sua qualidade."
+      },
+      {
+        id: 4,
+        question: "Qual o impacto no relacionamentos?",
+        options: ["Melhora comunicação", "Reduz conexão face-a-face", "Aumenta intimidade", "Não afeta"],
+        correctAnswer: 1,
+        explanation: "Uso excessivo de dispositivos reduz qualidade das interações face-a-face e conexão emocional real."
+      }
+    ]
+  },
+  {
+    day: 5,
+    theme: "Combatendo Vertigo - Batalha 5: Distração e Produtividade",
+    questions: [
+      {
+        id: 1,
+        question: "O que é 'deep work'?",
+        options: ["Trabalhar muito", "Foco profundo sem distração", "Trabalhar de madrugada", "Trabalhar sozinho"],
+        correctAnswer: 1,
+        explanation: "Deep work é a capacidade de focar sem distração em tarefas cognitivamente exigentes - habilidade cada vez mais rara."
+      },
+      {
+        id: 2,
+        question: "Como dispositivos afetam capacidade de concentração?",
+        options: ["Melhoram", "Reduzem span de atenção", "Não afetam", "Aumentam foco"],
+        correctAnswer: 1,
+        explanation: "Uso excessivo de dispositivos está reduzindo nossa capacidade natural de atenção sustentada e foco profundo."
+      },
+      {
+        id: 3,
+        question: "O que é 'context switching cost'?",
+        options: ["Preço de apps", "Energia gasta mudando foco", "Custo de internet", "Tempo de carregamento"],
+        correctAnswer: 1,
+        explanation: "Context switching cost é a energia mental perdida toda vez que mudamos foco entre diferentes tarefas ou apps."
+      },
+      {
+        id: 4,
+        question: "Qual estratégia é mais eficaz contra distração digital?",
+        options: ["Força de vontade", "Design do ambiente", "Trabalhar mais rápido", "Ignorar distrações"],
+        correctAnswer: 1,
+        explanation: "Modificar o ambiente (remover distrações físicas) é mais eficaz que depender apenas da força de vontade."
+      }
+    ]
+  },
+  {
+    day: 6,
+    theme: "Combatendo Vertigo - Batalha 6: Detox Digital",
+    questions: [
+      {
+        id: 1,
+        question: "O que é um 'digital detox'?",
+        options: ["Limpar o celular", "Período sem dispositivos", "Atualizar apps", "Trocar de celular"],
+        correctAnswer: 1,
+        explanation: "Digital detox é um período deliberado sem usar dispositivos digitais para restaurar saúde mental e foco."
+      },
+      {
+        id: 2,
+        question: "Qual o primeiro passo para reduzir uso?",
+        options: ["Jogar o celular fora", "Medir tempo atual de uso", "Comprar outro celular", "Usar mais"],
+        correctAnswer: 1,
+        explanation: "Antes de reduzir, é essencial medir seu uso atual - a maioria subestima drasticamente seu tempo de tela."
+      },
+      {
+        id: 3,
+        question: "Como criar 'friction' saudável?",
+        options: ["Quebrar o celular", "Remover apps da tela inicial", "Usar celular quebrado", "Não carregar"],
+        correctAnswer: 1,
+        explanation: "Criar friction (atrito) removendo apps da tela inicial ou usando senhas complexas reduz uso impulsivo."
+      },
+      {
+        id: 4,
+        question: "Qual substituto saudável para scrolling?",
+        options: ["Assistir TV", "Leitura ou caminhada", "Jogos no PC", "Comer"],
+        correctAnswer: 1,
+        explanation: "Atividades offline como leitura, caminhada ou hobbies manuais são substitutos saudáveis para scrolling compulsivo."
+      }
+    ]
+  },
+  {
+    day: 7,
+    theme: "Combatendo Vertigo - Batalha Final: Uso Intencional",
+    questions: [
+      {
+        id: 1,
+        question: "O que é 'uso intencional' de tecnologia?",
+        options: ["Usar menos", "Usar com propósito específico", "Usar o melhor app", "Usar rápido"],
+        correctAnswer: 1,
+        explanation: "Uso intencional significa usar tecnologia com propósito específico e consciência, não por impulso ou tédio."
+      },
+      {
+        id: 2,
+        question: "Como implementar 'time boxing' digital?",
+        options: ["Comprar cronômetro", "Definir horários específicos", "Usar timer de cozinha", "Trabalhar em caixas"],
+        correctAnswer: 1,
+        explanation: "Time boxing define janelas específicas para uso digital, criando boundaries claros entre trabalho focado e consumo."
+      },
+      {
+        id: 3,
+        question: "Qual o papel do 'mono-tasking'?",
+        options: ["Fazer uma coisa", "Fazer uma tarefa por vez completamente", "Usar um app", "Trabalhar sozinho"],
+        correctAnswer: 1,
+        explanation: "Mono-tasking é fazer uma tarefa por vez com atenção completa, oposto do multitasking fragmentado."
+      },
+      {
+        id: 4,
+        question: "Como manter mudanças a longo prazo?",
+        options: ["Força de vontade", "Sistemas e hábitos consistentes", "Motivação constante", "Pressão social"],
+        correctAnswer: 1,
+        explanation: "Mudanças duradouras vêm de sistemas e hábitos consistentes, não de motivação temporária ou força de vontade."
+      }
+    ]
+  }
+];
+
+type Enemy = 'sloth' | 'vertigo';
+
 const CavernaDoDesafio: React.FC = () => {
   const navigate = useNavigate();
+  const [currentEnemy, setCurrentEnemy] = useState<Enemy>('sloth');
   const [currentDay, setCurrentDay] = useState(1);
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'action' | 'result'>('intro');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -272,9 +516,10 @@ const CavernaDoDesafio: React.FC = () => {
   const [answers, setAnswers] = useState<number[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [actionTimer, setActionTimer] = useState(10);
-  const [collectedCards, setCollectedCards] = useState<Set<number>>(new Set());
-  const [battleResults, setBattleResults] = useState<Record<number, boolean>>({});
+  const [collectedCards, setCollectedCards] = useState<Set<string>>(new Set());
+  const [battleResults, setBattleResults] = useState<Record<string, boolean>>({});
 
+  const battles = currentEnemy === 'sloth' ? slothBattles : vertigoBattles;
   const currentBattle = battles.find(b => b.day === currentDay);
   const currentQuestion = currentBattle?.questions[currentQuestionIndex];
 
@@ -330,8 +575,9 @@ const CavernaDoDesafio: React.FC = () => {
     const score = (correctAnswers / 4) * 100;
     
     if (score >= 80) {
-      setCollectedCards(prev => new Set([...prev, currentDay]));
-      setBattleResults(prev => ({ ...prev, [currentDay]: true }));
+      const cardId = `${currentEnemy}-${currentDay}`;
+      setCollectedCards(prev => new Set([...prev, cardId]));
+      setBattleResults(prev => ({ ...prev, [cardId]: true }));
       
       // Criar ou atualizar hábito de combate à procrastinação
       const habitData = {
@@ -399,33 +645,66 @@ const CavernaDoDesafio: React.FC = () => {
               ⚔️ Caverna do Desafio
             </h1>
             <p className="text-muted-foreground text-lg">
-              Enfrente SLOTH, a sombra da procrastinação, em 7 batalhas épicas
+              Enfrente as sombras: SLOTH (procrastinação) e VERTIGO (distração digital)
             </p>
+          </div>
+
+          {/* Seleção de Inimigo */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <Card 
+              className={`cursor-pointer transition-all ${
+                currentEnemy === 'sloth' ? 'border-orange-500 bg-orange-500/10' : 'border-muted hover:border-orange-500/50'
+              }`}
+              onClick={() => setCurrentEnemy('sloth')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">🦥</div>
+                <h3 className="font-bold text-lg mb-2">SLOTH</h3>
+                <p className="text-sm text-muted-foreground">Sombra da Procrastinação</p>
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className={`cursor-pointer transition-all ${
+                currentEnemy === 'vertigo' ? 'border-purple-500 bg-purple-500/10' : 'border-muted hover:border-purple-500/50'
+              }`}
+              onClick={() => setCurrentEnemy('vertigo')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">📱</div>
+                <h3 className="font-bold text-lg mb-2">VERTIGO</h3>
+                <p className="text-sm text-muted-foreground">Sombra da Distração Digital</p>
+              </CardContent>
+            </Card>
           </div>
 
           <Card className="mb-8 border-destructive/20">
             <CardHeader className="text-center">
               <div className="w-32 h-32 mx-auto mb-4">
                 <div className="w-full h-full bg-gradient-to-br from-gray-600 to-gray-800 rounded-lg flex items-center justify-center text-6xl">
-                  🦥
+                  {currentEnemy === 'sloth' ? '🦥' : '📱'}
                 </div>
               </div>
-              <CardTitle className="text-2xl">⚔️ Desafio de SLOTH</CardTitle>
+              <CardTitle className="text-2xl">
+                ⚔️ Desafio de {currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}
+              </CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <p className="text-lg text-muted-foreground">
                 Bem-vindo à <strong>Caverna do Desafio</strong>! 
               </p>
               <p className="text-muted-foreground">
-                SLOTH, a sombra da procrastinação, te desafia para 7 batalhas. 
-                Cada batalha contém 4 perguntas + uma ação de foco de 10 minutos.
+                {currentEnemy === 'sloth' 
+                  ? 'SLOTH, a sombra da procrastinação, te desafia para 7 batalhas. Cada batalha contém 4 perguntas + uma ação de foco de 10 minutos.'
+                  : 'VERTIGO, a sombra da distração digital, te desafia para 7 batalhas. Cada batalha contém 4 perguntas + uma ação para ficar sem celular por 10 minutos.'
+                }
               </p>
               <p className="text-muted-foreground">
                 Vença acertando 80%+ das questões e completando a ação para coletar uma carta de vitória!
               </p>
               <div className="bg-destructive/5 p-4 rounded-lg">
                 <p className="font-semibold text-destructive">
-                  Está pronto para sua primeira batalha contra SLOTH?
+                  Está pronto para sua primeira batalha contra {currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}?
                 </p>
               </div>
             </CardContent>
@@ -470,28 +749,58 @@ const CavernaDoDesafio: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-7 gap-2">
-                  {Array.from({ length: 7 }, (_, i) => i + 1).map(day => (
-                    <div 
-                      key={day} 
-                      className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold ${
-                        collectedCards.has(day) 
-                          ? 'bg-yellow-100 border-yellow-400 text-yellow-800' 
-                          : 'bg-gray-100 border-gray-300 text-gray-500'
-                      }`}
-                    >
-                      <div className="text-lg">🦥</div>
-                      <div>{day}</div>
-                    </div>
-                  ))}
+                <div className="space-y-4">
+                  <h4 className="font-semibold">SLOTH - Procrastinação</h4>
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 7 }, (_, i) => i + 1).map(day => (
+                      <div 
+                        key={`sloth-${day}`} 
+                        className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold ${
+                          collectedCards.has(`sloth-${day}`) 
+                            ? 'bg-orange-100 border-orange-400 text-orange-800' 
+                            : 'bg-gray-100 border-gray-300 text-gray-500'
+                        }`}
+                      >
+                        <div className="text-lg">🦥</div>
+                        <div>{day}</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <h4 className="font-semibold">VERTIGO - Distração Digital</h4>
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 7 }, (_, i) => i + 1).map(day => (
+                      <div 
+                        key={`vertigo-${day}`} 
+                        className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold ${
+                          collectedCards.has(`vertigo-${day}`) 
+                            ? 'bg-purple-100 border-purple-400 text-purple-800' 
+                            : 'bg-gray-100 border-gray-300 text-gray-500'
+                        }`}
+                      >
+                        <div className="text-lg">📱</div>
+                        <div>{day}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="mt-4 text-center">
                   <p className="text-sm text-muted-foreground">
-                    {collectedCards.size}/7 batalhas vencidas
+                    {collectedCards.size}/14 batalhas vencidas no total
                   </p>
-                  {collectedCards.size === 7 && (
+                  {Array.from(collectedCards).filter(card => card.startsWith('sloth')).length === 7 && (
+                    <p className="text-sm font-bold text-orange-600 mt-1">
+                      🎉 SLOTH completamente derrotado!
+                    </p>
+                  )}
+                  {Array.from(collectedCards).filter(card => card.startsWith('vertigo')).length === 7 && (
+                    <p className="text-sm font-bold text-purple-600 mt-1">
+                      🎉 VERTIGO completamente derrotado!
+                    </p>
+                  )}
+                  {collectedCards.size === 14 && (
                     <p className="text-sm font-bold text-green-600 mt-2">
-                      🎉 Parabéns! Você venceu SLOTH completamente!
+                      👑 Parabéns! Você venceu todas as sombras!
                     </p>
                   )}
                 </div>
@@ -593,7 +902,10 @@ const CavernaDoDesafio: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <p className="text-lg text-muted-foreground">
-                Agora é hora da ação! Trabalhe focado por 10 minutos para vencer SLOTH.
+                {currentEnemy === 'sloth' 
+                  ? 'Agora é hora da ação! Trabalhe focado por 10 minutos para vencer SLOTH.'
+                  : 'Agora é hora da ação! Fique sem usar o celular por 10 minutos para vencer VERTIGO.'
+                }
               </p>
               
               <div className="text-6xl font-bold text-primary mb-4">
@@ -612,7 +924,10 @@ const CavernaDoDesafio: React.FC = () => {
               </div>
               
               <p className="text-sm text-muted-foreground">
-                Concentre-se em uma tarefa importante. SLOTH está observando...
+                {currentEnemy === 'sloth' 
+                  ? 'Concentre-se em uma tarefa importante. SLOTH está observando...'
+                  : 'Mantenha o celular longe e resista à tentação. VERTIGO está testando você...'
+                }
               </p>
               
               <Button 
@@ -645,7 +960,10 @@ const CavernaDoDesafio: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-6xl mb-4">
-                {won ? "🦥⚔️" : "🦥"}
+                {won 
+                  ? `${currentEnemy === 'sloth' ? '🦥' : '📱'}⚔️` 
+                  : `${currentEnemy === 'sloth' ? '🦥' : '📱'}`
+                }
               </div>
               
               <div>
@@ -654,7 +972,7 @@ const CavernaDoDesafio: React.FC = () => {
                 </p>
                 <p className="text-muted-foreground">
                   {won 
-                    ? `Parabéns! Você venceu a Batalha ${currentDay} contra SLOTH!`
+                    ? `Parabéns! Você venceu a Batalha ${currentDay} contra ${currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}!`
                     : `Você não venceu desta vez. Tente novamente!`
                   }
                 </p>

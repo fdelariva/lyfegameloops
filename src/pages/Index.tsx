@@ -70,6 +70,16 @@ const Index = () => {
               </p>
             </CardContent>
           </Card>
+          
+          <Card className="bg-red-600/10 border-red-600/20 hover:bg-red-600/15 transition-colors">
+            <CardContent className="p-6 text-center">
+              <Skull className="h-12 w-12 mx-auto mb-4 text-red-600" />
+              <h3 className="font-bold text-lg mb-2">Caverna do Desafio</h3>
+              <p className="text-sm text-muted-foreground">
+                Enfrente três sombras poderosas: Sloth, Swache e Vertigo
+              </p>
+            </CardContent>
+          </Card>
         </div>
         
         <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-8 rounded-xl mb-8 max-w-3xl mx-auto">
