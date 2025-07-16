@@ -326,32 +326,64 @@ const DashboardQ3 = () => {
             </CardContent>
           </Card>
 
-          {/* Attributes */}
+          {/* Sabedoria */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center">
-                <Zap className="h-4 w-4 mr-1 text-orange-medium" />
-                Atributos
+                <Brain className="h-4 w-4 mr-1 text-purple-600" />
+                Sabedoria
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs">Energia</span>
-                <Badge variant="outline" className="bg-orange-50">
-                  {energy}
+                <span className="text-xs">Pergaminhos Mágicos</span>
+                <Badge variant="outline" className="bg-purple-50">
+                  {(() => {
+                    const completedLessons = localStorage.getItem('completedCavernaLessons');
+                    return completedLessons ? JSON.parse(completedLessons).length : 0;
+                  })()}
                 </Badge>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs">Conexão</span>
-                <Badge variant="outline" className="bg-blue-50">
-                  {connection}
-                </Badge>
+              <div className="text-xs text-muted-foreground">
+                Complete lições da Caverna da Sabedoria para ganhar pergaminhos
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs">Habilidade</span>
-                <Badge variant="outline" className="bg-green-50">
-                  {skill}
-                </Badge>
+            </CardContent>
+          </Card>
+
+          {/* Quests */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center">
+                <Skull className="h-4 w-4 mr-1 text-red-600" />
+                Quests
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs">Sloth</span>
+                  <Badge variant="outline" className="bg-red-50">
+                    {(() => {
+                      const completedSlothBattles = localStorage.getItem('completedSlothBattles');
+                      return completedSlothBattles ? JSON.parse(completedSlothBattles).length : 0;
+                    })()}/7
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs">Vertigo</span>
+                  <Badge variant="outline" className="bg-orange-50">
+                    {(() => {
+                      const completedVertigo = localStorage.getItem('completedVertigo');
+                      return completedVertigo ? JSON.parse(completedVertigo).length : 0;
+                    })()}/7
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs">Swache</span>
+                  <Badge variant="outline" className="bg-gray-50">
+                    0/7
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>
