@@ -468,6 +468,10 @@ const OnboardingCompetitive = () => {
             </Tabs>
 
             <div className="flex gap-3 mt-6">
+              <Button onClick={() => navigate("/dashboard-q3")} size="lg">
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Ir para Dashboard
+              </Button>
               <Button variant="outline" onClick={() => setStep(3)}>
                 Voltar
               </Button>

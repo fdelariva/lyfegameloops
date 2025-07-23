@@ -17,7 +17,8 @@ import {
   TrendingUp,
   Settings,
   Skull,
-  Sword
+  Sword,
+  Bell
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -300,6 +301,48 @@ const DashboardQ3 = () => {
         {/* Oracle Message Carousel */}
         <OracleMessageCarousel className="mb-6" />
 
+        {/* Squad Activity Feed */}
+        <Card className="col-span-full bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-indigo-100 rounded-full">
+                <Bell className="h-5 w-5 text-indigo-600" />
+              </div>
+              <h3 className="font-bold text-lg">Feed do Squad</h3>
+            </div>
+            <div className="space-y-3 max-h-48 overflow-y-auto">
+              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
+                <div className="text-lg">⚡</div>
+                <div className="text-sm">
+                  <span className="font-bold text-purple-600">Squad Guerreiros Alpha</span> assumiu a liderança!
+                  <p className="text-xs text-muted-foreground">há 2 minutos</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
+                <div className="text-lg">✅</div>
+                <div className="text-sm">
+                  <span className="font-bold">Maria S.</span> completou <span className="font-medium">Exercitar-se 30min</span>
+                  <p className="text-xs text-muted-foreground">há 5 minutos</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
+                <div className="text-lg">🔥</div>
+                <div className="text-sm">
+                  <span className="font-bold text-orange-600">Squad Phoenix Fire</span> ganhou 50 pontos de energia!
+                  <p className="text-xs text-muted-foreground">há 8 minutos</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
+                <div className="text-lg">👥</div>
+                <div className="text-sm">
+                  <span className="font-bold">Pedro H.</span> e <span className="font-bold">Ana L.</span> completaram hábitos simultaneamente! <span className="text-purple-600 font-medium">+20 pts bonus</span>
+                  <p className="text-xs text-muted-foreground">há 12 minutos</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Avatar & Level */}
@@ -326,64 +369,53 @@ const DashboardQ3 = () => {
             </CardContent>
           </Card>
 
-          {/* Sabedoria */}
+          {/* Squad Ranking */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center">
-                <Brain className="h-4 w-4 mr-1 text-purple-600" />
-                Sabedoria
+                <Users className="h-4 w-4 mr-1 text-purple-600" />
+                Meu Squad
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs">Pergaminhos Mágicos</span>
-                <Badge variant="outline" className="bg-purple-50">
-                  {(() => {
-                    const completedLessons = localStorage.getItem('completedCavernaLessons');
-                    return completedLessons ? JSON.parse(completedLessons).length : 0;
-                  })()}
-                </Badge>
+                <span className="text-xs font-medium">Guerreiros Alpha</span>
+                <Badge className="bg-purple-100 text-purple-800">#2</Badge>
               </div>
-              <div className="text-xs text-muted-foreground">
-                Complete lições da Caverna da Sabedoria para ganhar pergaminhos
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span>👑 João (Você)</span>
+                  <span className="font-bold">150 pts</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>🥈 Maria S.</span>
+                  <span>145 pts</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>🥉 Pedro H.</span>
+                  <span>130 pts</span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Quests */}
+          {/* Global Ranking */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center">
-                <Skull className="h-4 w-4 mr-1 text-red-600" />
-                Quests
+                <Trophy className="h-4 w-4 mr-1 text-yellow-600" />
+                Ranking Global
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs">Sloth</span>
-                  <Badge variant="outline" className="bg-red-50">
-                    {(() => {
-                      const completedSlothBattles = localStorage.getItem('completedSlothBattles');
-                      return completedSlothBattles ? JSON.parse(completedSlothBattles).length : 0;
-                    })()}/7
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs">Vertigo</span>
-                  <Badge variant="outline" className="bg-orange-50">
-                    {(() => {
-                      const completedVertigo = localStorage.getItem('completedVertigo');
-                      return completedVertigo ? JSON.parse(completedVertigo).length : 0;
-                    })()}/7
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs">Swache</span>
-                  <Badge variant="outline" className="bg-gray-50">
-                    0/7
-                  </Badge>
-                </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-medium">Entre Squads</span>
+                <Badge className="bg-yellow-100 text-yellow-800">#2 de 47</Badge>
+              </div>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div>🥇 Team Phoenix - 420 pts</div>
+                <div className="font-bold text-purple-600">🥈 Guerreiros Alpha - 425 pts</div>
+                <div>🥉 Lendas do Amanhã - 380 pts</div>
               </div>
             </CardContent>
           </Card>
