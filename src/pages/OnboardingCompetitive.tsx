@@ -296,6 +296,22 @@ const OnboardingCompetitive = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              <Card 
+                className="cursor-pointer transition hover:border-primary border-dashed border-2"
+                onClick={() => navigate("/onboarding-challenges")}
+              >
+                <CardContent className="p-6 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-purple-600/20 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">✨</span>
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-purple-600">Desafio Customizado</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Crie seu próprio desafio personalizado
+                  </p>
+                  <Badge variant="outline">Personalizável</Badge>
+                </CardContent>
+              </Card>
             </div>
             
             <Button variant="outline" onClick={() => setStep(1)}>
