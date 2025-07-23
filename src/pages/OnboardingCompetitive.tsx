@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { 
   Trophy, Users, Share2, Award, Calendar, Flag, Star, 
-  MessageSquare, ThumbsUp, Bell, ArrowRight
+  MessageSquare, ThumbsUp, Bell, ArrowRight, Copy, Crown,
+  Medal, Sword, Target, Heart, Network, Brain, Shield,
+  Zap
 } from "lucide-react";
 import LuckyCards from "@/components/LuckyCards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,52 +26,62 @@ const OnboardingCompetitive = () => {
   const [showInviteFriends, setShowInviteFriends] = useState(false);
   const [inviteLink, setInviteLink] = useState("https://lyfe.app/join/abc123");
   
-  // Desafios disponíveis
+  // Desafios Squad Competitivos e Cooperativos
   const challenges = [
     {
-      id: "warrior",
-      name: "Guerreiro Total",
-      description: "Exercícios + alimentação saudável",
-      icon: "⚔️",
-      color: "from-red-500 to-orange-500",
-      habits: ["Exercício matinal (20min)", "Refeição sem processados", "10K passos diários"],
-      difficulty: 80
+      id: "warriors",
+      name: "Guerreiros da Disciplina",
+      description: "Exercícios, alimentação e sono",
+      icon: <Sword className="h-6 w-6" />,
+      color: "text-red-600",
+      bgColor: "bg-red-50",
+      habits: ["Exercitar-se 30min", "Alimentação saudável", "Dormir 8h", "Beber 2L água"],
+      goal: "Completar 80% dos hábitos coletivamente",
+      squadMeta: "Squad com maior % de completude diária"
     },
     {
       id: "productivity",
-      name: "Mestre da Produtividade",
-      description: "Trabalho + estudos",
-      icon: "⏱️",
-      color: "from-blue-500 to-indigo-500",
-      habits: ["Pomodoro de 3h", "Leitura técnica (30min)", "Revisão diária"],
-      difficulty: 70
+      name: "Mestres da Produtividade",
+      description: "Foco no trabalho, organização e aprendizado",
+      icon: <Target className="h-6 w-6" />,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      habits: ["Deep Work 2h", "Organizar workspace", "Aprender algo novo", "Planejar o dia"],
+      goal: "Acumular mais pontos de produtividade",
+      squadMeta: "Squad com maior eficiência coletiva"
     },
     {
-      id: "balance",
-      name: "Guardião do Equilíbrio",
-      description: "Mindfulness + relacionamentos",
-      icon: "☯️",
-      color: "from-teal-500 to-green-500",
-      habits: ["Meditação (10min)", "Contato significativo", "Gratidão (3 itens)"],
-      difficulty: 60
+      id: "wellbeing",
+      name: "Guardiões do Bem-Estar",
+      description: "Meditação, journaling e gratidão",
+      icon: <Heart className="h-6 w-6" />,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      habits: ["Meditar 15min", "Journaling", "Gratidão diária", "Respiração consciente"],
+      goal: "Maior nível de paz interior do grupo",
+      squadMeta: "Squad com melhor pontuação de bem-estar"
     },
     {
-      id: "wisdom",
-      name: "Sábio Moderno",
-      description: "Leitura + reflexão",
-      icon: "📚",
-      color: "from-purple-500 to-pink-500",
-      habits: ["Leitura (30min)", "Journaling", "Aprender algo novo"],
-      difficulty: 65
+      id: "social",
+      name: "Conquistadores Sociais",
+      description: "Networking, família e amizades",
+      icon: <Network className="h-6 w-6" />,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      habits: ["Conectar com família", "Networking", "Ajudar alguém", "Socializar"],
+      goal: "Fortalecer conexões internas e externas",
+      squadMeta: "Squad com mais interações sociais"
     },
     {
-      id: "conqueror",
-      name: "Conquistador Completo",
-      description: "Mix de todas as áreas",
-      icon: "🌟",
-      color: "from-yellow-500 to-amber-500",
-      habits: ["Exercício (qualquer)", "Meditação (5min)", "Leitura (15min)", "Contato social"],
-      difficulty: 90
+      id: "complete",
+      name: "Lendas Completas",
+      description: "Mix de todas as categorias",
+      icon: <Star className="h-6 w-6" />,
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+      habits: ["Exercício", "Produtividade", "Bem-estar", "Social", "Aprendizado", "Criatividade"],
+      goal: "Versatilidade total em todas as áreas",
+      squadMeta: "Squad mais equilibrado"
     }
   ];
   
@@ -163,69 +176,60 @@ const OnboardingCompetitive = () => {
       case 1:
         return (
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-4xl font-bold mb-6">Desafio Competitivo</h1>
-            
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Trophy className="h-8 w-8 text-amber-500" />
-              <Users className="h-8 w-8 text-primary" />
+            <div className="flex justify-center mb-6">
+              <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full">
+                <Users className="h-12 w-12 text-white" />
+              </div>
             </div>
             
-            <p className="text-xl text-muted-foreground mb-8">
-              Transforme sua jornada de hábitos em uma competição épica com seus amigos!
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+              Transforme sua jornada em uma aventura épica!
+            </h1>
+            
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              Escolha seu desafio e forme um squad com seus amigos. 70% cooperação + 30% competição saudável.
             </p>
             
-            <Card className="w-full max-w-md mb-6 bg-primary/5">
+            <Card className="w-full max-w-md mb-6 bg-gradient-to-br from-blue-50 to-purple-50">
               <CardHeader>
                 <CardTitle className="flex items-center justify-center gap-2">
-                  <Trophy className="h-5 w-5" />
-                  Como Funciona
+                  <Shield className="h-5 w-5 text-purple-600" />
+                  Sistema de Squad (3-5 pessoas)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 rounded-full p-2">
-                    <Flag className="h-5 w-5 text-primary" />
+                  <div className="bg-purple-100 rounded-full p-2">
+                    <Users className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-medium">Escolha um Desafio</h3>
+                    <h3 className="font-medium">Cooperação Interna</h3>
                     <p className="text-sm text-muted-foreground">
-                      Selecione entre 5 desafios competitivos de 7 dias
+                      Ajudem-se mutuamente a completar hábitos
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 rounded-full p-2">
-                    <Users className="h-5 w-5 text-primary" />
+                  <div className="bg-purple-100 rounded-full p-2">
+                    <Trophy className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-medium">Convide Amigos</h3>
+                    <h3 className="font-medium">Competição Externa</h3>
                     <p className="text-sm text-muted-foreground">
-                      Desafie seus amigos e compitam juntos
+                      Squad vs outros squads no ranking global
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 rounded-full p-2">
-                    <Star className="h-5 w-5 text-primary" />
+                  <div className="bg-purple-100 rounded-full p-2">
+                    <Zap className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-medium">Ganhe Pontos</h3>
+                    <h3 className="font-medium">Multiplicadores</h3>
                     <p className="text-sm text-muted-foreground">
-                      Complete hábitos para subir no ranking
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 rounded-full p-2">
-                    <Award className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="font-medium">Conquiste Badges</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Desbloqueie conquistas exclusivas
+                      Atividades simultâneas dobram pontos
                     </p>
                   </div>
                 </div>
@@ -286,11 +290,8 @@ const OnboardingCompetitive = () => {
                     </div>
                     
                     <div className="mt-4">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Dificuldade</span>
-                        <span>{challenge.difficulty}%</span>
-                      </div>
-                      <Progress value={challenge.difficulty} className="h-2" />
+                      <p className="text-sm font-medium">Meta do Squad:</p>
+                      <p className="text-xs text-muted-foreground">{challenge.goal}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -371,57 +372,106 @@ const OnboardingCompetitive = () => {
       case 4:
         return (
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-2">Convide Seus Amigos</h2>
+            <h2 className="text-2xl font-bold mb-2">Convide seus amigos!</h2>
             <p className="text-muted-foreground text-center mb-6">
-              Desafios são mais divertidos com competição!
+              Forme seu squad de 3-5 pessoas para começar a aventura
             </p>
             
-            <Card className="w-full max-w-md mb-6">
-              <CardHeader>
-                <CardTitle className="text-center">Link de Convite</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2 mb-6">
-                  <Input value={inviteLink} readOnly className="bg-muted/50" />
-                  <Button 
-                    variant="secondary" 
-                    onClick={() => {
-                      navigator.clipboard.writeText(inviteLink);
-                      toast.success("Link copiado!");
-                    }}
-                  >
-                    Copiar
-                  </Button>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <Button variant="outline" onClick={() => handleShareLink("WhatsApp")} className="flex gap-2">
-                    <span className="text-lg">📱</span>
-                    WhatsApp
-                  </Button>
-                  <Button variant="outline" onClick={() => handleShareLink("Instagram")} className="flex gap-2">
-                    <span className="text-lg">📸</span>
-                    Instagram
-                  </Button>
-                  <Button variant="outline" onClick={() => handleShareLink("Email")} className="flex gap-2">
-                    <span className="text-lg">📧</span>
-                    Email
-                  </Button>
-                  <Button variant="outline" onClick={() => handleShareLink("SMS")} className="flex gap-2">
-                    <span className="text-lg">💬</span>
-                    SMS
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Button onClick={() => setStep(5)} size="lg" className="mb-3">
-              <ArrowRight className="mr-2 h-4 w-4" />
-              Iniciar Desafio
-            </Button>
-            <Button variant="outline" onClick={() => setStep(3)}>
-              Voltar
-            </Button>
+            <Tabs defaultValue="create" className="w-full max-w-md">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="create">Criar Squad</TabsTrigger>
+                <TabsTrigger value="join">Entrar Squad</TabsTrigger>
+                <TabsTrigger value="solo">Começar Solo</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="create" className="space-y-4 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Criar Novo Squad</CardTitle>
+                    <CardDescription>Nomeie seu grupo e convide amigos</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="squadName">Nome do Squad</Label>
+                      <Input id="squadName" placeholder="Ex: Guerreiros Invencíveis" />
+                    </div>
+                    
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                      <h4 className="font-medium mb-2">Código do Squad: ABC123</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Compartilhe este código com seus amigos
+                      </p>
+                      
+                      <div className="flex gap-2 mb-3">
+                        <Input 
+                          value="https://app.exemplo.com/join-squad/ABC123" 
+                          readOnly 
+                          className="flex-1"
+                        />
+                        <Button 
+                          size="icon"
+                          onClick={() => {
+                            navigator.clipboard.writeText("https://app.exemplo.com/join-squad/ABC123");
+                            toast.success("Link copiado!");
+                          }}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleShareLink('WhatsApp')}>
+                          <Share2 className="h-4 w-4 mr-1" />
+                          WhatsApp
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleShareLink('Instagram')}>
+                          <Share2 className="h-4 w-4 mr-1" />
+                          Instagram
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="join" className="space-y-4 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Entrar em Squad</CardTitle>
+                    <CardDescription>Use o código enviado por seus amigos</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="squadCode">Código do Squad</Label>
+                      <Input id="squadCode" placeholder="Ex: ABC123" />
+                    </div>
+                    <Button onClick={() => setStep(5)} className="w-full">
+                      Entrar no Squad
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="solo" className="space-y-4 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Começar Solo</CardTitle>
+                    <CardDescription>Você pode entrar em um squad depois</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button onClick={() => setStep(5)} variant="outline" className="w-full">
+                      Continuar Sozinho
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" onClick={() => setStep(3)}>
+                Voltar
+              </Button>
+            </div>
           </div>
         );
       

@@ -46,7 +46,48 @@ const CompetitiveChallenge = ({
   const [inviteEmail, setInviteEmail] = useState("");
   const [challengeCreated, setChallengeCreated] = useState(false);
   
-  // Mock data for the ranking
+  // Squad members data (cooperative + competitive)
+  const [squadMembers] = useState([
+    { 
+      name: userName, 
+      progress: userProgress, 
+      streak: 5, 
+      points: userProgress * 15,
+      isUser: true,
+      avatar: "😎",
+      habits: userHabits.length,
+      role: "Você"
+    },
+    { 
+      name: "Ana Silva", 
+      progress: 85, 
+      streak: 7, 
+      points: 1275,
+      isUser: false,
+      avatar: "👩‍💻",
+      habits: 4,
+      role: "Motivadora"
+    },
+    { 
+      name: "Pedro Costa", 
+      progress: 78, 
+      streak: 3, 
+      points: 1170,
+      isUser: false,
+      avatar: "👨‍🎨",
+      habits: 5,
+      role: "Organizador"
+    }
+  ].sort((a, b) => b.points - a.points));
+
+  // Global squads ranking
+  const [globalSquads] = useState([
+    { name: "Guerreiros Alpha", points: 4520, members: 5, league: "Platinum" },
+    { name: "Team Phoenix", points: 4350, members: 4, league: "Platinum" },
+    { name: "Zen Masters", points: 4180, members: 5, league: "Gold" },
+    { name: "Seu Squad", points: 3750, members: 3, league: "Silver", isUserSquad: true }
+  ]);
+
   const [participants] = useState([
     {
       id: "1",
