@@ -14,6 +14,10 @@ const Index = () => {
     navigate("/onboarding-q3", { state: { skipWelcome: true } });
   };
 
+  const handleCompetitiveStart = () => {
+    navigate("/onboarding-competitive");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
       <div className="text-center max-w-4xl mx-auto">
@@ -103,15 +107,44 @@ const Index = () => {
             </li>
           </ul>
         </div>
-        
-        <Button 
-          size="lg" 
-          onClick={handleStart}
-          className="text-lg px-8 py-4 gradient-primary"
-        >
-          Iniciar Minha Jornada
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8 w-full max-w-4xl">
+          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
+            <CardContent className="p-6 text-center">
+              <Brain className="h-16 w-16 mx-auto mb-4 text-primary" />
+              <h3 className="font-bold text-xl mb-2">Jornada Solo</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Oracle pessoal, progressão individual e cavernas místicas
+              </p>
+              <Button 
+                size="lg" 
+                onClick={handleStart}
+                className="w-full gradient-primary"
+              >
+                Iniciar Jornada Solo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+            <CardContent className="p-6 text-center">
+              <Users className="h-16 w-16 mx-auto mb-4 text-purple-500" />
+              <h3 className="font-bold text-xl mb-2">Desafio Competitivo</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Forme squads com amigos e compitam em desafios épicos
+              </p>
+              <Button 
+                size="lg" 
+                onClick={handleCompetitiveStart}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                Criar Squad
+                <Trophy className="ml-2 h-5 w-5" />
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
