@@ -17,7 +17,7 @@ const OnboardingStreak = () => {
   const [customHabit, setCustomHabit] = useState("");
   const [showCustomHabitInput, setShowCustomHabitInput] = useState(false);
   const [habits, setHabits] = useState([
-    { id: "h1", name: "Levantar da cama", icon: "🛏️", description: "Começar o dia saindo da cama", category: "Manhã" },
+    { id: "h1", name: "Arrumar sua cama", icon: "🛏️", description: "Organizar e arrumar a cama ao acordar", category: "Manhã" },
     { id: "h2", name: "Escovar os dentes", icon: "🦷", description: "Cuidar da higiene bucal", category: "Higiene" },
     { id: "h3", name: "Lavar meu rosto pela manhã", icon: "💧", description: "Refrescar o rosto ao acordar", category: "Higiene" },
     { id: "h4", name: "Levantar da cadeira e fazer 1 alongamento", icon: "🤸‍♂️", description: "Movimentar o corpo durante o dia", category: "Movimento" },

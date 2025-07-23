@@ -66,8 +66,8 @@ const Dashboard = () => {
     const defaultHabits = [
       {
         id: "h1",
-        title: "Levantar da cama",
-        description: "Começar o dia saindo da cama",
+        title: "Arrumar sua cama",
+        description: "Organizar e arrumar a cama ao acordar",
         energyBoost: 5,
         skillBoost: 0,
         connectionBoost: 5,

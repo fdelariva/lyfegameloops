@@ -2,9 +2,9 @@
 export const defaultHabits = [
   { 
     id: "h1", 
-    name: "Levantar da cama", 
+    name: "Arrumar sua cama", 
     icon: "🛏️", 
-    description: "Começar o dia saindo da cama", 
+    description: "Organizar e arrumar a cama ao acordar", 
     category: "Manhã",
     info: {
       whyDo: "Acordar cedo regula o ritmo circadiano, melhora a qualidade do sono e aumenta a produtividade ao longo do dia. Estudos mostram que pessoas matutinas têm menos stress e melhor humor.",

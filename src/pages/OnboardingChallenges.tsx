@@ -9,7 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 
 const CHALLENGES = [
-  { id: 1, title: "Levantar da cama", description: "Começar o dia saindo da cama", xp: 20, icon: "🛏️", difficulty: "Fácil" },
+  { id: 1, title: "Arrumar sua cama", description: "Organizar e arrumar a cama ao acordar", xp: 20, icon: "🛏️", difficulty: "Fácil" },
   { id: 2, title: "Escovar os dentes", description: "Cuidar da higiene bucal", xp: 25, icon: "🦷", difficulty: "Fácil" },
   { id: 3, title: "Lavar meu rosto pela manhã", description: "Refrescar o rosto ao acordar", xp: 30, icon: "💧", difficulty: "Fácil" },
   { id: 4, title: "Levantar da cadeira e fazer 1 alongamento", description: "Movimentar o corpo durante o dia", xp: 40, icon: "🤸‍♂️", difficulty: "Médio" },
