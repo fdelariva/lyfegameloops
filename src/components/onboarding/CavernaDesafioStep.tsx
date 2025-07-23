@@ -123,7 +123,7 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
       <div className="flex gap-4 justify-center">
         <Button 
           size="lg" 
-          onClick={() => window.location.href = "/onboarding-competitive"}
+          onClick={() => window.location.href = "/squad-transition"}
           className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg px-8 py-4"
         >
           Criar Squad
