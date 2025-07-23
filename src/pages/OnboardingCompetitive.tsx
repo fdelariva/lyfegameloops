@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
@@ -20,11 +20,20 @@ import { Input } from "@/components/ui/input";
 
 const OnboardingCompetitive = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showInviteFriends, setShowInviteFriends] = useState(false);
   const [inviteLink, setInviteLink] = useState("https://lyfe.app/join/abc123");
+
+  // Verificar se deve pular etapa de escolha de desafios
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'current') {
+      setStep(3); // Pular direto para Sistema de Pontuação
+    }
+  }, [searchParams]);
   
   // Desafios Squad Competitivos e Cooperativos
   const challenges = [
