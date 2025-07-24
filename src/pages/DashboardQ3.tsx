@@ -29,6 +29,9 @@ import EndOfDayReview from "@/components/EndOfDayReview";
 import EvolutionAnimation from "@/components/EvolutionAnimation";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
 import CompetitiveChallenge from "@/components/CompetitiveChallenge";
+import SquadMembersList from "@/components/SquadMembersList";
+import CompetitorSquadList from "@/components/CompetitorSquadList";
+import CompetitorProfile from "@/components/CompetitorProfile";
 import { defaultHabits } from "@/data/defaultHabits";
 import { useNavigate } from "react-router-dom";
 import AristosWelcomeMessages from "@/components/AristosWelcomeMessages";
@@ -56,6 +59,11 @@ const DashboardQ3 = () => {
   const [showEvolution, setShowEvolution] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [showCompetitiveChallenge, setShowCompetitiveChallenge] = useState(false);
+  const [showSquadMembers, setShowSquadMembers] = useState(false);
+  const [showCompetitorSquad, setShowCompetitorSquad] = useState(false);
+  const [showCompetitorProfile, setShowCompetitorProfile] = useState(false);
+  const [selectedCompetitor, setSelectedCompetitor] = useState<any>(null);
+  const [selectedSquadName, setSelectedSquadName] = useState("");
   const [showAristosWelcome, setShowAristosWelcome] = useState(false);
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
@@ -370,7 +378,7 @@ const DashboardQ3 = () => {
           </Card>
 
           {/* Squad Ranking */}
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowSquadMembers(true)}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center">
                 <Users className="h-4 w-4 mr-1 text-purple-600" />
@@ -413,9 +421,25 @@ const DashboardQ3 = () => {
                 <Badge className="bg-yellow-100 text-yellow-800">#2 de 47</Badge>
               </div>
               <div className="space-y-1 text-xs text-muted-foreground">
-                <div>🥇 Team Phoenix - 420 pts</div>
+                <div 
+                  className="cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => {
+                    setSelectedSquadName("Team Phoenix");
+                    setShowCompetitorSquad(true);
+                  }}
+                >
+                  🥇 Team Phoenix - 420 pts
+                </div>
                 <div className="font-bold text-purple-600">🥈 Guerreiros Alpha - 425 pts</div>
-                <div>🥉 Lendas do Amanhã - 380 pts</div>
+                <div 
+                  className="cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => {
+                    setSelectedSquadName("Lendas do Amanhã");
+                    setShowCompetitorSquad(true);
+                  }}
+                >
+                  🥉 Lendas do Amanhã - 380 pts
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -661,6 +685,34 @@ const DashboardQ3 = () => {
         isOpen={showAddHabit}
         onClose={() => setShowAddHabit(false)}
         onAddHabit={handleAddHabit}
+      />
+      
+      <SquadMembersList
+        isOpen={showSquadMembers}
+        onClose={() => setShowSquadMembers(false)}
+      />
+      
+      <CompetitorSquadList
+        isOpen={showCompetitorSquad}
+        onClose={() => setShowCompetitorSquad(false)}
+        squadName={selectedSquadName}
+        onViewProfile={(competitor) => {
+          setSelectedCompetitor(competitor);
+          setShowCompetitorProfile(true);
+        }}
+      />
+      
+      <CompetitorProfile
+        isOpen={showCompetitorProfile}
+        onClose={() => {
+          setShowCompetitorProfile(false);
+          setSelectedCompetitor(null);
+        }}
+        onBack={() => {
+          setShowCompetitorProfile(false);
+          setShowCompetitorSquad(true);
+        }}
+        competitor={selectedCompetitor}
       />
     </div>
   );
