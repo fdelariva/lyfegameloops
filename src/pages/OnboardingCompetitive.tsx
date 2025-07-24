@@ -17,6 +17,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
+import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
+import { ArchetypeType } from "@/data/archetypes";
+import { defaultHabits } from "@/data/defaultHabits";
 
 const OnboardingCompetitive = () => {
   const navigate = useNavigate();
@@ -26,6 +30,11 @@ const OnboardingCompetitive = () => {
   const [showLuckyCards, setShowLuckyCards] = useState(false);
   const [showInviteFriends, setShowInviteFriends] = useState(false);
   const [inviteLink, setInviteLink] = useState("https://lyfe.app/join/abc123");
+  
+  // Estados para desafio customizado
+  const [selectedArchetype, setSelectedArchetype] = useState<ArchetypeType>("Guerreiro");
+  const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
 
   // Verificar se deve pular etapa de escolha de desafios
   useEffect(() => {
@@ -133,6 +142,42 @@ const OnboardingCompetitive = () => {
   const handleSelectChallenge = (challengeId: string) => {
     setSelectedChallenge(challengeId);
     setStep(3);
+  };
+
+  const handleCustomChallenge = () => {
+    setSelectedChallenge("custom");
+    setStep(2.5); // Ir para seleção de arquétipo
+  };
+
+  const handleArchetypeSelect = (archetype: ArchetypeType) => {
+    setSelectedArchetype(archetype);
+    setStep(2.6); // Ir para seleção de hábitos
+  };
+
+  const handleHabitToggle = (habitId: string) => {
+    setSelectedHabits(prev => 
+      prev.includes(habitId) 
+        ? prev.filter(id => id !== habitId)
+        : [...prev, habitId]
+    );
+  };
+
+  const handleHabitDelete = (habitId: string) => {
+    setSelectedHabits(prev => prev.filter(id => id !== habitId));
+  };
+
+  const handleAddCustomHabit = (habitName: string) => {
+    const newHabit = {
+      id: `custom-${Date.now()}`,
+      name: habitName
+    };
+    setCustomHabits(prev => [...prev, newHabit]);
+    setSelectedHabits(prev => [...prev, newHabit.id]);
+  };
+
+  const handleCompleteCustomOnboarding = () => {
+    toast.success("Desafio customizado criado!");
+    setStep(3); // Ir para sistema de pontuação
   };
 
   const handleFirstHabitComplete = () => {
@@ -308,7 +353,7 @@ const OnboardingCompetitive = () => {
               
               <Card 
                 className="cursor-pointer transition hover:border-primary border-dashed border-2"
-                onClick={() => navigate("/onboarding-challenges")}
+                onClick={handleCustomChallenge}
               >
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 mx-auto mb-4 bg-purple-600/20 rounded-full flex items-center justify-center">
@@ -326,6 +371,40 @@ const OnboardingCompetitive = () => {
             <Button variant="outline" onClick={() => setStep(1)}>
               Voltar
             </Button>
+          </div>
+        );
+        
+      case 2.5:
+        return (
+          <div className="flex flex-col items-center">
+            <ArchetypeStep
+              selectedArchetype={selectedArchetype}
+              onSelectArchetype={handleArchetypeSelect}
+            />
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" onClick={() => setStep(2)}>
+                Voltar
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case 2.6:
+        return (
+          <div className="flex flex-col items-center">
+            <HabitSelectionStep
+              habits={defaultHabits}
+              selectedHabits={selectedHabits}
+              onHabitToggle={handleHabitToggle}
+              onHabitDelete={handleHabitDelete}
+              onAddCustomHabit={handleAddCustomHabit}
+              onComplete={handleCompleteCustomOnboarding}
+            />
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" onClick={() => setStep(2.5)}>
+                Voltar
+              </Button>
+            </div>
           </div>
         );
         
