@@ -623,11 +623,19 @@ const CavernaDoDesafio: React.FC = () => {
   useEffect(() => {
     if (gameState === 'result') {
       const timer = setTimeout(() => {
-        setGameState('intro');
+        // Check if user won and completed challenges
+        const score = calculateScore();
+        if (score >= 80) {
+          // If user won, go to caverna dashboard
+          navigate('/caverna-dashboard');
+        } else {
+          // If user didn't win, stay in intro to try again
+          setGameState('intro');
+        }
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [gameState]);
+  }, [gameState, navigate]);
 
   if (gameState === 'intro') {
     return (
@@ -636,7 +644,7 @@ const CavernaDoDesafio: React.FC = () => {
           <div className="text-center mb-8">
             <Button 
               variant="ghost" 
-              onClick={() => navigate('/dashboard-q3')}
+              onClick={() => navigate('/caverna-dashboard')}
               className="mb-4"
             >
               ← Voltar ao Dashboard
@@ -991,7 +999,10 @@ const CavernaDoDesafio: React.FC = () => {
               
               <div className="pt-4">
                 <p className="text-sm text-muted-foreground">
-                  Voltando ao dashboard em alguns segundos...
+                  {won 
+                    ? "Voltando ao Dashboard da Caverna em alguns segundos..."
+                    : "Voltando para tentar novamente em alguns segundos..."
+                  }
                 </p>
               </div>
             </CardContent>
