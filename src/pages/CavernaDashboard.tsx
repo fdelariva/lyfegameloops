@@ -109,6 +109,15 @@ const CavernaDashboard = () => {
   }, [level, energy, connection, skill, streak, totalHabitsCompleted, shadowsDefeated, isDayZero]);
 
   const handleCompleteHabit = (habitId: string) => {
+    // Check if user has completed the caverna challenge
+    const hasChallengeCompleted = localStorage.getItem('cavernaChallengeCompleted') === 'true';
+    
+    // If it's the caverna habit and user hasn't completed the challenge, redirect to challenge
+    if (habitId === 'caverna-procrastinacao' && !hasChallengeCompleted) {
+      navigate('/caverna-do-desafio');
+      return;
+    }
+    
     setHabits(prev => prev.map(habit => {
       if (habit.id === habitId && !habit.completed) {
         const newStreak = habit.streak + 1;

@@ -602,6 +602,7 @@ const CavernaDoDesafio: React.FC = () => {
       
       localStorage.setItem('userHabits', JSON.stringify(existingHabits));
       localStorage.setItem('questHabitCompleted', 'true');
+      localStorage.setItem('cavernaChallengeCompleted', 'true');
     }
     
     setGameState('result');
