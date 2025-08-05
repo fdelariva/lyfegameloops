@@ -130,57 +130,8 @@ const OnboardingQ3Future = () => {
         return (
           <div className="flex flex-col items-center">
             <CavernaDesafioStep
-              onContinue={() => setStep(2)}
+              onContinue={() => setStep(3)}
             />
-          </div>
-        );
-      case 2:
-        return (
-          <div className="flex flex-col items-center text-center">
-            <h1 className="text-4xl font-bold mb-6 gradient-primary bg-clip-text text-transparent">
-              Bem-vindo ao Habit Quest
-            </h1>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              Desenvolva hábitos com Oracle personalizado e sistema de progressão avançado
-            </p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mb-8">
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4 text-center">
-                  <Brain className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h3 className="font-semibold">Oracle Pessoal</h3>
-                  <p className="text-sm text-muted-foreground">Orientação diária inteligente</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-orange-medium/10 border-orange-medium/20">
-                <CardContent className="p-4 text-center">
-                  <Trophy className="h-8 w-8 mx-auto mb-2 text-orange-medium" />
-                  <h3 className="font-semibold">Progressão Avançada</h3>
-                  <p className="text-sm text-muted-foreground">Sistema completo de evolução</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-teal-medium/10 border-teal-medium/20">
-                <CardContent className="p-4 text-center">
-                  <Calendar className="h-8 w-8 mx-auto mb-2 text-teal-medium" />
-                  <h3 className="font-semibold">Séries & Streaks</h3>
-                  <p className="text-sm text-muted-foreground">Mantenha a consistência</p>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-6 rounded-lg mb-8 max-w-2xl">
-              <h3 className="font-bold text-lg mb-2">🚀 Recursos Exclusivos</h3>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Oracle com IA personalizada para orientação diária</li>
-                <li>• Evolução de avatar com sistema de características</li>
-                <li>• Séries e streaks para manter consistência</li>
-                <li>• Caverna do Desafio: enfrente suas sombras internas</li>
-              </ul>
-            </div>
-            
-            <Button size="lg" onClick={() => setStep(3)} className="gradient-primary">
-              Continuar Jornada
-            </Button>
           </div>
         );
       case 3:
@@ -225,7 +176,7 @@ const OnboardingQ3Future = () => {
           variant="ghost" 
           size="sm" 
           className="absolute top-4 left-4"
-          onClick={() => setStep(step - 1)}
+          onClick={() => setStep(step === 4 ? 3 : step === 3 ? 1 : step - 1)}
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Voltar
@@ -234,7 +185,7 @@ const OnboardingQ3Future = () => {
       
       {/* Progress indicator */}
       <div className="absolute top-4 right-4 flex gap-2">
-        {[1, 2, 3, 4].map((stepNumber) => (
+        {[1, 3, 4].map((stepNumber) => (
           <div
             key={stepNumber}
             className={`w-2 h-2 rounded-full transition-colors ${
