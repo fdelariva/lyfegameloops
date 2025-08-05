@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { defaultHabits } from "@/data/defaultHabits";
 import { ArchetypeType } from "@/data/archetypes";
 import { saveOnboardingData, createCustomHabit } from "@/utils/onboardingUtils";
@@ -11,11 +11,21 @@ import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
   const [archetype, setArchetype] = useState<ArchetypeType>("Indefinido");
   const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
   const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
   const [habits, setHabits] = useState(defaultHabits);
+
+  // Check URL parameters on mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const stepParam = searchParams.get('step');
+    if (stepParam) {
+      setStep(parseInt(stepParam));
+    }
+  }, [location.search]);
 
   const handleSelectArchetype = (selected: ArchetypeType) => {
     setArchetype(selected);

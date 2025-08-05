@@ -380,7 +380,7 @@ const CavernaDashboard = () => {
                   </div>
                 </div>
                 <Button 
-                  onClick={() => navigate('/onboarding')}
+                  onClick={() => navigate('/onboarding?step=2')}
                   className="bg-purple-500 hover:bg-purple-600"
                 >
                   Escolher Arquétipo
