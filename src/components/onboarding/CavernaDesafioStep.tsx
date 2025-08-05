@@ -69,9 +69,9 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
             <h3 className="font-bold text-lg">Pergaminhos Mágicos Necessários</h3>
           </div>
           <p className="text-muted-foreground">
-            Para acessar a Caverna do Desafio, você precisa colecionar pergaminhos mágicos 
-            completando lições na Caverna da Sabedoria. Cada pergaminho representa conhecimento 
-            que você conquistou e te prepara para enfrentar essas sombras internas.
+            Para acessar a Caverna do Desafio, você precisa desenvolver suas habilidades e 
+            conquistar conhecimento através dos seus hábitos diários. Cada conquista te prepara 
+            para enfrentar essas sombras internas.
           </p>
         </CardContent>
       </Card>
@@ -87,55 +87,13 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
         </ul>
       </div>
 
-      <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20 mb-8">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mr-4">
-              <span className="text-2xl">👥</span>
-            </div>
-            <h3 className="font-bold text-lg">Quer Transformar em Desafio Coletivo?</h3>
-          </div>
-          <p className="text-muted-foreground mb-4">
-            Forme um Squad com 3-5 amigos e transforme sua jornada individual em uma 
-            aventura épica colaborativa! 70% cooperação + 30% competição saudável.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              <span className="text-blue-600">🤝</span>
-              <span className="text-sm">Apoio mútuo do squad</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-purple-600">⚡</span>
-              <span className="text-sm">Multiplicadores em grupo</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-green-600">🏆</span>
-              <span className="text-sm">Rankings e competições</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-orange-600">🎯</span>
-              <span className="text-sm">Metas coletivas épicas</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-4 justify-center">
+      <div className="flex justify-center">
         <Button 
           size="lg" 
-          onClick={() => window.location.href = "/squad-transition"}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg px-8 py-4"
-        >
-          Criar Squad
-        </Button>
-        
-        <Button 
-          size="lg" 
-          variant="outline"
           onClick={onContinue}
-          className="text-lg px-8 py-4"
+          className="bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-600 hover:to-purple-700 text-white text-lg px-8 py-4"
         >
-          Continuar Solo
+          Entrar na Caverna
         </Button>
       </div>
     </div>

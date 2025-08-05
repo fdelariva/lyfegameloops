@@ -28,10 +28,6 @@ import MorningBrief from "@/components/MorningBrief";
 import EndOfDayReview from "@/components/EndOfDayReview";
 import EvolutionAnimation from "@/components/EvolutionAnimation";
 import LevelUpAnimation from "@/components/LevelUpAnimation";
-import CompetitiveChallenge from "@/components/CompetitiveChallenge";
-import SquadMembersList from "@/components/SquadMembersList";
-import CompetitorSquadList from "@/components/CompetitorSquadList";
-import CompetitorProfile from "@/components/CompetitorProfile";
 import { defaultHabits } from "@/data/defaultHabits";
 import { useNavigate } from "react-router-dom";
 import AristosWelcomeMessages from "@/components/AristosWelcomeMessages";
@@ -58,12 +54,6 @@ const DashboardQ3 = () => {
   const [showEndOfDay, setShowEndOfDay] = useState(false);
   const [showEvolution, setShowEvolution] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  const [showCompetitiveChallenge, setShowCompetitiveChallenge] = useState(false);
-  const [showSquadMembers, setShowSquadMembers] = useState(false);
-  const [showCompetitorSquad, setShowCompetitorSquad] = useState(false);
-  const [showCompetitorProfile, setShowCompetitorProfile] = useState(false);
-  const [selectedCompetitor, setSelectedCompetitor] = useState<any>(null);
-  const [selectedSquadName, setSelectedSquadName] = useState("");
   const [showAristosWelcome, setShowAristosWelcome] = useState(false);
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
@@ -274,20 +264,6 @@ const DashboardQ3 = () => {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => navigate('/caverna-da-sabedoria')}
-              className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30 hover:from-purple-500/20 hover:to-indigo-500/20 text-purple-700 font-semibold px-6 py-3 h-auto"
-            >
-              <div className="w-5 h-5 mr-2">
-                <AthenaImage 
-                  className="w-full h-full object-contain"
-                  alt="Athena - Caverna da Sabedoria"
-                />
-              </div>
-              Caverna da Sabedoria
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
               onClick={() => navigate('/caverna-do-desafio')}
               className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border-red-500/30 hover:from-red-500/20 hover:to-orange-500/20 text-red-700 font-semibold px-6 py-3 h-auto"
             >
@@ -309,47 +285,6 @@ const DashboardQ3 = () => {
         {/* Oracle Message Carousel */}
         <OracleMessageCarousel className="mb-6" />
 
-        {/* Squad Activity Feed */}
-        <Card className="col-span-full bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-indigo-100 rounded-full">
-                <Bell className="h-5 w-5 text-indigo-600" />
-              </div>
-              <h3 className="font-bold text-lg">Feed do Squad</h3>
-            </div>
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                <div className="text-lg">⚡</div>
-                <div className="text-sm">
-                  <span className="font-bold text-purple-600">Squad Guerreiros Alpha</span> assumiu a liderança!
-                  <p className="text-xs text-muted-foreground">há 2 minutos</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                <div className="text-lg">✅</div>
-                <div className="text-sm">
-                  <span className="font-bold">Maria S.</span> completou <span className="font-medium">Exercitar-se 30min</span>
-                  <p className="text-xs text-muted-foreground">há 5 minutos</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                <div className="text-lg">🔥</div>
-                <div className="text-sm">
-                  <span className="font-bold text-orange-600">Squad Phoenix Fire</span> ganhou 50 pontos de energia!
-                  <p className="text-xs text-muted-foreground">há 8 minutos</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                <div className="text-lg">👥</div>
-                <div className="text-sm">
-                  <span className="font-bold">Pedro H.</span> e <span className="font-bold">Ana L.</span> completaram hábitos simultaneamente! <span className="text-purple-600 font-medium">+20 pts bonus</span>
-                  <p className="text-xs text-muted-foreground">há 12 minutos</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -377,72 +312,6 @@ const DashboardQ3 = () => {
             </CardContent>
           </Card>
 
-          {/* Squad Ranking */}
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowSquadMembers(true)}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center">
-                <Users className="h-4 w-4 mr-1 text-purple-600" />
-                Meu Squad
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-medium">Guerreiros Alpha</span>
-                <Badge className="bg-purple-100 text-purple-800">#2</Badge>
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span>👑 João (Você)</span>
-                  <span className="font-bold">150 pts</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>🥈 Maria S.</span>
-                  <span>145 pts</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>🥉 Pedro H.</span>
-                  <span>130 pts</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Global Ranking */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center">
-                <Trophy className="h-4 w-4 mr-1 text-yellow-600" />
-                Ranking Global
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-medium">Entre Squads</span>
-                <Badge className="bg-yellow-100 text-yellow-800">#2 de 47</Badge>
-              </div>
-              <div className="space-y-1 text-xs text-muted-foreground">
-                <div 
-                  className="cursor-pointer hover:text-primary transition-colors"
-                  onClick={() => {
-                    setSelectedSquadName("Team Phoenix");
-                    setShowCompetitorSquad(true);
-                  }}
-                >
-                  🥇 Team Phoenix - 420 pts
-                </div>
-                <div className="font-bold text-purple-600">🥈 Guerreiros Alpha - 425 pts</div>
-                <div 
-                  className="cursor-pointer hover:text-primary transition-colors"
-                  onClick={() => {
-                    setSelectedSquadName("Lendas do Amanhã");
-                    setShowCompetitorSquad(true);
-                  }}
-                >
-                  🥉 Lendas do Amanhã - 380 pts
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Progress */}
           <Card>
@@ -673,46 +542,10 @@ const DashboardQ3 = () => {
         newLevel={level}
       />
       
-      <CompetitiveChallenge
-        isOpen={showCompetitiveChallenge}
-        onClose={() => setShowCompetitiveChallenge(false)}
-        userHabits={habits}
-        userProgress={completionRate}
-        userName="Você"
-      />
-      
       <AddHabitModal
         isOpen={showAddHabit}
         onClose={() => setShowAddHabit(false)}
         onAddHabit={handleAddHabit}
-      />
-      
-      <SquadMembersList
-        isOpen={showSquadMembers}
-        onClose={() => setShowSquadMembers(false)}
-      />
-      
-      <CompetitorSquadList
-        isOpen={showCompetitorSquad}
-        onClose={() => setShowCompetitorSquad(false)}
-        squadName={selectedSquadName}
-        onViewProfile={(competitor) => {
-          setSelectedCompetitor(competitor);
-          setShowCompetitorProfile(true);
-        }}
-      />
-      
-      <CompetitorProfile
-        isOpen={showCompetitorProfile}
-        onClose={() => {
-          setShowCompetitorProfile(false);
-          setSelectedCompetitor(null);
-        }}
-        onBack={() => {
-          setShowCompetitorProfile(false);
-          setShowCompetitorSquad(true);
-        }}
-        competitor={selectedCompetitor}
       />
     </div>
   );

@@ -29,9 +29,8 @@ const CavernaChallengeStep = ({ onAccept, onDecline }: CavernaChallengeStepProps
           Parabéns por escolher seus hábitos iniciais! Agora, eu tenho uma proposta especial para você.
         </p>
         <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-          Na primeira semana, junto com os hábitos que você escolheu, você pode ter acesso à 
-          <span className="font-bold text-primary"> Caverna da Sabedoria</span>, onde receberá 
-          lições sobre as três dimensões do desenvolvimento pessoal e ganhará pergaminhos mágicos acertando mais de 80% das questões:
+          Na primeira semana, junto com os hábitos que você escolheu, você se desenvolverá nas 
+          três dimensões do desenvolvimento pessoal:
         </p>
       </div>
 
