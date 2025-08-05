@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skull, Zap, Smartphone } from "lucide-react";
@@ -8,6 +9,7 @@ interface CavernaDesafioStepProps {
 }
 
 const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
+  const navigate = useNavigate();
   return (
     <div className="text-center max-w-4xl mx-auto">
       <div className="mb-8">
@@ -87,13 +89,21 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
         </ul>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
         <Button 
           size="lg" 
-          onClick={onContinue}
-          className="bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+          onClick={() => navigate('/caverna-do-desafio')}
+          className="bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-600 hover:to-purple-700 text-white text-lg px-8 py-4 flex-1"
         >
           Entrar na Caverna
+        </Button>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          onClick={onContinue}
+          className="flex-1"
+        >
+          Quero escolher meu arquétipo
         </Button>
       </div>
     </div>
