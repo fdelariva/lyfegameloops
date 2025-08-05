@@ -331,7 +331,7 @@ const CavernaDashboard = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => setShowAddHabit(true)}
+                onClick={() => navigate('/caverna-do-desafio')}
               >
                 Adicionar Desafio
               </Button>
@@ -365,6 +365,31 @@ const CavernaDashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Archetype Selection Prompt */}
+        {shadowsDefeated >= 1 && (
+          <Card className="bg-gradient-to-r from-purple-500/10 to-primary/10 border-purple-500/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Brain className="h-6 w-6 text-purple-500" />
+                  <div>
+                    <h3 className="font-semibold text-purple-500">Mensagem do Oráculo</h3>
+                    <p className="text-sm text-muted-foreground">
+                      "Agora que você venceu sua primeira sombra, você pode escolher seu arquétipo e começar a se tornar a pessoa que você quer ser:"
+                    </p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => navigate('/onboarding')}
+                  className="bg-purple-500 hover:bg-purple-600"
+                >
+                  Escolher Arquétipo
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* End of Day Review Prompt */}
         {completedToday === totalToday && totalToday > 0 && (
           <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
@@ -396,13 +421,6 @@ const CavernaDashboard = () => {
         />
       )}
 
-      {showAddHabit && (
-        <AddHabitModal
-          isOpen={showAddHabit}
-          onClose={() => setShowAddHabit(false)}
-          onAddHabit={handleAddHabit}
-        />
-      )}
 
       {showEndOfDay && (
         <EndOfDayReview
