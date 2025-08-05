@@ -92,7 +92,7 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
       <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
         <Button 
           size="lg" 
-          onClick={() => navigate('/caverna-do-desafio')}
+          onClick={() => navigate('/caverna-dashboard')}
           className="bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-600 hover:to-purple-700 text-white text-lg px-8 py-4 flex-1"
         >
           Entrar na Caverna

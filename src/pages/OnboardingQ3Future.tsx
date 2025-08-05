@@ -85,7 +85,7 @@ const OnboardingQ3Future = () => {
   };
 
   const handleCavernaDecline = () => {
-    handleCompleteOnboarding();
+    navigate('/caverna-dashboard');
   };
 
   const handleHabitToggle = (habitId: string) => {

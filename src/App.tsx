@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import OnboardingQ3Future from "./pages/OnboardingQ3Future";
+import CavernaDashboard from "./pages/CavernaDashboard";
 import DashboardQ3 from "./pages/DashboardQ3";
 import CavernaDoDesafio from "./pages/CavernaDoDesafio";
 import NotFound from "./pages/NotFound";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/onboarding-q3" element={<OnboardingQ3Future />} />
             <Route path="/dashboard-q3" element={<DashboardQ3 />} />
+            <Route path="/caverna-dashboard" element={<CavernaDashboard />} />
             <Route path="/caverna-do-desafio" element={<CavernaDoDesafio />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
