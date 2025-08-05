@@ -66,9 +66,9 @@ const CavernaDesafioStep = ({ onContinue }: CavernaDesafioStepProps) => {
         <CardContent className="p-6">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mr-4">
-              <span className="text-2xl">📜</span>
+              <span className="text-2xl">📚</span>
             </div>
-            <h3 className="font-bold text-lg">Pergaminhos Mágicos Necessários</h3>
+            <h3 className="font-bold text-lg">Conhecimento Necessário</h3>
           </div>
           <p className="text-muted-foreground">
             Para acessar a Caverna do Desafio, você precisa desenvolver suas habilidades e 

@@ -37,7 +37,7 @@ const UserAvatar = ({
         5: "👑"  // Coroa de louros
       },
       sábio: {
-        1: "📜", // Pergaminho
+        1: "📚", // Livro
         2: "🦉", // Coruja de Atena
         5: "⚡"  // Raio de Zeus
       },
