@@ -56,24 +56,28 @@ const CavernaDashboard = () => {
   const [previousLevel, setPreviousLevel] = useState(1);
   
   // Caverna-specific habits
-  const [habits, setHabits] = useState([
-    {
-      id: 'caverna-procrastinacao',
-      name: "Lutar contra a procrastinação",
-      icon: "⚔️",
-      description: "Enfrente suas sombras internas",
-      category: "Caverna",
-      energyBoost: 5,
-      connectionBoost: 3,
-      skillBoost: 4,
-      completed: false,
-      streak: 0,
-      info: {
-        whyDo: "A procrastinação é uma das maiores sombras que nos impedem de crescer. Enfrentá-la fortalece nossa disciplina e autocontrole.",
-        howDo: "Identifique uma tarefa que você está adiando há mais de 24 horas e a execute imediatamente, mesmo que seja apenas o primeiro passo."
+  const [habits, setHabits] = useState(() => {
+    const hasChallengeCompleted = localStorage.getItem('cavernaChallengeCompleted') === 'true';
+    
+    return [
+      {
+        id: 'caverna-procrastinacao',
+        name: "Lutar contra a procrastinação",
+        icon: "⚔️",
+        description: "Enfrente suas sombras internas",
+        category: "Caverna",
+        energyBoost: 5,
+        connectionBoost: 3,
+        skillBoost: 4,
+        completed: hasChallengeCompleted, // Auto-complete if challenge was completed
+        streak: hasChallengeCompleted ? 1 : 0,
+        info: {
+          whyDo: "A procrastinação é uma das maiores sombras que nos impedem de crescer. Enfrentá-la fortalece nossa disciplina e autocontrole.",
+          howDo: "Identifique uma tarefa que você está adiando há mais de 24 horas e a execute imediatamente, mesmo que seja apenas o primeiro passo."
+        }
       }
-    }
-  ]);
+    ];
+  });
 
   // Load user data on mount
   useEffect(() => {
