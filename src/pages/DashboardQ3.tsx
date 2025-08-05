@@ -64,10 +64,29 @@ const DashboardQ3 = () => {
     const savedHabits = localStorage.getItem('selectedHabits');
     const customHabits = localStorage.getItem('customHabits');
     const userHabits = localStorage.getItem('userHabits');
+    const cavernaChallengeAccepted = localStorage.getItem('cavernaChallengeAccepted');
+    const cavernaHabitName = localStorage.getItem('cavernaHabitName');
     
     let baseHabits = [];
     
-    if (savedHabits) {
+    // If user came from caverna challenge and hasn't added other habits
+    if (cavernaChallengeAccepted === 'true' && (!savedHabits || JSON.parse(savedHabits).length === 1)) {
+      const cavernaHabit = {
+        id: 'caverna-aprendizado',
+        name: cavernaHabitName || "Lutar contra a procrastinação",
+        icon: "⚔️",
+        description: "Desafio da Caverna das Sombras",
+        category: "Caverna",
+        energyBoost: 5,
+        connectionBoost: 3,
+        skillBoost: 4,
+        info: {
+          whyDo: "Enfrentar a procrastinação é o primeiro passo para dominar suas sombras internas.",
+          howDo: "Identifique uma tarefa que você está adiando e a execute imediatamente."
+        }
+      };
+      baseHabits = [cavernaHabit];
+    } else if (savedHabits) {
       const selectedIds = JSON.parse(savedHabits);
       const customs = customHabits ? JSON.parse(customHabits) : [];
       
@@ -90,7 +109,26 @@ const DashboardQ3 = () => {
         }
       }));
       
-      baseHabits = [...selectedDefaultHabits, ...selectedCustomHabits];
+      // If caverna challenge was accepted, include the caverna habit
+      if (cavernaChallengeAccepted === 'true') {
+        const cavernaHabit = {
+          id: 'caverna-aprendizado',
+          name: cavernaHabitName || "Lutar contra a procrastinação",
+          icon: "⚔️",
+          description: "Desafio da Caverna das Sombras",
+          category: "Caverna",
+          energyBoost: 5,
+          connectionBoost: 3,
+          skillBoost: 4,
+          info: {
+            whyDo: "Enfrentar a procrastinação é o primeiro passo para dominar suas sombras internas.",
+            howDo: "Identifique uma tarefa que você está adiando e a execute imediatamente."
+          }
+        };
+        baseHabits = [cavernaHabit, ...selectedDefaultHabits, ...selectedCustomHabits];
+      } else {
+        baseHabits = [...selectedDefaultHabits, ...selectedCustomHabits];
+      }
     } else {
       baseHabits = defaultHabits.slice(0, 3);
     }

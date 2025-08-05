@@ -53,8 +53,8 @@ const OnboardingQ3Future = () => {
   };
 
   const handleCavernaAccept = () => {
-    // Add "Aprender sobre desenvolvimento pessoal" habit
-    const cavernaHabit = "Aprender sobre desenvolvimento pessoal";
+    // Add "Lutar contra a procrastinação" habit
+    const cavernaHabit = "Lutar contra a procrastinação";
     const cavernaHabitId = `caverna-aprendizado`;
     
     setCustomHabits(prev => [...prev, cavernaHabit]);
