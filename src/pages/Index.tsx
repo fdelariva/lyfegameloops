@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Users, Trophy, Target, Calendar, Skull, ArrowRight } from "lucide-react";
+import { Brain, Trophy, Target, Calendar, Skull, ArrowRight } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,9 +14,6 @@ const Index = () => {
     navigate("/onboarding-q3", { state: { skipWelcome: true } });
   };
 
-  const handleCompetitiveStart = () => {
-    navigate("/onboarding-competitive");
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
@@ -59,22 +56,6 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-purple-600/10 border-purple-600/20 hover:bg-purple-600/15 transition-colors">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 mx-auto mb-4">
-                <img 
-                  src="/lovable-uploads/d43b4096-ba1e-404a-9b10-1e22c3ac310a.png" 
-                  alt="Oráculo Aristos - Caverna da Sabedoria"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Caverna da Sabedoria</h3>
-              <p className="text-sm text-muted-foreground">
-                Ganhe pergaminhos mágicos e prepare-se para enfrentar seus primeiros quests
-              </p>
-            </CardContent>
-          </Card>
-          
           <Card className="bg-red-600/10 border-red-600/20 hover:bg-red-600/15 transition-colors">
             <CardContent className="p-6 text-center">
               <Skull className="h-12 w-12 mx-auto mb-4 text-red-600" />
@@ -101,46 +82,24 @@ const Index = () => {
               <ArrowRight className="h-4 w-4 text-primary" />
               Séries e streaks para manter consistência
             </li>
-            <li className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4 text-primary" />
-              Caverna da Sabedoria: ganhe pergaminhos mágicos e prepare-se para quests
-            </li>
           </ul>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8 w-full max-w-4xl">
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-            <CardContent className="p-6 text-center">
-              <Brain className="h-16 w-16 mx-auto mb-4 text-primary" />
-              <h3 className="font-bold text-xl mb-2">Jornada Solo</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Oracle pessoal, progressão individual e cavernas místicas
+        <div className="flex justify-center mb-8">
+          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20 max-w-md">
+            <CardContent className="p-8 text-center">
+              <Brain className="h-20 w-20 mx-auto mb-6 text-primary" />
+              <h3 className="font-bold text-2xl mb-4">Comece Sua Jornada</h3>
+              <p className="text-muted-foreground mb-6">
+                Oracle pessoal, progressão individual e enfrentamento das sombras internas
               </p>
               <Button 
                 size="lg" 
                 onClick={handleStart}
-                className="w-full gradient-primary"
+                className="w-full gradient-primary text-lg py-6"
               >
-                Iniciar Jornada Solo
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
-            <CardContent className="p-6 text-center">
-              <Users className="h-16 w-16 mx-auto mb-4 text-purple-500" />
-              <h3 className="font-bold text-xl mb-2">Desafio Competitivo</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Forme squads com amigos e compitam em desafios épicos
-              </p>
-              <Button 
-                size="lg" 
-                onClick={handleCompetitiveStart}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-              >
-                Criar Squad
-                <Trophy className="ml-2 h-5 w-5" />
+                Iniciar Jornada
+                <ArrowRight className="ml-2 h-6 w-6" />
               </Button>
             </CardContent>
           </Card>
