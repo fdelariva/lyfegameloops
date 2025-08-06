@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ const Index = () => {
   };
 
   const handleStartJourney = () => {
-    navigate("/onboarding-q3", { state: { skipWelcome: true } });
+    navigate("/onboarding-q3", { state: { skipToArchetype: true } });
   };
 
   return (
