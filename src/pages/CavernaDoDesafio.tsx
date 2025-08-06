@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CheckCircle, XCircle, Sword, Trophy, Timer, Play, ChevronLeft, Lock } from "lucide-react";
+import { CheckCircle, XCircle, Sword, Trophy, Timer, Play, ChevronLeft, Lock, Gift } from "lucide-react";
 import { AthenaImage } from "@/components/AthenaImage";
 
 interface Battle {
@@ -593,7 +593,7 @@ const CavernaDoDesafio: React.FC = () => {
   const navigate = useNavigate();
   const [selectedShadow, setSelectedShadow] = useState<Shadow | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
-  const [gameState, setGameState] = useState<'intro' | 'playing' | 'action' | 'result'>('intro');
+  const [gameState, setGameState] = useState<'intro' | 'playing' | 'action' | 'treasure' | 'result'>('intro');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -601,11 +601,12 @@ const CavernaDoDesafio: React.FC = () => {
   const [actionTimer, setActionTimer] = useState(10);
   const [shadowProgress, setShadowProgress] = useState<Record<string, number>>({});
   const [capturedShadows, setCapturedShadows] = useState<Set<string>>(new Set());
+  const [treasureResult, setTreasureResult] = useState<'potion' | 'poison' | null>(null);
+  const [livesGained, setLivesGained] = useState(1);
 
   const currentBattle = selectedShadow?.battles.find(b => b.day === currentDay);
   const currentQuestion = currentBattle?.questions[currentQuestionIndex];
 
-  // Load progress from localStorage
   useEffect(() => {
     const savedProgress = localStorage.getItem('shadowProgress');
     const savedCaptured = localStorage.getItem('capturedShadows');
@@ -618,7 +619,6 @@ const CavernaDoDesafio: React.FC = () => {
     }
   }, []);
 
-  // Save progress to localStorage
   const saveProgress = (progress: Record<string, number>, captured: Set<string>) => {
     localStorage.setItem('shadowProgress', JSON.stringify(progress));
     localStorage.setItem('capturedShadows', JSON.stringify(Array.from(captured)));
@@ -632,6 +632,8 @@ const CavernaDoDesafio: React.FC = () => {
     setAnswers([]);
     setSelectedAnswer(null);
     setShowFeedback(false);
+    setTreasureResult(null);
+    setLivesGained(1);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
@@ -662,12 +664,33 @@ const CavernaDoDesafio: React.FC = () => {
       setActionTimer(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          completeBattle();
+          
+          const correctAnswers = answers.filter((answer, index) => 
+            answer === currentBattle?.questions[index].correctAnswer
+          ).length;
+          const score = (correctAnswers / 4) * 100;
+          
+          if (score >= 80) {
+            setGameState('treasure');
+            openTreasureChest();
+          } else {
+            setGameState('result');
+          }
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+  };
+
+  const openTreasureChest = () => {
+    const isPotion = Math.random() < 0.5;
+    setTreasureResult(isPotion ? 'potion' : 'poison');
+    setLivesGained(isPotion ? 2 : 0);
+    
+    setTimeout(() => {
+      completeBattle();
+    }, 3000);
   };
 
   const completeBattle = () => {
@@ -682,10 +705,14 @@ const CavernaDoDesafio: React.FC = () => {
       const newProgress = { ...shadowProgress };
       const shadowId = selectedShadow.id;
       
-      // Increment lives defeated for this shadow
-      newProgress[shadowId] = (newProgress[shadowId] || 0) + 1;
+      if (treasureResult === 'potion') {
+        newProgress[shadowId] = (newProgress[shadowId] || 0) + 2;
+      } else if (treasureResult === 'poison') {
+        newProgress[shadowId] = newProgress[shadowId] || 0;
+      } else {
+        newProgress[shadowId] = (newProgress[shadowId] || 0) + 1;
+      }
       
-      // Check if shadow is completely defeated (7 lives)
       const newCaptured = new Set(capturedShadows);
       if (newProgress[shadowId] >= 7) {
         newCaptured.add(shadowId);
@@ -695,7 +722,6 @@ const CavernaDoDesafio: React.FC = () => {
       setCapturedShadows(newCaptured);
       saveProgress(newProgress, newCaptured);
       
-      // Create or update combat habit
       const habitData = {
         id: 'combat-shadows',
         name: 'Combater as Sombras',
@@ -903,6 +929,60 @@ const CavernaDoDesafio: React.FC = () => {
     );
   }
 
+  if (gameState === 'treasure') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-yellow-500/10 p-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <Card className="border-yellow-400 bg-yellow-50/50">
+            <CardHeader>
+              <CardTitle className="text-3xl flex items-center justify-center gap-3">
+                <Gift className="w-8 h-8 text-yellow-600" />
+                Baú do Tesouro
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-8xl animate-bounce">
+                📦
+              </div>
+              
+              <p className="text-lg text-muted-foreground">
+                Você venceu a batalha! Um baú misterioso apareceu...
+              </p>
+              
+              {treasureResult && (
+                <div className="space-y-4">
+                  <div className="text-6xl">
+                    {treasureResult === 'potion' ? '🧪' : '☠️'}
+                  </div>
+                  
+                  <div className={`p-6 rounded-lg border-2 ${
+                    treasureResult === 'potion' 
+                      ? 'bg-green-50 border-green-300 text-green-800' 
+                      : 'bg-red-50 border-red-300 text-red-800'
+                  }`}>
+                    <h3 className="text-2xl font-bold mb-2">
+                      {treasureResult === 'potion' ? '🎉 Poção da Vitória!' : '💀 Veneno Sombrio!'}
+                    </h3>
+                    <p className="text-lg">
+                      {treasureResult === 'potion' 
+                        ? `Incrível! A poção dobrou sua recompensa - você ganhou ${livesGained} vidas!`
+                        : 'Oh não! O veneno anulou sua vitória - a sombra recuperou sua vida perdida!'
+                      }
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="text-sm text-muted-foreground">
+                Processando resultado...
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (gameState === 'result') {
     const score = calculateScore();
     const won = score >= 80;
@@ -930,25 +1010,40 @@ const CavernaDoDesafio: React.FC = () => {
                 </p>
                 <p className="text-muted-foreground mb-4">
                   {won 
-                    ? `Parabéns! Você derrotou uma vida de ${selectedShadow?.name}!`
+                    ? `Parabéns! ${treasureResult === 'potion' ? 'A poção dobrou sua recompensa!' : treasureResult === 'poison' ? 'O veneno anulou sua vitória...' : 'Você derrotou uma vida de ' + selectedShadow?.name + '!'}`
                     : `Você não venceu desta vez. Tente novamente!`
                   }
                 </p>
                 
                 {won && (
                   <div className="space-y-4">
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <p className="text-green-800 font-semibold">
-                        💚 Vida {livesDefeated}/7 derrotada!
+                    <div className={`p-4 rounded-lg border ${
+                      treasureResult === 'poison' 
+                        ? 'bg-red-50 border-red-200' 
+                        : 'bg-green-50 border-green-200'
+                    }`}>
+                      <p className={`font-semibold ${
+                        treasureResult === 'poison' ? 'text-red-800' : 'text-green-800'
+                      }`}>
+                        {treasureResult === 'poison' 
+                          ? '☠️ Veneno anulou a vitória!' 
+                          : treasureResult === 'potion'
+                            ? `🧪 Vidas ${livesDefeated}/7 derrotadas! (+2 pela poção)`
+                            : `💚 Vida ${livesDefeated}/7 derrotada!`
+                        }
                       </p>
-                      {shadowCaptured ? (
-                        <p className="text-green-700 text-sm mt-1">
-                          🎉 {selectedShadow?.name} foi completamente capturada!
-                        </p>
-                      ) : (
-                        <p className="text-green-700 text-sm mt-1">
-                          Ainda restam {7 - livesDefeated} vidas para capturar {selectedShadow?.name}
-                        </p>
+                      {treasureResult !== 'poison' && (
+                        <>
+                          {shadowCaptured ? (
+                            <p className="text-green-700 text-sm mt-1">
+                              🎉 {selectedShadow?.name} foi completamente capturada!
+                            </p>
+                          ) : (
+                            <p className="text-green-700 text-sm mt-1">
+                              Ainda restam {7 - livesDefeated} vidas para capturar {selectedShadow?.name}
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                     
