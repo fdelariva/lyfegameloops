@@ -1010,7 +1010,11 @@ const CavernaDoDesafio: React.FC = () => {
                 </p>
                 <p className="text-muted-foreground mb-4">
                   {won 
-                    ? `Parabéns! ${treasureResult === 'potion' ? 'A poção dobrou sua recompensa!' : treasureResult === 'poison' ? 'O veneno anulou sua vitória...' : 'Você derrotou uma vida de ' + selectedShadow?.name + '!'}`
+                    ? treasureResult === 'poison' 
+                      ? 'O veneno anulou sua vitória! A sombra mantém sua vida...'
+                      : treasureResult === 'potion'
+                        ? 'A poção dobrou sua recompensa! Você ganhou 2 vidas da sombra!'
+                        : 'Você derrotou uma vida de ' + selectedShadow?.name + '!'
                     : `Você não venceu desta vez. Tente novamente!`
                   }
                 </p>
@@ -1026,13 +1030,17 @@ const CavernaDoDesafio: React.FC = () => {
                         treasureResult === 'poison' ? 'text-red-800' : 'text-green-800'
                       }`}>
                         {treasureResult === 'poison' 
-                          ? '☠️ Veneno anulou a vitória!' 
+                          ? '☠️ Veneno detectado! A sombra se regenera!' 
                           : treasureResult === 'potion'
-                            ? `🧪 Vidas ${livesDefeated}/7 derrotadas! (+2 pela poção)`
-                            : `💚 Vida ${livesDefeated}/7 derrotada!`
+                            ? `🧪 Poção mágica! 2 vidas derrotadas (${livesDefeated}/7)`
+                            : `💚 1 vida derrotada (${livesDefeated}/7)`
                         }
                       </p>
-                      {treasureResult !== 'poison' && (
+                      {treasureResult === 'poison' ? (
+                        <p className="text-red-700 text-sm mt-1">
+                          ⚔️ A vida da sombra continua ativa. Você precisará lutar novamente!
+                        </p>
+                      ) : (
                         <>
                           {shadowCaptured ? (
                             <p className="text-green-700 text-sm mt-1">
