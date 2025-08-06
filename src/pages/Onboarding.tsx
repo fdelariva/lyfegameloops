@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultHabits } from "@/data/defaultHabits";
@@ -6,7 +5,6 @@ import { ArchetypeType } from "@/data/archetypes";
 import { saveOnboardingData, createCustomHabit } from "@/utils/onboardingUtils";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
-
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 
 const Onboarding = () => {
@@ -21,7 +19,6 @@ const Onboarding = () => {
     setArchetype(selected);
     setStep(4);
   };
-
 
   const handleHabitToggle = (habitId: string) => {
     if (selectedHabits.includes(habitId)) {
@@ -49,7 +46,7 @@ const Onboarding = () => {
     }
 
     saveOnboardingData(selectedHabits, customHabits, archetype);
-    navigate("/dashboard");
+    navigate("/dashboard-q3");
   };
 
   const renderStep = () => {
@@ -64,7 +61,6 @@ const Onboarding = () => {
             onSelectArchetype={handleSelectArchetype}
           />
         );
-
 
       case 4:
         return (

@@ -12,6 +12,14 @@ export const saveOnboardingData = (
   localStorage.setItem('selectedHabits', JSON.stringify(selectedHabits));
   localStorage.setItem('customHabits', JSON.stringify(customHabits));
   localStorage.setItem('userArchetype', archetype);
+  localStorage.setItem('onboardingCompleted', 'true');
+  localStorage.setItem('gameMode', 'regular');
+  localStorage.setItem('userLevel', '1');
+  localStorage.setItem('userEnergy', '25');
+  localStorage.setItem('userConnection', '20');
+  localStorage.setItem('userSkill', '15');
+  localStorage.setItem('userCoins', '100');
+  localStorage.setItem('isDayZero', 'true');
   
   toast.success("Onboarding completo!");
   toast("Bônus de boas-vindas!", {
