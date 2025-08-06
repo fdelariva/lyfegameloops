@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CheckCircle, XCircle, Sword, Trophy, Timer, Play, ChevronLeft } from "lucide-react";
+import { CheckCircle, XCircle, Sword, Trophy, Timer, Play, ChevronLeft, Lock } from "lucide-react";
 import { AthenaImage } from "@/components/AthenaImage";
 
 interface Battle {
@@ -20,6 +20,16 @@ interface Question {
   options: string[];
   correctAnswer: number;
   explanation: string;
+}
+
+interface Shadow {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  enabled: boolean;
+  battles: Battle[];
 }
 
 const slothBattles: Battle[] = [
@@ -504,11 +514,84 @@ const vertigoBattles: Battle[] = [
   }
 ];
 
-type Enemy = 'sloth' | 'vertigo';
+const shadows: Shadow[] = [
+  {
+    id: 'sloth',
+    name: 'SLOTH',
+    description: 'Procrastinação',
+    icon: '🦥',
+    color: 'orange',
+    enabled: true,
+    battles: slothBattles
+  },
+  {
+    id: 'vertigo',
+    name: 'VERTIGO',
+    description: 'Vício em tecnologia/Doom scrolling',
+    icon: '📱',
+    color: 'purple',
+    enabled: true,
+    battles: vertigoBattles
+  },
+  {
+    id: 'direction',
+    name: 'DIRECTION',
+    description: 'Falta de Direção',
+    icon: '🧭',
+    color: 'blue',
+    enabled: false,
+    battles: []
+  },
+  {
+    id: 'distraction',
+    name: 'DISTRACTION',
+    description: 'Distração',
+    icon: '💭',
+    color: 'yellow',
+    enabled: false,
+    battles: []
+  },
+  {
+    id: 'discipline',
+    name: 'DISCIPLINE',
+    description: 'Falta de Disciplina',
+    icon: '⚖️',
+    color: 'red',
+    enabled: false,
+    battles: []
+  },
+  {
+    id: 'motivation',
+    name: 'MOTIVATION',
+    description: 'Falta de Motivação',
+    icon: '🔥',
+    color: 'pink',
+    enabled: false,
+    battles: []
+  },
+  {
+    id: 'organization',
+    name: 'ORGANIZATION',
+    description: 'Falta de Organização',
+    icon: '📋',
+    color: 'green',
+    enabled: false,
+    battles: []
+  },
+  {
+    id: 'confidence',
+    name: 'CONFIDENCE',
+    description: 'Falta de Autoconfiança/Autoeficácia',
+    icon: '💪',
+    color: 'indigo',
+    enabled: false,
+    battles: []
+  }
+];
 
 const CavernaDoDesafio: React.FC = () => {
   const navigate = useNavigate();
-  const [currentEnemy, setCurrentEnemy] = useState<Enemy>('sloth');
+  const [selectedShadow, setSelectedShadow] = useState<Shadow | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'action' | 'result'>('intro');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -516,14 +599,34 @@ const CavernaDoDesafio: React.FC = () => {
   const [answers, setAnswers] = useState<number[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [actionTimer, setActionTimer] = useState(10);
-  const [collectedCards, setCollectedCards] = useState<Set<string>>(new Set());
-  const [battleResults, setBattleResults] = useState<Record<string, boolean>>({});
+  const [shadowProgress, setShadowProgress] = useState<Record<string, number>>({});
+  const [capturedShadows, setCapturedShadows] = useState<Set<string>>(new Set());
 
-  const battles = currentEnemy === 'sloth' ? slothBattles : vertigoBattles;
-  const currentBattle = battles.find(b => b.day === currentDay);
+  const currentBattle = selectedShadow?.battles.find(b => b.day === currentDay);
   const currentQuestion = currentBattle?.questions[currentQuestionIndex];
 
-  const startBattle = () => {
+  // Load progress from localStorage
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('shadowProgress');
+    const savedCaptured = localStorage.getItem('capturedShadows');
+    
+    if (savedProgress) {
+      setShadowProgress(JSON.parse(savedProgress));
+    }
+    if (savedCaptured) {
+      setCapturedShadows(new Set(JSON.parse(savedCaptured)));
+    }
+  }, []);
+
+  // Save progress to localStorage
+  const saveProgress = (progress: Record<string, number>, captured: Set<string>) => {
+    localStorage.setItem('shadowProgress', JSON.stringify(progress));
+    localStorage.setItem('capturedShadows', JSON.stringify(Array.from(captured)));
+  };
+
+  const startBattle = (shadow: Shadow, day: number) => {
+    setSelectedShadow(shadow);
+    setCurrentDay(day);
     setGameState('playing');
     setCurrentQuestionIndex(0);
     setAnswers([]);
@@ -548,7 +651,6 @@ const CavernaDoDesafio: React.FC = () => {
         setSelectedAnswer(null);
         setShowFeedback(false);
       } else {
-        // Fim das perguntas, ir para ação
         setGameState('action');
         setActionTimer(10);
       }
@@ -569,20 +671,34 @@ const CavernaDoDesafio: React.FC = () => {
   };
 
   const completeBattle = () => {
+    if (!selectedShadow) return;
+    
     const correctAnswers = answers.filter((answer, index) => 
       answer === currentBattle?.questions[index].correctAnswer
     ).length;
     const score = (correctAnswers / 4) * 100;
     
     if (score >= 80) {
-      const cardId = `${currentEnemy}-${currentDay}`;
-      setCollectedCards(prev => new Set([...prev, cardId]));
-      setBattleResults(prev => ({ ...prev, [cardId]: true }));
+      const newProgress = { ...shadowProgress };
+      const shadowId = selectedShadow.id;
       
-      // Criar ou atualizar hábito de combate à procrastinação
+      // Increment lives defeated for this shadow
+      newProgress[shadowId] = (newProgress[shadowId] || 0) + 1;
+      
+      // Check if shadow is completely defeated (7 lives)
+      const newCaptured = new Set(capturedShadows);
+      if (newProgress[shadowId] >= 7) {
+        newCaptured.add(shadowId);
+      }
+      
+      setShadowProgress(newProgress);
+      setCapturedShadows(newCaptured);
+      saveProgress(newProgress, newCaptured);
+      
+      // Create or update combat habit
       const habitData = {
-        id: 'combat-procrastination',
-        name: 'Lutar contra a Procrastinação',
+        id: 'combat-shadows',
+        name: 'Combater as Sombras',
         icon: '⚔️',
         color: 'bg-red-500',
         autoTrack: true,
@@ -590,9 +706,8 @@ const CavernaDoDesafio: React.FC = () => {
         completedAt: new Date().toISOString()
       };
       
-      // Salvar no localStorage
       const existingHabits = JSON.parse(localStorage.getItem('userHabits') || '[]');
-      const habitIndex = existingHabits.findIndex((h: any) => h.id === 'combat-procrastination');
+      const habitIndex = existingHabits.findIndex((h: any) => h.id === 'combat-shadows');
       
       if (habitIndex >= 0) {
         existingHabits[habitIndex] = { ...existingHabits[habitIndex], ...habitData };
@@ -621,205 +736,39 @@ const CavernaDoDesafio: React.FC = () => {
     return selectedAnswer === currentQuestion.correctAnswer;
   };
 
+  const isBattleEnabled = (shadow: Shadow, day: number) => {
+    if (!shadow.enabled) return false;
+    if (day === 1) return true;
+    const progress = shadowProgress[shadow.id] || 0;
+    return progress >= day - 1;
+  };
+
+  const getShadowColorClasses = (color: string, enabled: boolean, captured: boolean) => {
+    if (captured) return `bg-green-500/20 border-green-500 text-green-700`;
+    if (!enabled) return `bg-gray-500/10 border-gray-300 text-gray-500`;
+    
+    const colorMap: Record<string, string> = {
+      orange: 'bg-orange-500/20 border-orange-500 text-orange-700',
+      purple: 'bg-purple-500/20 border-purple-500 text-purple-700',
+      blue: 'bg-blue-500/20 border-blue-500 text-blue-700',
+      yellow: 'bg-yellow-500/20 border-yellow-500 text-yellow-700',
+      red: 'bg-red-500/20 border-red-500 text-red-700',
+      pink: 'bg-pink-500/20 border-pink-500 text-pink-700',
+      green: 'bg-green-500/20 border-green-500 text-green-700',
+      indigo: 'bg-indigo-500/20 border-indigo-500 text-indigo-700'
+    };
+    return colorMap[color] || 'bg-gray-500/20 border-gray-500 text-gray-700';
+  };
+
   useEffect(() => {
     if (gameState === 'result') {
       const timer = setTimeout(() => {
-        // Check if user won and completed challenges
-        const score = calculateScore();
-        if (score >= 80) {
-          // If user won, go to caverna dashboard
-          navigate('/caverna-dashboard');
-        } else {
-          // If user didn't win, stay in intro to try again
-          setGameState('intro');
-        }
+        setGameState('intro');
+        setSelectedShadow(null);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [gameState, navigate]);
-
-  if (gameState === 'intro') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-destructive/5 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/caverna-dashboard')}
-              className="mb-4"
-            >
-              ← Voltar ao Dashboard
-            </Button>
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              ⚔️ Caverna do Desafio
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Enfrente as sombras: SLOTH (procrastinação) e VERTIGO (distração digital)
-            </p>
-          </div>
-
-          {/* Seleção de Inimigo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <Card 
-              className={`cursor-pointer transition-all ${
-                currentEnemy === 'sloth' ? 'border-orange-500 bg-orange-500/10' : 'border-muted hover:border-orange-500/50'
-              }`}
-              onClick={() => setCurrentEnemy('sloth')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">🦥</div>
-                <h3 className="font-bold text-lg mb-2">SLOTH</h3>
-                <p className="text-sm text-muted-foreground">Sombra da Procrastinação</p>
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className={`cursor-pointer transition-all ${
-                currentEnemy === 'vertigo' ? 'border-purple-500 bg-purple-500/10' : 'border-muted hover:border-purple-500/50'
-              }`}
-              onClick={() => setCurrentEnemy('vertigo')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">📱</div>
-                <h3 className="font-bold text-lg mb-2">VERTIGO</h3>
-                <p className="text-sm text-muted-foreground">Sombra da Distração Digital</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="mb-8 border-destructive/20">
-            <CardHeader className="text-center">
-              <div className="w-32 h-32 mx-auto mb-4">
-                <div className="w-full h-full bg-gradient-to-br from-gray-600 to-gray-800 rounded-lg flex items-center justify-center text-6xl">
-                  {currentEnemy === 'sloth' ? '🦥' : '📱'}
-                </div>
-              </div>
-              <CardTitle className="text-2xl">
-                ⚔️ Desafio de {currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-lg text-muted-foreground">
-                Bem-vindo à <strong>Caverna do Desafio</strong>! 
-              </p>
-              <p className="text-muted-foreground">
-                {currentEnemy === 'sloth' 
-                  ? 'SLOTH, a sombra da procrastinação, te desafia para 7 batalhas. Cada batalha contém 4 perguntas + uma ação de foco de 10 minutos.'
-                  : 'VERTIGO, a sombra da distração digital, te desafia para 7 batalhas. Cada batalha contém 4 perguntas + uma ação para ficar sem celular por 10 minutos.'
-                }
-              </p>
-              <p className="text-muted-foreground">
-                Vença acertando 80%+ das questões e completando a ação para coletar uma carta de vitória!
-              </p>
-              <div className="bg-destructive/5 p-4 rounded-lg">
-                <p className="font-semibold text-destructive">
-                  Está pronto para sua primeira batalha contra {currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}?
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sword className="w-5 h-5 text-destructive" />
-                Batalha {currentDay}: {currentBattle?.theme}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Batalha de hoje:</p>
-                  <p className="font-semibold text-primary">{currentBattle?.theme}</p>
-                </div>
-                <Badge variant="outline" className="text-destructive border-destructive">
-                  4 Perguntas + Ação
-                </Badge>
-              </div>
-              
-              <Button 
-                onClick={startBattle}
-                className="w-full bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70"
-                size="lg"
-              >
-                <Sword className="w-5 h-5 mr-2" />
-                Iniciar Batalha {currentDay}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Cartas Coletadas */}
-          {collectedCards.size > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
-                  Cartas de Vitória Coletadas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <h4 className="font-semibold">SLOTH - Procrastinação</h4>
-                  <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 7 }, (_, i) => i + 1).map(day => (
-                      <div 
-                        key={`sloth-${day}`} 
-                        className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold ${
-                          collectedCards.has(`sloth-${day}`) 
-                            ? 'bg-orange-100 border-orange-400 text-orange-800' 
-                            : 'bg-gray-100 border-gray-300 text-gray-500'
-                        }`}
-                      >
-                        <div className="text-lg">🦥</div>
-                        <div>{day}</div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <h4 className="font-semibold">VERTIGO - Distração Digital</h4>
-                  <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 7 }, (_, i) => i + 1).map(day => (
-                      <div 
-                        key={`vertigo-${day}`} 
-                        className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold ${
-                          collectedCards.has(`vertigo-${day}`) 
-                            ? 'bg-purple-100 border-purple-400 text-purple-800' 
-                            : 'bg-gray-100 border-gray-300 text-gray-500'
-                        }`}
-                      >
-                        <div className="text-lg">📱</div>
-                        <div>{day}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-4 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    {collectedCards.size}/14 batalhas vencidas no total
-                  </p>
-                  {Array.from(collectedCards).filter(card => card.startsWith('sloth')).length === 7 && (
-                    <p className="text-sm font-bold text-orange-600 mt-1">
-                      🎉 SLOTH completamente derrotado!
-                    </p>
-                  )}
-                  {Array.from(collectedCards).filter(card => card.startsWith('vertigo')).length === 7 && (
-                    <p className="text-sm font-bold text-purple-600 mt-1">
-                      🎉 VERTIGO completamente derrotado!
-                    </p>
-                  )}
-                  {collectedCards.size === 14 && (
-                    <p className="text-sm font-bold text-green-600 mt-2">
-                      👑 Parabéns! Você venceu todas as sombras!
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
-    );
-  }
+  }, [gameState]);
 
   if (gameState === 'playing') {
     return (
@@ -911,7 +860,7 @@ const CavernaDoDesafio: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <p className="text-lg text-muted-foreground">
-                {currentEnemy === 'sloth' 
+                {selectedShadow?.id === 'sloth' 
                   ? 'Agora é hora da ação! Trabalhe focado por 10 minutos para vencer SLOTH.'
                   : 'Agora é hora da ação! Fique sem usar o celular por 10 minutos para vencer VERTIGO.'
                 }
@@ -933,7 +882,7 @@ const CavernaDoDesafio: React.FC = () => {
               </div>
               
               <p className="text-sm text-muted-foreground">
-                {currentEnemy === 'sloth' 
+                {selectedShadow?.id === 'sloth' 
                   ? 'Concentre-se em uma tarefa importante. SLOTH está observando...'
                   : 'Mantenha o celular longe e resista à tentação. VERTIGO está testando você...'
                 }
@@ -957,6 +906,8 @@ const CavernaDoDesafio: React.FC = () => {
   if (gameState === 'result') {
     const score = calculateScore();
     const won = score >= 80;
+    const livesDefeated = shadowProgress[selectedShadow?.id || ''] || 0;
+    const shadowCaptured = capturedShadows.has(selectedShadow?.id || '');
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-4">
@@ -969,41 +920,50 @@ const CavernaDoDesafio: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-6xl mb-4">
-                {won 
-                  ? `${currentEnemy === 'sloth' ? '🦥' : '📱'}⚔️` 
-                  : `${currentEnemy === 'sloth' ? '🦥' : '📱'}`
-                }
+                {selectedShadow?.icon}
+                {won ? '⚔️' : ''}
               </div>
               
               <div>
                 <p className="text-2xl font-bold text-primary mb-2">
                   {score.toFixed(0)}%
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground mb-4">
                   {won 
-                    ? `Parabéns! Você venceu a Batalha ${currentDay} contra ${currentEnemy === 'sloth' ? 'SLOTH' : 'VERTIGO'}!`
+                    ? `Parabéns! Você derrotou uma vida de ${selectedShadow?.name}!`
                     : `Você não venceu desta vez. Tente novamente!`
                   }
                 </p>
+                
+                {won && (
+                  <div className="space-y-4">
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <p className="text-green-800 font-semibold">
+                        💚 Vida {livesDefeated}/7 derrotada!
+                      </p>
+                      {shadowCaptured ? (
+                        <p className="text-green-700 text-sm mt-1">
+                          🎉 {selectedShadow?.name} foi completamente capturada!
+                        </p>
+                      ) : (
+                        <p className="text-green-700 text-sm mt-1">
+                          Ainda restam {7 - livesDefeated} vidas para capturar {selectedShadow?.name}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <p className="text-blue-800 font-semibold">
+                        ⚔️ Hábito "Combater as Sombras" marcado automaticamente
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {won && (
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <p className="text-green-800 font-semibold">
-                    🃏 Carta de Vitória #{currentDay} coletada!
-                  </p>
-                  <p className="text-green-700 text-sm mt-1">
-                    Hábito "Lutar contra a Procrastinação" foi marcado automaticamente.
-                  </p>
-                </div>
-              )}
               
               <div className="pt-4">
                 <p className="text-sm text-muted-foreground">
-                  {won 
-                    ? "Voltando ao Dashboard da Caverna em alguns segundos..."
-                    : "Voltando para tentar novamente em alguns segundos..."
-                  }
+                  Voltando ao menu principal em alguns segundos...
                 </p>
               </div>
             </CardContent>
@@ -1013,7 +973,224 @@ const CavernaDoDesafio: React.FC = () => {
     );
   }
 
-  return null;
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-destructive/5 p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/caverna-dashboard')}
+            className="mb-4"
+          >
+            ← Voltar ao Dashboard
+          </Button>
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            ⚔️ Caverna das Sombras
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Enfrente as 8 sombras que impedem seu crescimento
+          </p>
+        </div>
+
+        {/* Grid de Sombras */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {shadows.map((shadow) => {
+            const progress = shadowProgress[shadow.id] || 0;
+            const captured = capturedShadows.has(shadow.id);
+            
+            return (
+              <Card 
+                key={shadow.id}
+                className={`relative transition-all ${getShadowColorClasses(shadow.color, shadow.enabled, captured)} ${
+                  shadow.enabled ? 'cursor-pointer hover:scale-105' : ''
+                }`}
+                onClick={() => shadow.enabled && setSelectedShadow(shadow)}
+              >
+                <CardContent className="p-4 text-center">
+                  {!shadow.enabled && (
+                    <div className="absolute inset-0 bg-gray-500/20 rounded-lg flex items-center justify-center">
+                      <Lock className="w-8 h-8 text-gray-400" />
+                    </div>
+                  )}
+                  
+                  <div className="text-3xl mb-2 relative">
+                    {shadow.icon}
+                    {captured && (
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <h3 className="font-bold text-sm mb-1">{shadow.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-2">{shadow.description}</p>
+                  
+                  {shadow.enabled && (
+                    <div className="space-y-1">
+                      <div className="flex justify-center">
+                        <Badge variant="outline" className="text-xs">
+                          {progress}/7 vidas
+                        </Badge>
+                      </div>
+                      {progress > 0 && (
+                        <div className="w-full bg-gray-200 rounded-full h-1">
+                          <div 
+                            className="bg-current rounded-full h-1 transition-all"
+                            style={{ width: `${(progress / 7) * 100}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Coleção de Sombras Capturadas */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              Coleção de Sombras
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+              {shadows.map((shadow) => {
+                const captured = capturedShadows.has(shadow.id);
+                
+                return (
+                  <div 
+                    key={shadow.id}
+                    className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs font-bold transition-all ${
+                      captured 
+                        ? 'bg-green-100 border-green-400 text-green-800 shadow-md' 
+                        : 'bg-gray-100 border-gray-300 text-gray-500'
+                    }`}
+                  >
+                    <div className="text-lg mb-1">{shadow.icon}</div>
+                    <div className="text-center leading-tight">
+                      {captured ? (
+                        <>
+                          <div className="text-green-600 font-bold">✓</div>
+                          <div>Capturada</div>
+                        </>
+                      ) : (
+                        <div>Solta</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                {capturedShadows.size}/8 sombras capturadas
+              </p>
+              {capturedShadows.size === 8 && (
+                <p className="text-sm font-bold text-green-600 mt-2">
+                  🎉 Parabéns! Você dominou todas as suas sombras!
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Detalhes da Sombra Selecionada */}
+        {selectedShadow && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="text-3xl">{selectedShadow.icon}</div>
+                <div>
+                  <h2 className="text-2xl">{selectedShadow.name}</h2>
+                  <p className="text-muted-foreground text-base">{selectedShadow.description}</p>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold">Progresso:</span>
+                  <Badge variant="outline">
+                    {shadowProgress[selectedShadow.id] || 0}/7 vidas derrotadas
+                  </Badge>
+                </div>
+                <Progress 
+                  value={((shadowProgress[selectedShadow.id] || 0) / 7) * 100} 
+                  className="h-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+                {Array.from({ length: 7 }, (_, i) => i + 1).map(day => {
+                  const enabled = isBattleEnabled(selectedShadow, day);
+                  const completed = (shadowProgress[selectedShadow.id] || 0) >= day;
+                  
+                  return (
+                    <Card 
+                      key={day}
+                      className={`relative transition-all ${
+                        completed 
+                          ? 'bg-green-100 border-green-400' 
+                          : enabled 
+                            ? `${getShadowColorClasses(selectedShadow.color, true, false)} cursor-pointer hover:scale-105`
+                            : 'bg-gray-100 border-gray-300'
+                      }`}
+                      onClick={() => enabled && !completed && startBattle(selectedShadow, day)}
+                    >
+                      <CardContent className="p-3 text-center">
+                        {!enabled && !completed && (
+                          <div className="absolute inset-0 bg-gray-500/50 rounded-lg flex items-center justify-center">
+                            <Lock className="w-4 h-4 text-gray-400" />
+                          </div>
+                        )}
+                        
+                        <div className="font-bold text-lg mb-1">
+                          {completed ? '✓' : day}
+                        </div>
+                        <div className="text-xs">
+                          Batalha {day}
+                        </div>
+                        
+                        {enabled && !completed && (
+                          <Button 
+                            size="sm" 
+                            className="mt-2 text-xs px-2 py-1 h-auto"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startBattle(selectedShadow, day);
+                            }}
+                          >
+                            <Sword className="w-3 h-3 mr-1" />
+                            Lutar
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+              
+              <div className="mt-6 bg-muted/50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Como funciona:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Cada sombra possui 7 vidas (batalhas)</li>
+                  <li>• Responda 4 perguntas e complete uma ação prática</li>
+                  <li>• Obtenha 80%+ de acertos para derrotar uma vida</li>
+                  <li>• Derrote todas as 7 vidas para capturar a sombra</li>
+                  <li>• As batalhas se desbloqueiam conforme você progride</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default CavernaDoDesafio;
