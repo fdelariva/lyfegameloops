@@ -10,6 +10,7 @@ import { AthenaImage } from "@/components/AthenaImage";
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 import { defaultHabits } from "@/data/defaultHabits";
 import { createCustomHabit } from "@/utils/onboardingUtils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Battle {
   day: number;
@@ -607,37 +608,115 @@ const CavernaDoDesafio: React.FC = () => {
   const [treasureResult, setTreasureResult] = useState<'potion' | 'poison' | null>(null);
   const [livesGained, setLivesGained] = useState(1);
 
+  // Routine builder state
+  const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
+  const [routineBuilderShadow, setRoutineBuilderShadow] = useState<Shadow | null>(null);
+  const [routineHabits, setRoutineHabits] = useState(defaultHabits.slice(0, 6));
+  const [routineSelectedHabits, setRoutineSelectedHabits] = useState<string[]>([]);
+  const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string }>>([]);
+  const [pendingStartDay, setPendingStartDay] = useState<number | null>(null);
+
+  // Action checklist state
+  const [actionHabits, setActionHabits] = useState<string[]>([]);
+  const [habitsChecked, setHabitsChecked] = useState<Record<string, boolean>>({});
+
+
   const currentBattle = selectedShadow?.battles.find(b => b.day === currentDay);
   const currentQuestion = currentBattle?.questions[currentQuestionIndex];
 
-  useEffect(() => {
-    const savedProgress = localStorage.getItem('shadowProgress');
-    const savedCaptured = localStorage.getItem('capturedShadows');
-    
-    if (savedProgress) {
-      setShadowProgress(JSON.parse(savedProgress));
-    }
-    if (savedCaptured) {
-      setCapturedShadows(new Set(JSON.parse(savedCaptured)));
-    }
-  }, []);
+useEffect(() => {
+  const savedProgress = localStorage.getItem('shadowProgress');
+  const savedCaptured = localStorage.getItem('capturedShadows');
+  let progress: Record<string, number> = savedProgress ? JSON.parse(savedProgress) : {};
+  let captured = new Set<string>(savedCaptured ? JSON.parse(savedCaptured) : []);
+
+  // Reset requested: show 0/7 defeated for Sloth and Vertigo
+  progress['sloth'] = 0;
+  progress['vertigo'] = 0;
+  captured.delete('sloth');
+  captured.delete('vertigo');
+
+  setShadowProgress(progress);
+  setCapturedShadows(captured);
+  saveProgress(progress, captured);
+}, []);
 
   const saveProgress = (progress: Record<string, number>, captured: Set<string>) => {
     localStorage.setItem('shadowProgress', JSON.stringify(progress));
     localStorage.setItem('capturedShadows', JSON.stringify(Array.from(captured)));
   };
 
-  const startBattle = (shadow: Shadow, day: number) => {
-    setSelectedShadow(shadow);
-    setCurrentDay(day);
-    setGameState('playing');
-    setCurrentQuestionIndex(0);
-    setAnswers([]);
-    setSelectedAnswer(null);
-    setShowFeedback(false);
-    setTreasureResult(null);
-    setLivesGained(1);
-  };
+const startBattle = (shadow: Shadow, day: number) => {
+  setSelectedShadow(shadow);
+  setCurrentDay(day);
+  setGameState('playing');
+  setCurrentQuestionIndex(0);
+  setAnswers([]);
+  setSelectedAnswer(null);
+  setShowFeedback(false);
+  setTreasureResult(null);
+  setLivesGained(1);
+};
+
+// Start battle ensuring routine exists
+const handleStartBattle = (shadow: Shadow, day: number) => {
+  const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
+  const routine = routines[shadow.id];
+  if (!routine || !routine.names || routine.names.length === 0) {
+    openRoutineBuilderFor(shadow, day);
+    return;
+  }
+  startBattle(shadow, day);
+};
+
+const openRoutineBuilderFor = (shadow: Shadow, day: number) => {
+  setRoutineBuilderShadow(shadow);
+  setPendingStartDay(day);
+  setRoutineHabits(defaultHabits.slice(0, 6));
+  setRoutineSelectedHabits([]);
+  setRoutineCustomHabits([]);
+  setShowRoutineBuilder(true);
+};
+
+// Routine builder handlers
+const handleRoutineHabitToggle = (habitId: string) => {
+  setRoutineSelectedHabits(prev => prev.includes(habitId)
+    ? prev.filter(id => id !== habitId)
+    : [...prev, habitId]
+  );
+};
+
+const handleRoutineHabitDelete = (habitId: string) => {
+  setRoutineHabits(prev => prev.filter(h => h.id !== habitId));
+  setRoutineSelectedHabits(prev => prev.filter(id => id !== habitId));
+};
+
+const handleRoutineAddCustomHabit = (habitName: string) => {
+  const newHabit = createCustomHabit(habitName);
+  setRoutineHabits(prev => [...prev, newHabit]);
+  setRoutineCustomHabits(prev => [...prev, { id: newHabit.id, name: newHabit.name }]);
+  setRoutineSelectedHabits(prev => [...prev, newHabit.id]);
+};
+
+const handleRoutineComplete = () => {
+  if (!routineBuilderShadow || routineSelectedHabits.length === 0) {
+    setShowRoutineBuilder(false);
+    return;
+  }
+  // Map selected IDs to names
+  const idToName = new Map(routineHabits.map(h => [h.id, h.name] as const));
+  const names = routineSelectedHabits.map(id => idToName.get(id) || id);
+  const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
+  routines[routineBuilderShadow.id] = { ids: routineSelectedHabits, names };
+  localStorage.setItem('shadowRoutines', JSON.stringify(routines));
+  setShowRoutineBuilder(false);
+
+  // Proceed to battle
+  if (pendingStartDay !== null) {
+    startBattle(routineBuilderShadow, pendingStartDay);
+    setPendingStartDay(null);
+  }
+};
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
