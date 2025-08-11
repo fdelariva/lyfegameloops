@@ -809,26 +809,11 @@ const handleRoutineComplete = () => {
     const score = (correctAnswers / 4) * 100;
     
     if (score >= 80) {
-      const newProgress = { ...shadowProgress };
-      const shadowId = selectedShadow.id;
+      // Do NOT apply lives here anymore. Defer to dashboard after daily habits are marked.
+      const lives = treasureResult === 'potion' ? 2 : (treasureResult === 'poison' ? 0 : 1);
+      localStorage.setItem('pendingShadowLife', JSON.stringify({ shadowId: selectedShadow.id, lives }));
       
-      if (treasureResult === 'potion') {
-        newProgress[shadowId] = (newProgress[shadowId] || 0) + 2;
-      } else if (treasureResult === 'poison') {
-        newProgress[shadowId] = newProgress[shadowId] || 0;
-      } else {
-        newProgress[shadowId] = (newProgress[shadowId] || 0) + 1;
-      }
-      
-      const newCaptured = new Set(capturedShadows);
-      if (newProgress[shadowId] >= 7) {
-        newCaptured.add(shadowId);
-      }
-      
-      setShadowProgress(newProgress);
-      setCapturedShadows(newCaptured);
-      saveProgress(newProgress, newCaptured);
-      
+      // Keep existing flags for other parts of the app
       const habitData = {
         id: 'combat-shadows',
         name: 'Combater as Sombras',
@@ -838,16 +823,13 @@ const handleRoutineComplete = () => {
         completed: true,
         completedAt: new Date().toISOString()
       };
-      
       const existingHabits = JSON.parse(localStorage.getItem('userHabits') || '[]');
       const habitIndex = existingHabits.findIndex((h: any) => h.id === 'combat-shadows');
-      
       if (habitIndex >= 0) {
         existingHabits[habitIndex] = { ...existingHabits[habitIndex], ...habitData };
       } else {
         existingHabits.push(habitData);
       }
-      
       localStorage.setItem('userHabits', JSON.stringify(existingHabits));
       localStorage.setItem('questHabitCompleted', 'true');
       localStorage.setItem('cavernaChallengeCompleted', 'true');
@@ -1151,10 +1133,10 @@ const handleRoutineComplete = () => {
                 <p className="text-muted-foreground mb-4">
                   {won 
                     ? treasureResult === 'poison' 
-                      ? 'O veneno anulou sua vitória! A sombra mantém sua vida...'
+                      ? 'Você acertou, mas o veneno anulou sua vitória. Nenhuma vida será aplicada.'
                       : treasureResult === 'potion'
-                        ? 'A poção dobrou sua recompensa! Você ganhou 2 vidas da sombra!'
-                        : 'Você derrotou uma vida de ' + selectedShadow?.name + '!'
+                        ? `Vitória! Recompensa potencial: 2 vidas contra ${selectedShadow?.name}.`
+                        : `Vitória! Recompensa potencial: 1 vida contra ${selectedShadow?.name}.`
                     : `Você não venceu desta vez. Tente novamente!`
                   }
                 </p>
@@ -1170,34 +1152,20 @@ const handleRoutineComplete = () => {
                         treasureResult === 'poison' ? 'text-red-800' : 'text-green-800'
                       }`}>
                         {treasureResult === 'poison' 
-                          ? '☠️ Veneno detectado! A sombra se regenera!' 
+                          ? '☠️ Veneno detectado! A sombra se regenera.' 
                           : treasureResult === 'potion'
-                            ? `🧪 Poção mágica! 2 vidas derrotadas (${livesDefeated}/7)`
-                            : `💚 1 vida derrotada (${livesDefeated}/7)`
+                            ? '🧪 Poção mágica! Bônus de 2 vidas disponível.'
+                            : '💚 1 vida disponível para aplicar na sombra.'
                         }
                       </p>
-                      {treasureResult === 'poison' ? (
-                        <p className="text-red-700 text-sm mt-1">
-                          ⚔️ A vida da sombra continua ativa. Você precisará lutar novamente!
-                        </p>
-                      ) : (
-                        <>
-                          {shadowCaptured ? (
-                            <p className="text-green-700 text-sm mt-1">
-                              🎉 {selectedShadow?.name} foi completamente capturada!
-                            </p>
-                          ) : (
-                            <p className="text-green-700 text-sm mt-1">
-                              Ainda restam {7 - livesDefeated} vidas para capturar {selectedShadow?.name}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                    
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                      <p className="text-blue-800 font-semibold">
-                        ⚔️ Hábito "Combater as Sombras" marcado automaticamente
+                      <p className={`${treasureResult === 'poison' ? 'text-red-700' : 'text-green-700'} text-sm mt-1`}>
+                        {treasureResult === 'poison' 
+                          ? '⚔️ Você precisará lutar novamente para ganhar a recompensa.'
+                          : '➡️ Próximo passo: vá ao Caverna Dashboard > "Seus Desafios de Hoje" e conclua seus hábitos. Ao marcar, a vida será aplicada à sombra do dia.'
+                        }
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Progresso atual: {(shadowProgress[selectedShadow?.id || ''] || 0)}/7 vidas derrotadas
                       </p>
                     </div>
                   </div>

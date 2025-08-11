@@ -121,6 +121,30 @@ const CavernaDashboard = () => {
       navigate('/caverna-do-desafio');
       return;
     }
+
+    // Apply pending shadow life (from successful battle) when any daily habit is marked
+    const pendingRaw = localStorage.getItem('pendingShadowLife');
+    if (pendingRaw) {
+      try {
+        const pending = JSON.parse(pendingRaw) as { shadowId: string; lives: number };
+        const progress = JSON.parse(localStorage.getItem('shadowProgress') || '{}');
+        const current = progress[pending.shadowId] || 0;
+        const newVal = current + (pending.lives || 0);
+        progress[pending.shadowId] = newVal;
+        localStorage.setItem('shadowProgress', JSON.stringify(progress));
+
+        const captured = new Set<string>(JSON.parse(localStorage.getItem('capturedShadows') || '[]'));
+        if (newVal >= 7) captured.add(pending.shadowId);
+        localStorage.setItem('capturedShadows', JSON.stringify(Array.from(captured)));
+
+        if ((pending.lives || 0) > 0) {
+          toast.success(`Batalha da sombra cumprida! ${pending.lives > 1 ? `${pending.lives} vidas` : '1 vida'} perdid${pending.lives > 1 ? 'as' : 'a'}.`);
+        } else {
+          toast("Atenção", { description: "O veneno anulou a vitória. Nenhuma vida foi perdida." });
+        }
+      } catch {}
+      localStorage.removeItem('pendingShadowLife');
+    }
     
     setHabits(prev => prev.map(habit => {
       if (habit.id === habitId && !habit.completed) {
@@ -145,8 +169,8 @@ const CavernaDashboard = () => {
           }
         }
         
-        toast.success(`Sombra derrotada! +${habit.energyBoost} energia`);
-        
+        // Inform about habit completion
+        // Removed previous generic shadow toast; messaging handled above when applicable
         return { ...habit, completed: true, streak: newStreak };
       }
       return habit;
@@ -420,7 +444,7 @@ const CavernaDashboard = () => {
           totalHabits={totalToday}
         />
       )}
-
+import { defaultHabits } from "@/data/defaultHabits";
 
       {showEndOfDay && (
         <EndOfDayReview
