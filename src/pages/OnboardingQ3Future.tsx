@@ -50,7 +50,26 @@ const OnboardingQ3Future = () => {
   const handleComplete = () => {
     if (selectedHabits.length === 0) return;
     saveOnboardingData(selectedHabits, customHabits, archetype);
-    navigate("/dashboard-q3");
+
+    // Build today's daily habits from the selected items
+    const today = new Date().toISOString().slice(0,10);
+    const chosen = habits.filter(h => selectedHabits.includes(h.id));
+    const daily = chosen.map(h => ({
+      id: h.id,
+      name: h.name,
+      icon: h.icon,
+      description: h.description,
+      info: h.info,
+      energyBoost: 3,
+      connectionBoost: 2,
+      skillBoost: 2,
+      completed: false,
+      streak: 0,
+      date: today
+    }));
+    localStorage.setItem('dailyHabits', JSON.stringify(daily));
+
+    navigate("/caverna-dashboard");
   };
 
   const renderStep = () => {

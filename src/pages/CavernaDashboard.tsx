@@ -58,25 +58,60 @@ const CavernaDashboard = () => {
   // Caverna-specific habits
   const [habits, setHabits] = useState(() => {
     const hasChallengeCompleted = localStorage.getItem('cavernaChallengeCompleted') === 'true';
+    const today = new Date().toISOString().slice(0,10);
     
-    return [
-      {
-        id: 'caverna-procrastinacao',
-        name: "Lutar contra a procrastinação",
-        icon: "⚔️",
-        description: "Enfrente suas sombras internas",
-        category: "Caverna",
-        energyBoost: 5,
-        connectionBoost: 3,
-        skillBoost: 4,
-        completed: hasChallengeCompleted, // Auto-complete if challenge was completed
-        streak: hasChallengeCompleted ? 1 : 0,
-        info: {
-          whyDo: "A procrastinação é uma das maiores sombras que nos impedem de crescer. Enfrentá-la fortalece nossa disciplina e autocontrole.",
-          howDo: "Identifique uma tarefa que você está adiando há mais de 24 horas e a execute imediatamente, mesmo que seja apenas o primeiro passo."
-        }
+    // Base Caverna habit
+    const baseHabit = {
+      id: 'caverna-procrastinacao',
+      name: "Lutar contra a procrastinação",
+      icon: "⚔️",
+      description: "Enfrente suas sombras internas",
+      category: "Caverna",
+      energyBoost: 5,
+      connectionBoost: 3,
+      skillBoost: 4,
+      completed: hasChallengeCompleted, // Auto-complete if challenge was completed
+      streak: hasChallengeCompleted ? 1 : 0,
+      info: {
+        whyDo: "A procrastinação é uma das maiores sombras que nos impedem de crescer. Enfrentá-la fortalece nossa disciplina e autocontrole.",
+        howDo: "Identifique uma tarefa que você está adiando há mais de 24 horas e a execute imediatamente, mesmo que seja apenas o primeiro passo."
       }
-    ];
+    };
+
+    // Load daily habits created in the routine builder
+    let stored: any[] = [];
+    try {
+      stored = JSON.parse(localStorage.getItem('dailyHabits') || '[]');
+    } catch {
+      stored = [];
+    }
+
+    // Reset completion if date changed
+    if (stored.length && stored[0]?.date !== today) {
+      stored = stored.map(h => ({ ...h, completed: false, date: today }));
+      localStorage.setItem('dailyHabits', JSON.stringify(stored));
+    }
+
+    const todayHabits = stored
+      .filter(h => h.date === today)
+      .map(h => ({
+        id: h.id,
+        name: h.name,
+        icon: h.icon || '⚔️',
+        description: h.description || 'Desafio do dia',
+        category: 'Caverna',
+        energyBoost: h.energyBoost ?? 3,
+        connectionBoost: h.connectionBoost ?? 2,
+        skillBoost: h.skillBoost ?? 2,
+        completed: !!h.completed,
+        streak: h.streak ?? 0,
+        info: h.info || {
+          whyDo: 'Hábito selecionado no montador de rotina.',
+          howDo: 'Execute-o da melhor forma que fizer sentido para você hoje.'
+        }
+      }));
+
+    return [baseHabit, ...todayHabits];
   });
 
   // Load user data on mount
@@ -175,6 +210,17 @@ const CavernaDashboard = () => {
       }
       return habit;
     }));
+
+    // Persist completion in dailyHabits storage
+    try {
+      const dailyRaw = localStorage.getItem('dailyHabits');
+      if (dailyRaw) {
+        const today = new Date().toISOString().slice(0,10);
+        const list = JSON.parse(dailyRaw);
+        const updated = list.map((h: any) => h.id === habitId ? { ...h, completed: true, date: today } : h);
+        localStorage.setItem('dailyHabits', JSON.stringify(updated));
+      }
+    } catch {}
   };
 
   const handleAddHabit = (habitData: any) => {
