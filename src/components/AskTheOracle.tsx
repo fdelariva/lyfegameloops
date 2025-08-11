@@ -63,6 +63,16 @@ const oracleSuggestions = [
       whyDo: "Ambientes organizados reduzem o cortisol, melhoram o foco e aumentam a produtividade. A ordem externa reflete ordem mental.",
       howDo: "Escolha um espaço pequeno, remova tudo, limpe e recoloque apenas o necessário. Dê um lugar específico para cada item."
     }
+  },
+  {
+    name: "Planejar 3 prioridades do dia",
+    icon: "🗒️",
+    description: "Definir o que mais importa para hoje",
+    category: "Produtividade",
+    info: {
+      whyDo: "Clareza diária reduz ansiedade e aumenta foco. Prioridades claras elevam a execução do que é essencial.",
+      howDo: "Liste as 3 tarefas mais importantes do dia em ordem. Faça a primeira logo no início do seu período de foco."
+    }
   }
 ];
 

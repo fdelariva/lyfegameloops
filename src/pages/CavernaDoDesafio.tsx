@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CheckCircle, XCircle, Sword, Trophy, Timer, Play, ChevronLeft, Lock, Gift } from "lucide-react";
 import { AthenaImage } from "@/components/AthenaImage";
+import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
+import { defaultHabits } from "@/data/defaultHabits";
+import { createCustomHabit } from "@/utils/onboardingUtils";
 
 interface Battle {
   day: number;
