@@ -5,15 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, ArrowRight } from "lucide-react";
 import ArchetypeStep from "@/components/onboarding/ArchetypeStep";
+import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 import { ArchetypeType } from "@/data/archetypes";
-import { saveOnboardingData } from "@/utils/onboardingUtils";
+import { defaultHabits } from "@/data/defaultHabits";
+import { saveOnboardingData, createCustomHabit } from "@/utils/onboardingUtils";
 
 const OnboardingQ3Future = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [step, setStep] = useState(1);
   const [archetype, setArchetype] = useState<ArchetypeType>("Indefinido");
-
+  const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const [customHabits, setCustomHabits] = useState<Array<{id: string, name: string}>>([]);
+  const [habits, setHabits] = useState(defaultHabits);
   // Check if we should skip to archetype selection
   useEffect(() => {
     if (location.state?.skipToArchetype) {
@@ -23,8 +27,29 @@ const OnboardingQ3Future = () => {
 
   const handleSelectArchetype = (selected: ArchetypeType) => {
     setArchetype(selected);
-    // Save basic onboarding data with selected archetype
-    saveOnboardingData([], [], selected);
+    setStep(3);
+  };
+  const handleHabitToggle = (habitId: string) => {
+    setSelectedHabits(prev =>
+      prev.includes(habitId) ? prev.filter(id => id !== habitId) : [...prev, habitId]
+    );
+  };
+
+  const handleHabitDelete = (habitId: string) => {
+    setHabits(prev => prev.filter(h => h.id !== habitId));
+    setSelectedHabits(prev => prev.filter(id => id !== habitId));
+  };
+
+  const handleAddCustomHabit = (habitName: string) => {
+    const newHabit = createCustomHabit(habitName);
+    setHabits(prev => [...prev, newHabit]);
+    setCustomHabits(prev => [...prev, { id: newHabit.id, name: newHabit.name }]);
+    setSelectedHabits(prev => [...prev, newHabit.id]);
+  };
+
+  const handleComplete = () => {
+    if (selectedHabits.length === 0) return;
+    saveOnboardingData(selectedHabits, customHabits, archetype);
     navigate("/dashboard-q3");
   };
 
@@ -82,7 +107,17 @@ const OnboardingQ3Future = () => {
             onSelectArchetype={handleSelectArchetype}
           />
         );
-
+      case 3:
+        return (
+          <HabitSelectionStep
+            habits={habits}
+            selectedHabits={selectedHabits}
+            onHabitToggle={handleHabitToggle}
+            onHabitDelete={handleHabitDelete}
+            onAddCustomHabit={handleAddCustomHabit}
+            onComplete={handleComplete}
+          />
+        );
       default:
         return null;
     }
