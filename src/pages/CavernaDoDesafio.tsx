@@ -616,9 +616,10 @@ const CavernaDoDesafio: React.FC = () => {
   const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string }>>([]);
   const [pendingStartDay, setPendingStartDay] = useState<number | null>(null);
 
-  // Action checklist state
-  const [actionHabits, setActionHabits] = useState<string[]>([]);
-  const [habitsChecked, setHabitsChecked] = useState<Record<string, boolean>>({});
+// Action checklist state
+const [actionHabits, setActionHabits] = useState<string[]>([]);
+const [habitsChecked, setHabitsChecked] = useState<Record<string, boolean>>({});
+const [focusCompleted, setFocusCompleted] = useState(false);
 
 
   const currentBattle = selectedShadow?.battles.find(b => b.day === currentDay);
@@ -698,6 +699,40 @@ const handleRoutineAddCustomHabit = (habitName: string) => {
   setRoutineSelectedHabits(prev => [...prev, newHabit.id]);
 };
 
+// Prepare checklist for action step
+const prepareActionChecklist = () => {
+  const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
+  const routine = routines[selectedShadow?.id || ''];
+  const names: string[] = routine?.names || [];
+  setActionHabits(names);
+  const init: Record<string, boolean> = {};
+  names.forEach(n => { init[n] = false; });
+  setHabitsChecked(init);
+  setFocusCompleted(false);
+};
+
+const toggleHabitChecked = (name: string, checked: boolean) => {
+  setHabitsChecked(prev => ({ ...prev, [name]: checked }));
+};
+
+const handleCompleteDay = () => {
+  // Require both focus and checklist
+  const allHabitsDone = actionHabits.length === 0 || actionHabits.every(n => habitsChecked[n]);
+  if (!focusCompleted || !allHabitsDone) return;
+
+  const correctAnswers = answers.filter((answer, index) => 
+    answer === currentBattle?.questions[index].correctAnswer
+  ).length;
+  const score = (correctAnswers / 4) * 100;
+  if (score >= 80) {
+    setGameState('treasure');
+    openTreasureChest();
+  } else {
+    setGameState('result');
+  }
+};
+
+
 const handleRoutineComplete = () => {
   if (!routineBuilderShadow || routineSelectedHabits.length === 0) {
     setShowRoutineBuilder(false);
@@ -734,10 +769,11 @@ const handleRoutineComplete = () => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setSelectedAnswer(null);
         setShowFeedback(false);
-      } else {
-        setGameState('action');
-        setActionTimer(10);
-      }
+} else {
+  setGameState('action');
+  setActionTimer(10);
+  prepareActionChecklist();
+}
     }, 2000);
   };
 
@@ -746,18 +782,7 @@ const handleRoutineComplete = () => {
       setActionTimer(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          
-          const correctAnswers = answers.filter((answer, index) => 
-            answer === currentBattle?.questions[index].correctAnswer
-          ).length;
-          const score = (correctAnswers / 4) * 100;
-          
-          if (score >= 80) {
-            setGameState('treasure');
-            openTreasureChest();
-          } else {
-            setGameState('result');
-          }
+          setFocusCompleted(true);
           return 0;
         }
         return prev - 1;
@@ -1004,6 +1029,39 @@ const handleRoutineComplete = () => {
                 <Play className="w-5 h-5 mr-2" />
                 Começar Foco
               </Button>
+
+              {focusCompleted && (
+                <p className="text-sm font-medium text-primary">✅ Foco de 10 minutos concluído!</p>
+              )}
+
+              <div className="text-left space-y-3 mt-4">
+                <h4 className="font-semibold">Hábitos do dia</h4>
+                {actionHabits.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Monte sua rotina para esta sombra antes de iniciar as batalhas.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {actionHabits.map((name) => (
+                      <label key={name} className="flex items-center gap-3">
+                        <Checkbox
+                          checked={!!habitsChecked[name]}
+                          onCheckedChange={(checked) => toggleHabitChecked(name, !!checked)}
+                        />
+                        <span className="text-sm">{name}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  onClick={handleCompleteDay}
+                  disabled={!focusCompleted || !(actionHabits.length === 0 || actionHabits.every((n) => habitsChecked[n]))}
+                  className="w-full"
+                >
+                  Concluir Dia
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -1316,46 +1374,46 @@ const handleRoutineComplete = () => {
                   const completed = (shadowProgress[selectedShadow.id] || 0) >= day;
                   
                   return (
-                    <Card 
-                      key={day}
-                      className={`relative transition-all ${
-                        completed 
-                          ? 'bg-green-100 border-green-400' 
-                          : enabled 
-                            ? `${getShadowColorClasses(selectedShadow.color, true, false)} cursor-pointer hover:scale-105`
-                            : 'bg-gray-100 border-gray-300'
-                      }`}
-                      onClick={() => enabled && !completed && startBattle(selectedShadow, day)}
-                    >
-                      <CardContent className="p-3 text-center">
-                        {!enabled && !completed && (
-                          <div className="absolute inset-0 bg-gray-500/50 rounded-lg flex items-center justify-center">
-                            <Lock className="w-4 h-4 text-gray-400" />
+                      <Card 
+                        key={day}
+                        className={`relative transition-all ${
+                          completed 
+                            ? 'bg-green-100 border-green-400' 
+                            : enabled 
+                              ? `${getShadowColorClasses(selectedShadow.color, true, false)} cursor-pointer hover:scale-105`
+                              : 'bg-gray-100 border-gray-300'
+                        }`}
+                        onClick={() => enabled && !completed && handleStartBattle(selectedShadow, day)}
+                      >
+                        <CardContent className="p-3 text-center">
+                          {!enabled && !completed && (
+                            <div className="absolute inset-0 bg-gray-500/50 rounded-lg flex items-center justify-center">
+                              <Lock className="w-4 h-4 text-gray-400" />
+                            </div>
+                          )}
+                          
+                          <div className="font-bold text-lg mb-1">
+                            {completed ? '✓' : day}
                           </div>
-                        )}
-                        
-                        <div className="font-bold text-lg mb-1">
-                          {completed ? '✓' : day}
-                        </div>
-                        <div className="text-xs">
-                          Batalha {day}
-                        </div>
-                        
-                        {enabled && !completed && (
-                          <Button 
-                            size="sm" 
-                            className="mt-2 text-xs px-2 py-1 h-auto"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              startBattle(selectedShadow, day);
-                            }}
-                          >
-                            <Sword className="w-3 h-3 mr-1" />
-                            Lutar
-                          </Button>
-                        )}
-                      </CardContent>
-                    </Card>
+                          <div className="text-xs">
+                            Batalha {day}
+                          </div>
+                          
+                          {enabled && !completed && (
+                            <Button 
+                              size="sm" 
+                              className="mt-2 text-xs px-2 py-1 h-auto"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStartBattle(selectedShadow, day);
+                              }}
+                            >
+                              <Sword className="w-3 h-3 mr-1" />
+                              Lutar
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
                   );
                 })}
               </div>
@@ -1374,6 +1432,24 @@ const handleRoutineComplete = () => {
           </Card>
         )}
       </div>
+
+      <Dialog open={showRoutineBuilder} onOpenChange={(open) => { if (!open) setShowRoutineBuilder(false); }}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Monte sua rotina para {routineBuilderShadow?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="mt-2">
+            <HabitSelectionStep
+              habits={routineHabits}
+              selectedHabits={routineSelectedHabits}
+              onHabitToggle={handleRoutineHabitToggle}
+              onHabitDelete={handleRoutineHabitDelete}
+              onAddCustomHabit={handleRoutineAddCustomHabit}
+              onComplete={handleRoutineComplete}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
