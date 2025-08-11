@@ -444,7 +444,7 @@ const CavernaDashboard = () => {
           totalHabits={totalToday}
         />
       )}
-import { defaultHabits } from "@/data/defaultHabits";
+
 
       {showEndOfDay && (
         <EndOfDayReview
