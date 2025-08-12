@@ -659,14 +659,8 @@ const startBattle = (shadow: Shadow, day: number) => {
   setLivesGained(1);
 };
 
-// Start battle ensuring routine exists
+// Start battle (no routine gating)
 const handleStartBattle = (shadow: Shadow, day: number) => {
-  const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
-  const routine = routines[shadow.id];
-  if (!routine || !routine.names || routine.names.length === 0) {
-    openRoutineBuilderFor(shadow, day);
-    return;
-  }
   startBattle(shadow, day);
 };
 
@@ -701,13 +695,9 @@ const handleRoutineAddCustomHabit = (habitName: string) => {
 
 // Prepare checklist for action step
 const prepareActionChecklist = () => {
-  const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
-  const routine = routines[selectedShadow?.id || ''];
-  const names: string[] = routine?.names || [];
-  setActionHabits(names);
-  const init: Record<string, boolean> = {};
-  names.forEach(n => { init[n] = false; });
-  setHabitsChecked(init);
+  // Daily habits are handled in the Dashboard; no checklist here
+  setActionHabits([]);
+  setHabitsChecked({});
   setFocusCompleted(false);
 };
 
@@ -717,8 +707,7 @@ const toggleHabitChecked = (name: string, checked: boolean) => {
 
 const handleCompleteDay = () => {
   // Require both focus and checklist
-  const allHabitsDone = actionHabits.length === 0 || actionHabits.every(n => habitsChecked[n]);
-  if (!focusCompleted || !allHabitsDone) return;
+  if (!focusCompleted) return;
 
   const correctAnswers = answers.filter((answer, index) => 
     answer === currentBattle?.questions[index].correctAnswer
@@ -738,12 +727,32 @@ const handleRoutineComplete = () => {
     setShowRoutineBuilder(false);
     return;
   }
-  // Map selected IDs to names
-  const idToName = new Map(routineHabits.map(h => [h.id, h.name] as const));
-  const names = routineSelectedHabits.map(id => idToName.get(id) || id);
+  // Map selected IDs to habit objects
+  const idToHabit = new Map(routineHabits.map(h => [h.id, h] as const));
+  const names = routineSelectedHabits.map(id => idToHabit.get(id)?.name || id);
   const routines = JSON.parse(localStorage.getItem('shadowRoutines') || '{}');
   routines[routineBuilderShadow.id] = { ids: routineSelectedHabits, names };
   localStorage.setItem('shadowRoutines', JSON.stringify(routines));
+
+  // Save today's daily habits for the Dashboard
+  const today = new Date().toISOString().slice(0,10);
+  const daily = routineSelectedHabits.map(id => {
+    const h: any = idToHabit.get(id);
+    return {
+      id: h?.id || id,
+      name: h?.name || id,
+      icon: h?.icon,
+      description: h?.description,
+      info: h?.info,
+      energyBoost: 3,
+      connectionBoost: 2,
+      skillBoost: 2,
+      completed: false,
+      streak: 0,
+      date: today
+    };
+  });
+  localStorage.setItem('dailyHabits', JSON.stringify(daily));
   setShowRoutineBuilder(false);
 
   // Proceed to battle
@@ -1018,27 +1027,15 @@ const handleRoutineComplete = () => {
 
               <div className="text-left space-y-3 mt-4">
                 <h4 className="font-semibold">Hábitos do dia</h4>
-                {actionHabits.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Monte sua rotina para esta sombra antes de iniciar as batalhas.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {actionHabits.map((name) => (
-                      <label key={name} className="flex items-center gap-3">
-                        <Checkbox
-                          checked={!!habitsChecked[name]}
-                          onCheckedChange={(checked) => toggleHabitChecked(name, !!checked)}
-                        />
-                        <span className="text-sm">{name}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
+                <p className="text-sm text-muted-foreground">
+                  Os hábitos do dia agora estão no Caverna Dashboard. Conclua-os lá; ao marcar um hábito, a vida pendente será aplicada à sombra.
+                </p>
               </div>
 
               <div className="pt-2">
                 <Button
                   onClick={handleCompleteDay}
-                  disabled={!focusCompleted || !(actionHabits.length === 0 || actionHabits.every((n) => habitsChecked[n]))}
+                  disabled={!focusCompleted}
                   className="w-full"
                 >
                   Concluir Dia
