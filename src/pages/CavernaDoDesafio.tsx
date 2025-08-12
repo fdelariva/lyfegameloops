@@ -615,6 +615,7 @@ const CavernaDoDesafio: React.FC = () => {
   const [routineSelectedHabits, setRoutineSelectedHabits] = useState<string[]>([]);
   const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string }>>([]);
   const [pendingStartDay, setPendingStartDay] = useState<number | null>(null);
+  const [showFirstVictoryPrompt, setShowFirstVictoryPrompt] = useState(false);
 
 // Action checklist state
 const [actionHabits, setActionHabits] = useState<string[]>([]);
@@ -667,6 +668,17 @@ const handleStartBattle = (shadow: Shadow, day: number) => {
 const openRoutineBuilderFor = (shadow: Shadow, day: number) => {
   setRoutineBuilderShadow(shadow);
   setPendingStartDay(day);
+  setRoutineHabits(defaultHabits.slice(0, 6));
+  setRoutineSelectedHabits([]);
+  setRoutineCustomHabits([]);
+  setShowRoutineBuilder(true);
+};
+
+// Open routine builder without starting a battle afterwards (first victory flow)
+const openRoutineBuilderStandalone = () => {
+  if (!selectedShadow) return;
+  setRoutineBuilderShadow(selectedShadow);
+  setPendingStartDay(null);
   setRoutineHabits(defaultHabits.slice(0, 6));
   setRoutineSelectedHabits([]);
   setRoutineCustomHabits([]);
@@ -753,6 +765,7 @@ const handleRoutineComplete = () => {
     };
   });
   localStorage.setItem('dailyHabits', JSON.stringify(daily));
+  localStorage.setItem('firstVictoryRoutineDone', 'true');
   setShowRoutineBuilder(false);
 
   // Proceed to battle
@@ -842,6 +855,11 @@ const handleRoutineComplete = () => {
       localStorage.setItem('userHabits', JSON.stringify(existingHabits));
       localStorage.setItem('questHabitCompleted', 'true');
       localStorage.setItem('cavernaChallengeCompleted', 'true');
+
+      // Show first victory prompt to choose habits (day 1)
+      if (currentDay === 1 && localStorage.getItem('firstVictoryRoutineDone') !== 'true') {
+        setShowFirstVictoryPrompt(true);
+      }
     }
     
     setGameState('result');
@@ -885,14 +903,14 @@ const handleRoutineComplete = () => {
   };
 
   useEffect(() => {
-    if (gameState === 'result') {
+    if (gameState === 'result' && !showFirstVictoryPrompt && !showRoutineBuilder) {
       const timer = setTimeout(() => {
         setGameState('intro');
         setSelectedShadow(null);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [gameState]);
+  }, [gameState, showFirstVictoryPrompt, showRoutineBuilder]);
 
   if (gameState === 'playing') {
     return (
@@ -1177,6 +1195,47 @@ const handleRoutineComplete = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* First victory prompt */}
+        <Dialog open={showFirstVictoryPrompt} onOpenChange={(open) => { if (!open) setShowFirstVictoryPrompt(false); }}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="text-center">Oráculo Aristos</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center text-center gap-4">
+              <img 
+                src="/lovable-uploads/d43b4096-ba1e-404a-9b10-1e22c3ac310a.png" 
+                alt="Oráculo Aristos" 
+                className="w-28 h-28 rounded-full object-cover shadow-lg" 
+              />
+              <p className="text-lg">
+                Parabéns! Você venceu sua primeira batalha. Agora escolha três hábitos para começar a mudar de vida.
+              </p>
+              <Button onClick={() => { setShowFirstVictoryPrompt(false); openRoutineBuilderStandalone(); }} className="w-full">
+                Escolher hábitos
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Routine builder dialog (also available here) */}
+        <Dialog open={showRoutineBuilder} onOpenChange={(open) => { if (!open) setShowRoutineBuilder(false); }}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Monte sua rotina para {routineBuilderShadow?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="mt-2">
+              <HabitSelectionStep
+                habits={routineHabits}
+                selectedHabits={routineSelectedHabits}
+                onHabitToggle={handleRoutineHabitToggle}
+                onHabitDelete={handleRoutineHabitDelete}
+                onAddCustomHabit={handleRoutineAddCustomHabit}
+                onComplete={handleRoutineComplete}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
