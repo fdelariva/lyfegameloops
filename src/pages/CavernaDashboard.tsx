@@ -30,6 +30,9 @@ import AristosWelcomeMessages from "@/components/AristosWelcomeMessages";
 import OracleMessageCarousel from "@/components/OracleMessageCarousel";
 import AddHabitModal from "@/components/AddHabitModal";
 import { AthenaImage } from "@/components/AthenaImage";
+import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
+import { defaultHabits } from "@/data/defaultHabits";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const CavernaDashboard = () => {
   const navigate = useNavigate();
@@ -54,6 +57,12 @@ const CavernaDashboard = () => {
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [isDayZero, setIsDayZero] = useState(true);
   const [previousLevel, setPreviousLevel] = useState(1);
+  
+  // Routine builder state
+  const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
+  const [routineHabits, setRoutineHabits] = useState(defaultHabits.slice(0, 6));
+  const [routineSelectedHabits, setRoutineSelectedHabits] = useState<string[]>([]);
+  const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string; icon?: string; description?: string; info?: any; category?: string }>>([]);
   
   // Caverna-specific habits
   const [habits, setHabits] = useState(() => {
@@ -245,6 +254,88 @@ const CavernaDashboard = () => {
     toast.success("Novo desafio adicionado à caverna!");
   };
 
+  // Routine builder handlers
+  const handleRoutineHabitToggle = (habitId: string) => {
+    setRoutineSelectedHabits(prev => 
+      prev.includes(habitId) 
+        ? prev.filter(id => id !== habitId)
+        : [...prev, habitId]
+    );
+  };
+
+  const handleRoutineHabitDelete = (habitId: string) => {
+    setRoutineHabits(prev => prev.filter(h => h.id !== habitId));
+    setRoutineSelectedHabits(prev => prev.filter(id => id !== habitId));
+    setRoutineCustomHabits(prev => prev.filter(h => h.id !== habitId));
+  };
+
+  const handleRoutineAddCustomHabit = (habitName: string) => {
+    const customHabit = {
+      id: `custom-${Date.now()}`,
+      name: habitName,
+      icon: "✨",
+      description: "Hábito personalizado",
+      category: "Personalizado",
+      info: {
+        whyDo: "Este é um hábito personalizado criado por você. Desenvolva sua própria motivação e descubra os benefícios únicos que ele pode trazer para sua vida.",
+        howDo: "Como este é seu hábito personalizado, você é quem melhor sabe como executá-lo. Defina os passos específicos e mantenha consistência na execução."
+      }
+    };
+    
+    setRoutineCustomHabits(prev => [...prev, customHabit]);
+    setRoutineHabits(prev => [...prev, customHabit]);
+    setRoutineSelectedHabits(prev => [...prev, customHabit.id]);
+  };
+
+  const handleRoutineComplete = () => {
+    const today = new Date().toISOString().slice(0,10);
+    const allHabits = [...routineHabits, ...routineCustomHabits];
+    const selectedHabitsData = allHabits.filter(h => routineSelectedHabits.includes(h.id));
+    
+    const daily = selectedHabitsData.map(habit => ({
+      id: habit.id,
+      name: habit.name,
+      icon: habit.icon || '⚔️',
+      description: habit.description || 'Desafio do dia',
+      category: 'Caverna',
+      energyBoost: 3,
+      connectionBoost: 2,
+      skillBoost: 2,
+      completed: false,
+      date: today,
+      info: habit.info || {
+        whyDo: 'Hábito selecionado no montador de rotina.',
+        howDo: 'Execute-o da melhor forma que fizer sentido para você hoje.'
+      }
+    }));
+    
+    localStorage.setItem('dailyHabits', JSON.stringify(daily));
+    setShowRoutineBuilder(false);
+    
+    // Reload habits
+    window.location.reload();
+    
+    toast.success("Rotina atualizada com sucesso!");
+  };
+
+  const openRoutineBuilder = () => {
+    // Reset state
+    setRoutineHabits(defaultHabits.slice(0, 6));
+    setRoutineSelectedHabits([]);
+    setRoutineCustomHabits([]);
+    
+    // Load current selected habits from localStorage
+    try {
+      const stored = JSON.parse(localStorage.getItem('dailyHabits') || '[]');
+      const today = new Date().toISOString().slice(0,10);
+      const todayHabits = stored.filter((h: any) => h.date === today);
+      const selectedIds = todayHabits.map((h: any) => h.id);
+      setRoutineSelectedHabits(selectedIds);
+    } catch {}
+    
+    setShowRoutineBuilder(true);
+  };
+
   const completedToday = habits.filter(h => h.completed).length;
   const totalToday = habits.length;
   const progressPercentage = totalToday > 0 ? (completedToday / totalToday) * 100 : 0;
@@ -401,7 +492,7 @@ const CavernaDashboard = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => navigate('/caverna-do-desafio')}
+                onClick={openRoutineBuilder}
               >
                 Adicionar Desafio
               </Button>
@@ -508,6 +599,25 @@ const CavernaDashboard = () => {
           newLevel={level}
         />
       )}
+
+      {/* Routine builder dialog */}
+      <Dialog open={showRoutineBuilder} onOpenChange={(open) => { if (!open) setShowRoutineBuilder(false); }}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Editar seus desafios diários</DialogTitle>
+          </DialogHeader>
+          <div className="mt-2">
+            <HabitSelectionStep
+              habits={routineHabits}
+              selectedHabits={routineSelectedHabits}
+              onHabitToggle={handleRoutineHabitToggle}
+              onHabitDelete={handleRoutineHabitDelete}
+              onAddCustomHabit={handleRoutineAddCustomHabit}
+              onComplete={handleRoutineComplete}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
