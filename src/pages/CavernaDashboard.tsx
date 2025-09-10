@@ -68,7 +68,7 @@ const CavernaDashboard = () => {
   
   // Routine builder state
   const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
-  const [routineHabits, setRoutineHabits] = useState(defaultHabits.slice(0, 6));
+  const [routineHabits, setRoutineHabits] = useState(defaultHabits);
   const [routineSelectedHabits, setRoutineSelectedHabits] = useState<string[]>([]);
   const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string; icon?: string; description?: string; info?: any; category?: string }>>([]);
   
@@ -420,7 +420,7 @@ const CavernaDashboard = () => {
 
   const openRoutineBuilder = () => {
     // Reset state
-    setRoutineHabits(defaultHabits.slice(0, 6));
+    setRoutineHabits(defaultHabits);
     setRoutineSelectedHabits([]);
     setRoutineCustomHabits([]);
     
