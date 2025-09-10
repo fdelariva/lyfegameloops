@@ -76,5 +76,49 @@ export const defaultHabits = [
       whyDo: "O corpo é 60% água e perde 2-3 litros por dia. Desidratação de apenas 2% reduz performance física e mental, causa fadiga e dores de cabeça. Água melhora concentração e humor.",
       howDo: "Beba um copo de 250ml de água pura, preferencialmente em temperatura ambiente. Mantenha uma garrafa visível como lembrete e distribua a ingestão ao longo do dia."
     }
+  },
+  { 
+    id: "h8", 
+    name: "Escreva seus objetivos do dia", 
+    icon: "📖", 
+    description: "Registre suas metas diárias em um diário", 
+    category: "Journaling",
+    info: {
+      whyDo: "Escrever objetivos clarifica suas intenções, aumenta o foco e melhora significativamente as chances de alcançá-los. Estudos mostram que pessoas que escrevem seus objetivos têm 42% mais chances de realizá-los.",
+      howDo: "Reserve 5-10 minutos pela manhã para escrever 2-3 objetivos específicos e realizáveis para o dia. Seja claro sobre o que você quer alcançar e como vai medir o sucesso."
+    }
+  },
+  { 
+    id: "h9", 
+    name: "Escreva 3 coisas que você é grato hoje", 
+    icon: "📖", 
+    description: "Pratique gratidão através da escrita", 
+    category: "Journaling",
+    info: {
+      whyDo: "A prática da gratidão rewire o cérebro para focar no positivo, reduz stress, melhora o humor e fortalece relacionamentos. Estudos mostram aumento de 25% na felicidade geral.",
+      howDo: "Anote 3 coisas específicas pelas quais você é grato hoje. Podem ser pequenas (um sorriso, o café da manhã) ou grandes (saúde, família). Seja específico e sinta genuinamente a gratidão."
+    }
+  },
+  { 
+    id: "h10", 
+    name: "Faça um diário do sono, como foi a sua noite de sono", 
+    icon: "📖", 
+    description: "Monitore e reflita sobre a qualidade do seu sono", 
+    category: "Journaling",
+    info: {
+      whyDo: "Monitorar o sono ajuda a identificar padrões, melhorar a qualidade do descanso e otimizar a performance durante o dia. O sono de qualidade é fundamental para saúde física e mental.",
+      howDo: "Registre: horário que dormiu, quantas vezes acordou, como se sente ao acordar (1-10), fatores que podem ter afetado o sono (cafeína, telas, stress). Use essas informações para ajustar seus hábitos."
+    }
+  },
+  { 
+    id: "h11", 
+    name: "Faça um diário de despesas do dia", 
+    icon: "📖", 
+    description: "Registre e reflita sobre seus gastos diários", 
+    category: "Journaling",
+    info: {
+      whyDo: "Conscientizar-se dos gastos é o primeiro passo para saúde financeira. Estudos mostram que pessoas que registram despesas gastam 12-18% menos e tomam decisões financeiras mais conscientes.",
+      howDo: "Anote todos os gastos do dia, categorizando-os (alimentação, transporte, lazer, etc.). Reflita: foi necessário? Trouxe valor? Está alinhado com seus objetivos financeiros? Use apps ou um caderno simples."
+    }
   }
 ];

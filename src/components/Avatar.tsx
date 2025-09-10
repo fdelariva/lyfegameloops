@@ -27,33 +27,33 @@ const UserAvatar = ({
   const getAvatarEmoji = (type: string, avatarLevel: number) => {
     const avatars = {
       guerreiro: {
-        1: "🗡️", // Sword - basic warrior weapon
-        2: "⚔️", // Crossed swords - advancing warrior
-        5: "🛡️"  // Shield - master warrior defender
+        1: "🧍", // Standing person - basic human figure
+        2: "🚶", // Walking person - advancing human
+        5: "🏃"  // Running person - master human
       },
       mestre: {
-        1: "🎭", // Máscara teatral
-        2: "🏺", // Ânfora grega
-        5: "👑"  // Coroa de louros
+        1: "🧍", // Standing person
+        2: "🚶", // Walking person
+        5: "🏃"  // Running person
       },
       sábio: {
-        1: "📚", // Livro
-        2: "🦉", // Coruja de Atena
-        5: "⚡"  // Raio de Zeus
+        1: "🧍", // Standing person
+        2: "🚶", // Walking person
+        5: "🏃"  // Running person
       },
       guardião: {
-        1: "🛡️", // Escudo básico
-        2: "🏛️", // Templo protetor
-        5: "🌟"  // Estrela divina
+        1: "🧍", // Standing person
+        2: "🚶", // Walking person
+        5: "🏃"  // Running person
       },
       indefinido: {
-        1: "❓",
-        2: "❓",
-        5: "❓"
+        1: "🧍",
+        2: "🚶",
+        5: "🏃"
       }
     };
 
-    return avatars[type.toLowerCase() as keyof typeof avatars]?.[avatarLevel as keyof typeof avatars.guerreiro] || "❓";
+    return avatars[type.toLowerCase() as keyof typeof avatars]?.[avatarLevel as keyof typeof avatars.guerreiro] || "🧍";
   };
 
   const getPreviewImage = () => {

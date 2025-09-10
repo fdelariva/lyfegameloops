@@ -15,7 +15,9 @@ import {
   TrendingUp,
   Settings,
   Bell,
-  Brain
+  Brain,
+  User,
+  BookOpen
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -32,7 +34,9 @@ import AddHabitModal from "@/components/AddHabitModal";
 import { AthenaImage } from "@/components/AthenaImage";
 import HabitSelectionStep from "@/components/onboarding/HabitSelectionStep";
 import { defaultHabits } from "@/data/defaultHabits";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const CavernaDashboard = () => {
   const navigate = useNavigate();
@@ -63,6 +67,11 @@ const CavernaDashboard = () => {
   const [routineHabits, setRoutineHabits] = useState(defaultHabits.slice(0, 6));
   const [routineSelectedHabits, setRoutineSelectedHabits] = useState<string[]>([]);
   const [routineCustomHabits, setRoutineCustomHabits] = useState<Array<{ id: string; name: string; icon?: string; description?: string; info?: any; category?: string }>>([]);
+  
+  // Journal dialog state
+  const [showJournalDialog, setShowJournalDialog] = useState(false);
+  const [currentJournalHabit, setCurrentJournalHabit] = useState<any>(null);
+  const [journalEntry, setJournalEntry] = useState("");
   
   // Caverna-specific habits
   const [habits, setHabits] = useState(() => {
@@ -157,6 +166,15 @@ const CavernaDashboard = () => {
   }, [level, energy, connection, skill, streak, totalHabitsCompleted, shadowsDefeated, isDayZero]);
 
   const handleCompleteHabit = (habitId: string) => {
+    // Check if it's a journal habit
+    const habit = habits.find(h => h.id === habitId);
+    if (habit && (habit.category === "Journaling" || habit.name.toLowerCase().includes("escreva") || habit.name.toLowerCase().includes("diário"))) {
+      setCurrentJournalHabit(habit);
+      setJournalEntry("");
+      setShowJournalDialog(true);
+      return;
+    }
+
     // Check if user has completed the caverna challenge
     const hasChallengeCompleted = localStorage.getItem('cavernaChallengeCompleted') === 'true';
     
@@ -166,6 +184,10 @@ const CavernaDashboard = () => {
       return;
     }
 
+    completeHabitAction(habitId);
+  };
+
+  const completeHabitAction = (habitId: string) => {
     // Apply pending shadow life (from successful battle) when any daily habit is marked
     const pendingRaw = localStorage.getItem('pendingShadowLife');
     if (pendingRaw) {
@@ -213,8 +235,6 @@ const CavernaDashboard = () => {
           }
         }
         
-        // Inform about habit completion
-        // Removed previous generic shadow toast; messaging handled above when applicable
         return { ...habit, completed: true, streak: newStreak };
       }
       return habit;
@@ -230,6 +250,56 @@ const CavernaDashboard = () => {
         localStorage.setItem('dailyHabits', JSON.stringify(updated));
       }
     } catch {}
+  };
+
+  const handleJournalSave = () => {
+    if (!journalEntry.trim()) {
+      toast.error("Por favor, escreva algo antes de salvar.");
+      return;
+    }
+
+    // Save journal entry to localStorage
+    const today = new Date().toISOString().slice(0,10);
+    const journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '{}');
+    
+    if (!journalEntries[today]) {
+      journalEntries[today] = [];
+    }
+    
+    journalEntries[today].push({
+      habitId: currentJournalHabit.id,
+      habitName: currentJournalHabit.name,
+      entry: journalEntry,
+      timestamp: new Date().toISOString()
+    });
+    
+    localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
+    
+    // Complete the habit
+    completeHabitAction(currentJournalHabit.id);
+    
+    // Close dialog
+    setShowJournalDialog(false);
+    setCurrentJournalHabit(null);
+    setJournalEntry("");
+    
+    toast.success("Reflexão salva com sucesso!");
+  };
+
+  const getJournalInstructions = (habitName: string) => {
+    if (habitName.includes("objetivos")) {
+      return "Liste 2-3 objetivos específicos que deseja alcançar hoje. Seja claro sobre o que constitui sucesso para cada um.";
+    }
+    if (habitName.includes("grato")) {
+      return "Escreva 3 coisas específicas pelas quais você é grato hoje. Podem ser pequenas ou grandes - o importante é sentir genuinamente a gratidão.";
+    }
+    if (habitName.includes("sono")) {
+      return "Descreva como foi sua noite de sono: horário que dormiu, quantas vezes acordou, como se sente agora (1-10), e o que pode ter afetado seu descanso.";
+    }
+    if (habitName.includes("despesas")) {
+      return "Liste os gastos do dia, categorizando-os. Reflita: foram necessários? Trouxeram valor? Estão alinhados com seus objetivos financeiros?";
+    }
+    return "Use este espaço para refletir sobre este hábito e como ele se relaciona com seus objetivos pessoais.";
   };
 
   const handleAddHabit = (habitData: any) => {
@@ -354,7 +424,8 @@ const CavernaDashboard = () => {
               skill={skill}
             />
             <div>
-              <h1 className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold gradient-primary bg-clip-text text-transparent flex items-center gap-2">
+                <BookOpen className="h-6 w-6" />
                 Caverna das Sombras
               </h1>
               <p className="text-muted-foreground">
@@ -599,6 +670,41 @@ const CavernaDashboard = () => {
           newLevel={level}
         />
       )}
+
+      {/* Journal Dialog */}
+      <Dialog open={showJournalDialog} onOpenChange={(open) => { if (!open) setShowJournalDialog(false); }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              {currentJournalHabit?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {currentJournalHabit && getJournalInstructions(currentJournalHabit.name)}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="journal-entry">Sua reflexão:</Label>
+              <Textarea
+                id="journal-entry"
+                placeholder="Escreva sua reflexão aqui..."
+                value={journalEntry}
+                onChange={(e) => setJournalEntry(e.target.value)}
+                className="mt-2 min-h-32"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowJournalDialog(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleJournalSave}>
+              Salvar e Completar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Routine builder dialog */}
       <Dialog open={showRoutineBuilder} onOpenChange={(open) => { if (!open) setShowRoutineBuilder(false); }}>
