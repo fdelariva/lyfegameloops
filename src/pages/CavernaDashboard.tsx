@@ -17,7 +17,8 @@ import {
   Bell,
   Brain,
   User,
-  BookOpen
+  BookOpen,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import UserAvatar from "@/components/Avatar";
 import DashboardHabitCard from "@/components/DashboardHabitCard";
@@ -37,6 +38,9 @@ import { defaultHabits } from "@/data/defaultHabits";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const CavernaDashboard = () => {
   const navigate = useNavigate();
@@ -72,6 +76,11 @@ const CavernaDashboard = () => {
   const [showJournalDialog, setShowJournalDialog] = useState(false);
   const [currentJournalHabit, setCurrentJournalHabit] = useState<any>(null);
   const [journalEntry, setJournalEntry] = useState("");
+  
+  // Journal calendar state
+  const [showJournalCalendar, setShowJournalCalendar] = useState(false);
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>();
+  const [journalEntries, setJournalEntries] = useState<any>({});
   
   // Caverna-specific habits
   const [habits, setHabits] = useState(() => {
@@ -151,6 +160,14 @@ const CavernaDashboard = () => {
     if (savedCompleted) setTotalHabitsCompleted(parseInt(savedCompleted));
     if (savedShadows) setShadowsDefeated(parseInt(savedShadows));
     if (savedDayZero) setIsDayZero(savedDayZero === 'true');
+    
+    // Load journal entries
+    const savedJournalEntries = localStorage.getItem('journalEntries');
+    if (savedJournalEntries) {
+      try {
+        setJournalEntries(JSON.parse(savedJournalEntries));
+      } catch {}
+    }
   }, []);
 
   // Save progress data whenever it changes
@@ -275,6 +292,9 @@ const CavernaDashboard = () => {
     
     localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
     
+    // Update local state
+    setJournalEntries(journalEntries);
+    
     // Complete the habit
     completeHabitAction(currentJournalHabit.id);
     
@@ -300,6 +320,16 @@ const CavernaDashboard = () => {
       return "Liste os gastos do dia, categorizando-os. Reflita: foram necessários? Trouxeram valor? Estão alinhados com seus objetivos financeiros?";
     }
     return "Use este espaço para refletir sobre este hábito e como ele se relaciona com seus objetivos pessoais.";
+  };
+
+  const getJournalEntriesForDate = (date: Date) => {
+    const dateStr = date.toISOString().slice(0, 10);
+    return journalEntries[dateStr] || [];
+  };
+
+  const hasJournalEntriesForDate = (date: Date) => {
+    const dateStr = date.toISOString().slice(0, 10);
+    return journalEntries[dateStr] && journalEntries[dateStr].length > 0;
   };
 
   const handleAddHabit = (habitData: any) => {
@@ -425,7 +455,14 @@ const CavernaDashboard = () => {
             />
             <div>
               <h1 className="text-2xl font-bold gradient-primary bg-clip-text text-transparent flex items-center gap-2">
-                <BookOpen className="h-6 w-6" />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-0 h-auto"
+                  onClick={() => setShowJournalCalendar(true)}
+                >
+                  <BookOpen className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
+                </Button>
                 Caverna das Sombras
               </h1>
               <p className="text-muted-foreground">
@@ -670,6 +707,81 @@ const CavernaDashboard = () => {
           newLevel={level}
         />
       )}
+
+      {/* Journal Calendar Dialog */}
+      <Dialog open={showJournalCalendar} onOpenChange={(open) => { if (!open) setShowJournalCalendar(false); }}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CalendarIcon className="h-5 w-5" />
+              Histórico do Diário
+            </DialogTitle>
+            <DialogDescription>
+              Clique em uma data para ver suas reflexões do dia. Dias com entradas aparecerão destacados.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <Calendar
+                mode="single"
+                selected={selectedCalendarDate}
+                onSelect={setSelectedCalendarDate}
+                locale={ptBR}
+                className="rounded-md border pointer-events-auto"
+                modifiers={{
+                  hasEntries: (date) => hasJournalEntriesForDate(date)
+                }}
+                modifiersStyles={{
+                  hasEntries: { 
+                    backgroundColor: 'hsl(var(--primary))', 
+                    color: 'hsl(var(--primary-foreground))',
+                    fontWeight: 'bold'
+                  }
+                }}
+              />
+            </div>
+            <div className="space-y-4">
+              {selectedCalendarDate ? (
+                <>
+                  <h3 className="text-lg font-semibold">
+                    Reflexões de {format(selectedCalendarDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                  </h3>
+                  {getJournalEntriesForDate(selectedCalendarDate).length > 0 ? (
+                    <div className="space-y-4">
+                      {getJournalEntriesForDate(selectedCalendarDate).map((entry: any, index: number) => (
+                        <Card key={index} className="p-4">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <BookOpen className="h-4 w-4 text-primary" />
+                              <h4 className="font-medium">{entry.habitName}</h4>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {format(new Date(entry.timestamp), "HH:mm")}
+                              </span>
+                            </div>
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                              {entry.entry}
+                            </p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>Nenhuma reflexão encontrada para este dia.</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>Selecione uma data para ver suas reflexões.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Journal Dialog */}
       <Dialog open={showJournalDialog} onOpenChange={(open) => { if (!open) setShowJournalDialog(false); }}>
