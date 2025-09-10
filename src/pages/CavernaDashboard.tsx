@@ -81,6 +81,8 @@ const CavernaDashboard = () => {
   const [showJournalCalendar, setShowJournalCalendar] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>();
   const [journalEntries, setJournalEntries] = useState<any>({});
+  const [isEditingEntry, setIsEditingEntry] = useState(false);
+  const [editingEntryData, setEditingEntryData] = useState<any>(null);
   
   // Caverna-specific habits
   const [habits, setHabits] = useState(() => {
@@ -270,6 +272,11 @@ const CavernaDashboard = () => {
   };
 
   const handleJournalSave = () => {
+    if (isEditingEntry) {
+      handleEditEntrySave();
+      return;
+    }
+
     if (!journalEntry.trim()) {
       toast.error("Por favor, escreva algo antes de salvar.");
       return;
@@ -330,6 +337,76 @@ const CavernaDashboard = () => {
   const hasJournalEntriesForDate = (date: Date) => {
     const dateStr = date.toISOString().slice(0, 10);
     return journalEntries[dateStr] && journalEntries[dateStr].length > 0;
+  };
+
+  const getRecentJournalEntries = () => {
+    const allEntries: any[] = [];
+    
+    // Collect all entries from all dates
+    Object.keys(journalEntries).forEach(dateStr => {
+      const entriesForDate = journalEntries[dateStr] || [];
+      entriesForDate.forEach((entry: any) => {
+        allEntries.push({
+          ...entry,
+          date: dateStr,
+          dateFormatted: format(new Date(dateStr), "dd 'de' MMMM", { locale: ptBR })
+        });
+      });
+    });
+
+    // Sort by timestamp (newest first) and take the 3 most recent
+    return allEntries
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 3);
+  };
+
+  const handleEditEntry = (entryData: any) => {
+    setEditingEntryData(entryData);
+    setJournalEntry(entryData.entry);
+    setCurrentJournalHabit({
+      id: entryData.habitId,
+      name: entryData.habitName
+    });
+    setIsEditingEntry(true);
+    setShowJournalDialog(true);
+    setShowJournalCalendar(false);
+  };
+
+  const handleEditEntrySave = () => {
+    if (!journalEntry.trim()) {
+      toast.error("Por favor, escreva algo antes de salvar.");
+      return;
+    }
+
+    // Update the existing entry
+    const updatedEntries = { ...journalEntries };
+    const dateEntries = updatedEntries[editingEntryData.date] || [];
+    
+    const entryIndex = dateEntries.findIndex((entry: any) => 
+      entry.timestamp === editingEntryData.timestamp && 
+      entry.habitId === editingEntryData.habitId
+    );
+    
+    if (entryIndex !== -1) {
+      dateEntries[entryIndex] = {
+        ...dateEntries[entryIndex],
+        entry: journalEntry,
+        timestamp: new Date().toISOString() // Update timestamp to show it was edited
+      };
+      
+      localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
+      setJournalEntries(updatedEntries);
+    }
+    
+    // Close dialog and reset state
+    setShowJournalDialog(false);
+    setCurrentJournalHabit(null);
+    setJournalEntry("");
+    setIsEditingEntry(false);
+    setEditingEntryData(null);
+    setShowJournalCalendar(true); // Return to calendar view
+    
+    toast.success("Reflexão atualizada com sucesso!");
   };
 
   const handleAddHabit = (habitData: any) => {
@@ -765,24 +842,33 @@ const CavernaDashboard = () => {
                     Reflexões de {format(selectedCalendarDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                   </h3>
                   {getJournalEntriesForDate(selectedCalendarDate).length > 0 ? (
-                    <div className="space-y-4">
-                      {getJournalEntriesForDate(selectedCalendarDate).map((entry: any, index: number) => (
-                        <Card key={index} className="p-4">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <BookOpen className="h-4 w-4 text-primary" />
-                              <h4 className="font-medium">{entry.habitName}</h4>
-                              <span className="text-xs text-muted-foreground ml-auto">
-                                {format(new Date(entry.timestamp), "HH:mm")}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                              {entry.entry}
-                            </p>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
+                     <div className="space-y-4">
+                       {getJournalEntriesForDate(selectedCalendarDate).map((entry: any, index: number) => (
+                         <Card 
+                           key={index} 
+                           className="p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+                           onClick={() => handleEditEntry({
+                             ...entry,
+                             date: selectedCalendarDate.toISOString().slice(0, 10),
+                             dateFormatted: format(selectedCalendarDate, "dd 'de' MMMM", { locale: ptBR })
+                           })}
+                         >
+                           <div className="space-y-2">
+                             <div className="flex items-center gap-2">
+                               <BookOpen className="h-4 w-4 text-primary" />
+                               <h4 className="font-medium">{entry.habitName}</h4>
+                               <span className="text-xs text-muted-foreground ml-auto">
+                                 {format(new Date(entry.timestamp), "HH:mm")}
+                               </span>
+                             </div>
+                             <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                               {entry.entry}
+                             </p>
+                             <p className="text-xs text-primary">Clique para editar</p>
+                           </div>
+                         </Card>
+                       ))}
+                     </div>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
                       <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -791,9 +877,39 @@ const CavernaDashboard = () => {
                   )}
                 </>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>Selecione uma data para ver suas reflexões.</p>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Entradas recentes</h3>
+                  {getRecentJournalEntries().length > 0 ? (
+                    <div className="space-y-4">
+                      {getRecentJournalEntries().map((entry: any, index: number) => (
+                        <Card 
+                          key={index} 
+                          className="p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+                          onClick={() => handleEditEntry(entry)}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <BookOpen className="h-4 w-4 text-primary" />
+                              <h4 className="font-medium">{entry.habitName}</h4>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {entry.dateFormatted} - {format(new Date(entry.timestamp), "HH:mm")}
+                              </span>
+                            </div>
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-3">
+                              {entry.entry}
+                            </p>
+                            <p className="text-xs text-primary">Clique para editar</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>Nenhuma reflexão encontrada ainda.</p>
+                      <p className="text-sm mt-1">Comece criando seus primeiros hábitos de journaling!</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -807,10 +923,13 @@ const CavernaDashboard = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              {currentJournalHabit?.name}
+              {isEditingEntry ? "Editar reflexão" : currentJournalHabit?.name}
             </DialogTitle>
             <DialogDescription>
-              {currentJournalHabit && getJournalInstructions(currentJournalHabit.name)}
+              {isEditingEntry 
+                ? "Edite sua reflexão anterior e salve as alterações."
+                : currentJournalHabit && getJournalInstructions(currentJournalHabit.name)
+              }
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -826,11 +945,18 @@ const CavernaDashboard = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowJournalDialog(false)}>
+            <Button variant="outline" onClick={() => {
+              setShowJournalDialog(false);
+              setIsEditingEntry(false);
+              setEditingEntryData(null);
+              if (isEditingEntry) {
+                setShowJournalCalendar(true);
+              }
+            }}>
               Cancelar
             </Button>
             <Button onClick={handleJournalSave}>
-              Salvar e Completar
+              {isEditingEntry ? "Salvar Alterações" : "Salvar e Completar"}
             </Button>
           </DialogFooter>
         </DialogContent>
